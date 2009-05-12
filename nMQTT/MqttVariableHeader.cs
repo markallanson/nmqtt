@@ -1,4 +1,4 @@
-﻿//using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +6,9 @@ using System.Text;
 namespace nMqtt
 {
     /// <summary>
-    /// A client class for interacting with MQTT Data Packets
+    /// Represents the Variable Header portion of an MQTT Message.
     /// </summary>
-    public class MqttClient
+    public class MqttVariableHeader
     {
     }
 }

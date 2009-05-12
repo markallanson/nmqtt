@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6506A020-988F-48A1-BC7C-FCDB13E3A4CC}</ProjectGuid>
+    <ProjectGuid>{A2E6E140-AA67-4683-BD09-03C1B7FCB2F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>nMqtt</RootNamespace>
-    <AssemblyName>nMqtt</AssemblyName>
+    <RootNamespace>nMqttTests</RootNamespace>
+    <AssemblyName>nMqttTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,19 +43,22 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="xunit, Version=1.1.0.1323, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\xunit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="InvalidHeaderException.cs" />
-    <Compile Include="InvalidPayloadSizeException.cs" />
-    <Compile Include="MqttMessageType.cs" />
-    <Compile Include="MqttPayload.cs" />
-    <Compile Include="MqttClient.cs" />
-    <Compile Include="MqttHeader.cs" />
-    <Compile Include="MqttMessage.cs" />
-    <Compile Include="MqttQos.cs" />
-    <Compile Include="MqttVariableHeader.cs" />
+    <Compile Include="MqttHeaderTests.cs" />
+    <Compile Include="MqttMessageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionBindingConstants.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nMQTT\nMQTT.csproj">
+      <Project>{6506A020-988F-48A1-BC7C-FCDB13E3A4CC}</Project>
+      <Name>nMQTT</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
