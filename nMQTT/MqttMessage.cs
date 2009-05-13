@@ -9,6 +9,20 @@ namespace nMqtt
     /// <summary>
     /// Represents an MQTT message that contains a fixed header, variable header and message body.
     /// </summary>
+    /// <remarks>
+    /// Messages roughly look as follows.
+    /// <code>
+    /// ----------------------------
+    /// | Header, 2-5 Bytes Length |
+    /// ----------------------------
+    /// | Variable Header          |
+    /// | n Bytes Length           |
+    /// ----------------------------
+    /// | Message Payload          |
+    /// | 256MB minus VH Size      |
+    /// ----------------------------
+    /// </code>
+    /// </remarks>
     public class MqttMessage
     {
         /// <summary>
@@ -34,7 +48,7 @@ namespace nMqtt
         /// <remarks>
         /// Only called via the MqttMessage.Create operation during processing of an Mqtt message stream.
         /// </remarks>
-        private MqttMessage()
+        public MqttMessage()
         {
         }
 
@@ -66,11 +80,11 @@ namespace nMqtt
         /// </summary>
         /// <param name="messageBytes">The message bytes.</param>
         /// <returns></returns>
-        public static MqttMessage Create(IEnumerable<byte> messageBytes)
+        public static MqttMessage CreateFrom(IEnumerable<byte> messageBytes)
         {
             using (MemoryStream messageStream = new MemoryStream(messageBytes.ToArray<byte>()))
             {
-                return Create(messageStream);
+                return CreateFrom(messageStream);
             }
         }
 
@@ -79,33 +93,55 @@ namespace nMqtt
         /// </summary>
         /// <param name="messageStream">The message stream.</param>
         /// <returns>An MqttMessage containing details of the message.</returns>
-        public static MqttMessage Create(Stream messageStream)
+        public static MqttMessage CreateFrom(Stream messageStream)
         {
-            MqttMessage message = new MqttMessage();
+            MqttHeader header = new MqttHeader();
 
             // pass the input stream sequentially through the component deserialization(create) methods
             // to build a full MqttMessage.
-            message.Header = MqttHeader.Create(messageStream);
+            header = new MqttHeader(messageStream);
 
-            // TODO: Implement the same for variable header and Payload
+            MqttMessage message = MqttMessageFactory.GetMessage(header, messageStream);
 
             return message;
         }
 
         /// <summary>
-        /// Gets the raw message bytes of the message. these bytes are the actual raw MQTT message.
+        /// Writes the message to the supplied stream.
         /// </summary>
-        /// <value>The message bytes.</value>
-        internal List<byte> MessageBytes
+        /// <param name="messageStream">The stream to write the message to.</param>
+        public void WriteTo(Stream messageStream)
         {
-            get
+            Header.WriteTo(messageStream);
+            VariableHeader.WriteTo(messageStream);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("MQTTMessage of type ");
+            sb.AppendLine(this.GetType().ToString());
+
+            sb.Append(Header.ToString());
+
+            if (VariableHeader != null)
             {
-                var messageBytes = new List<byte>();
-
-                messageBytes.AddRange(Header.HeaderBytes);
-
-                return messageBytes;
+                sb.Append(VariableHeader.ToString());
             }
+
+            if (Payload != null)
+            {
+                sb.Append(Payload.ToString());
+            }
+
+            return sb.ToString();
         }
     }
 }

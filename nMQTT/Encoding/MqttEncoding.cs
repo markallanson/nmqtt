@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+namespace nMqtt.Encoding
+{
+    /// <summary>
+    /// Encoding implementation that can encode and decode strings in the MQTT string format.
+    /// </summary>
+    /// <remarks>
+    /// The MQTT string format is simply a pascal string with ANSI character encoding. The first 2 bytes define
+    /// the length of the string, and they are followed by the string itself.
+    /// </remarks>
+    internal class MqttEncoding : ASCIIEncoding
+    {
+        /// <summary>
+        /// When overridden in a derived class, encodes all the characters in the specified <see cref="T:System.String"/> into a sequence of bytes.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns>
+        /// A byte array containing the results of encoding the specified set of characters.
+        /// </returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// 	<paramref name="s"/> is null.
+        /// </exception>
+        /// <exception cref="T:System.Text.EncoderFallbackException">
+        /// A fallback occurred (see Understanding Encodings for complete explanation)
+        /// -and-
+        /// <see cref="P:System.Text.Encoding.EncoderFallback"/> is set to <see cref="T:System.Text.EncoderExceptionFallback"/>.
+        /// </exception>
+        public override byte[] GetBytes(string s)
+        {
+            ValidateString(s);
+
+            List<byte> stringBytes = new List<byte>();
+            stringBytes.Add((byte)(s.Length >> 8));
+            stringBytes.Add((byte)(s.Length & 0xFF));
+            stringBytes.AddRange(base.GetBytes(s));
+
+            return stringBytes.ToArray();
+        }
+
+        /// <summary>
+        /// When overridden in a derived class, decodes all the bytes in the specified byte array into a string.
+        /// </summary>
+        /// <param name="bytes">The byte array containing the sequence of bytes to decode.</param>
+        /// <returns>
+        /// A <see cref="T:System.String"/> containing the results of decoding the specified sequence of bytes.
+        /// </returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// 	<paramref name="bytes"/> is null.
+        /// </exception>
+        /// <exception cref="T:System.Text.DecoderFallbackException">
+        /// A fallback occurred (see Understanding Encodings for complete explanation)
+        /// -and-
+        /// <see cref="P:System.Text.Encoding.DecoderFallback"/> is set to <see cref="T:System.Text.DecoderExceptionFallback"/>.
+        /// </exception>
+        public override string GetString(byte[] bytes)
+        {
+            return base.GetString(bytes);
+        }
+
+        /// <summary>
+        /// When overridden in a derived class, calculates the number of characters produced by decoding all the bytes in the specified byte array.
+        /// </summary>
+        /// <param name="bytes">The byte array containing the sequence of bytes to decode.</param>
+        /// <returns>
+        /// The number of characters produced by decoding the specified sequence of bytes.
+        /// </returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// 	<paramref name="bytes"/> is null.
+        /// </exception>
+        /// <exception cref="T:System.Text.DecoderFallbackException">
+        /// A fallback occurred (see Understanding Encodings for complete explanation)
+        /// -and-
+        /// <see cref="P:System.Text.Encoding.DecoderFallback"/> is set to <see cref="T:System.Text.DecoderExceptionFallback"/>.
+        /// </exception>
+        public override int GetCharCount(byte[] bytes)
+        {
+            if (bytes.Length < 2)
+            {
+                throw new ArgumentException("Length byte array must comprise 2 bytes");
+            }
+
+            return (short)((bytes[0] << 8) + bytes[1]);
+        }
+
+        /// <summary>
+        /// Validates the string to ensure it doesn't contain any characters invalid within the Mqtt string format.
+        /// </summary>
+        /// <param name="s">The s.</param>
+        private void ValidateString(string s)
+        {
+            foreach (char c in s)
+            {
+                if (c > 0x7F)
+                {
+                    throw new ArgumentException("The input string has extended UTF characters, which are not supported");
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,66 @@
+MQTT client (IA92 java gui client) connected to RSMB message broker
+
+<PQ> means one hex byte 0xPQ. 
+ASCII codes 33 to 127 printed as characters (except in the message headers 
+where I've put them back to hex for clarity)
+
+Andy S-C
+andy@stanford-clark.com
+
+[Start Of Transmission]
+##################### Tue May 12 17:38:05 2009 - From 'client 1' to 'broker for client 1' #####################
+# -> CONNECT with andy111 as clientID
+<10><15><00><06>MQIsdp<03><02><00><1E><00><07>andy111
+#
+##################### Tue May 12 17:38:05 2009 - From 'broker for client 1' to 'client 1' #####################
+# <- CONNACK
+<20><02><00><00>
+#
+##################### Tue May 12 17:38:10 2009 - From 'client 1' to 'broker for client 1' #####################
+# -> SUBSCRIBE 'fred' at qos0
+<82><09><00><02><00><04>fred<00>
+#
+##################### Tue May 12 17:38:10 2009 - From 'broker for client 1' to 'client 1' #####################
+# <- SUBACK
+<90><03><00><02><00>
+#
+##################### Tue May 12 17:38:19 2009 - From 'client 1' to 'broker for client 1' #####################
+# -> PUBLISH "hello!" to topic fred at qos0
+<30><0C><00><04>fredhello!
+#
+##################### Tue May 12 17:38:19 2009 - From 'broker for client 1' to 'client 1' #####################
+# <- PUBLISH on topic fred content "hello!" from broker to subscriber
+<30><0C><00><04>fredhello!
+#
+##################### Tue May 12 17:38:35 2009 - From 'client 1' to 'broker for client 1' #####################
+# -> PINGREQ ("ping")
+<C0><00>
+#
+##################### Tue May 12 17:38:35 2009 - From 'broker for client 1' to 'client 1' #####################
+# <- PINGRESP ("pong")
+<D0><00>
+#
+##################### Tue May 12 17:38:35 2009 - From 'client 1' to 'broker for client 1' #####################
+# -> UNSUBSCRIBE fred
+<A2><08><00><03><00><04>fred
+#
+##################### Tue May 12 17:38:35 2009 - From 'broker for client 1' to 'client 1' #####################
+# <- UNSUBACK
+<B0><02><00><03>
+#
+##################### Tue May 12 17:38:40 2009 - From 'client 1' to 'broker for client 1' #####################
+# publish "hello!" to topic fred again
+<30><0C><00><04>fredhello!
+#
+# PINGREQ 
+<C0><00>
+#
+##################### Tue May 12 17:39:05 2009 - From 'broker for client 1' to 'client 1' #####################
+# <- PINGRESP
+<D0><00>
+#
+##################### Tue May 12 17:39:26 2009 - From 'client 1' to 'broker for client 1' #####################
+# -> DISCONNECT
+<E0><00>
+#
+[transmission ends]

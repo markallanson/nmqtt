@@ -7,40 +7,131 @@ using nMqtt;
 
 namespace nMqttTests
 {
+    /// <summary>
+    /// MQTT Message Tests with sample input data provided by andy@stanford-clark.com
+    /// </summary>
     public class MqttMessageTests
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void MessageDeserialize_Basic()
+        public void Deserialize_Message_MessageType_Connect_FromDump()
         {
             // Our test deserialization message, with the following properties. Note this message is not 
             // yet a real MQTT message, because not everything is implemented, but it must be modified
             // and ammeneded as work progresses
             //
             // Message Specs________________
-            // Duplicate = true
-            // Retain = false
-            // Message Type = connect
-            // Qos = AtLeastOnce
-            // Message Size = 1 byte
-            // Message payload = number "10"
-            var sampleMessage = new []
+            // <10><15><00><06>MQIsdp<03><02><00><1E><00><07>andy111
+            var sampleMessage = new[]
             {
-                (byte)26,
-                (byte)1,
-                (byte)10
+                (byte)0x10,
+                (byte)0x15,
+                (byte)0x0,
+                (byte)0x6,
+                (byte)'M',
+                (byte)'Q',
+                (byte)'I',
+                (byte)'s',
+                (byte)'d',
+                (byte)'p',
+                (byte)0x3,
+                (byte)0x2,
+                (byte)0x0,
+                (byte)0x1E,
+                (byte)0x0,
+                (byte)0x7,
+                (byte)'a',
+                (byte)'n',
+                (byte)'d',
+                (byte)'y',
+                (byte)'1',
+                (byte)'1',
+                (byte)'1'
             };
 
-            MqttMessage message = MqttMessage.Create(sampleMessage);
+            MqttMessage message = MqttMessage.CreateFrom(sampleMessage);
+
+            Console.WriteLine(message.ToString());
+
+            // check that the message was correctly identified as a connect message.
+            Assert.IsType<MqttConnectMessage>(message);
 
             // validate the message deserialization
-            Assert.Equal<bool>(true, message.Header.Duplicate);
+            Assert.Equal<bool>(false, message.Header.Duplicate);
             Assert.Equal<bool>(false, message.Header.Retain);
-            Assert.Equal<MqttQos>(MqttQos.AtLeastOnce, message.Header.Qos);
+            Assert.Equal<MqttQos>(MqttQos.AtMostOnce, message.Header.Qos);
             Assert.Equal<MqttMessageType>(MqttMessageType.Connect, message.Header.MessageType);
-            Assert.Equal<int>(1, message.Header.PayloadSize);
+            Assert.Equal<int>(21, message.Header.MessageSize);
+
+            // validate the variable header
+            Assert.Equal<string>("MQIsdp", message.VariableHeader.ProtocolName);
+            Assert.Equal<int>(30, message.VariableHeader.KeepAlive);
+            Assert.Equal<int>(3, message.VariableHeader.ProtocolVersion);
         }
-    }
+
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void Deserialize_Message_MessageType_Connect_Payload_InvalidClientIdenfierLength()
+        {
+            // Our test deserialization message, with the following properties. Note this message is not 
+            // yet a real MQTT message, because not everything is implemented, but it must be modified
+            // and ammeneded as work progresses
+            //
+            // Message Specs________________
+            // <10><15><00><06>MQIsdp<03><02><00><1E><00><07>andy111andy111andy111andy111
+            var sampleMessage = new[]
+            {
+                (byte)0x10,
+                (byte)0x15,
+                (byte)0x0,
+                (byte)0x6,
+                (byte)'M',
+                (byte)'Q',
+                (byte)'I',
+                (byte)'s',
+                (byte)'d',
+                (byte)'p',
+                (byte)0x3,
+                (byte)0x2,
+                (byte)0x0,
+                (byte)0x1E,
+                (byte)0x0,
+                (byte)0x1C,
+                (byte)'a',
+                (byte)'n',
+                (byte)'d',
+                (byte)'y',
+                (byte)'1',
+                (byte)'1',
+                (byte)'1',
+                (byte)'a',
+                (byte)'n',
+                (byte)'d',
+                (byte)'y',
+                (byte)'1',
+                (byte)'1',
+                (byte)'1',
+                (byte)'a',
+                (byte)'n',
+                (byte)'d',
+                (byte)'y',
+                (byte)'1',
+                (byte)'1',
+                (byte)'1',
+                (byte)'a',
+                (byte)'n',
+                (byte)'d',
+                (byte)'y',
+                (byte)'1',
+                (byte)'1',
+                (byte)'1' 
+            };
+
+            Assert.Throws<ClientIdentifierException>(() => MqttMessage.CreateFrom(sampleMessage));
+        }
+    } 
 }

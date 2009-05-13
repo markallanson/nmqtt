@@ -45,9 +45,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientIdentifierException.cs" />
+    <Compile Include="Encoding\MqttEncoding.cs" />
+    <Compile Include="Messages\MqttConnectPayload.cs" />
+    <Compile Include="MqttConnectFlags.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="ExtensionMethods\StreamExtensions.cs" />
+    <Compile Include="Messages\MqttConnectMessage.cs" />
+    <Compile Include="Messages\MqttConnectVariableHeader.cs" />
     <Compile Include="InvalidHeaderException.cs" />
     <Compile Include="InvalidPayloadSizeException.cs" />
+    <Compile Include="MqttConnectReturnCode.cs" />
+    <Compile Include="MqttMessageFactory.cs" />
     <Compile Include="MqttMessageType.cs" />
     <Compile Include="MqttPayload.cs" />
     <Compile Include="MqttClient.cs" />

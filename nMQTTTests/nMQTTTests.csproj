@@ -53,6 +53,7 @@
     <Compile Include="MqttMessageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionBindingConstants.cs" />
+    <Compile Include="MqttConnectFlagTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nMQTT\nMQTT.csproj">

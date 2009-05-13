@@ -7,7 +7,7 @@ namespace nMqtt
 {
     public class InvalidPayloadSizeException : Exception
     {
-        private const string MessageConstant = "The size of the payload ({0} bytes) must be greater than 1 and less than {1} bytes)";
+        private const string MessageConstant = "The size of the payload ({0} bytes) must be equal to or greater than 0 and less than {1} bytes)";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidPayloadSizeException"/> class.
