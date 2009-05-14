@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+namespace Nmqtt
+{
+    /// <summary>
+    /// Implementation of the variable header for an MQTT Connect message.
+    /// </summary>
+    public sealed class MqttPublishVariableHeader : MqttVariableHeader
+    {
+        /// <summary>
+        /// Stores the standard header
+        /// </summary>
+        private MqttHeader header;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
+        /// </summary>
+        public MqttPublishVariableHeader()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
+        /// </summary>
+        /// <param name="headerStream">A stream containing the header of the message.</param>
+        public MqttPublishVariableHeader(MqttHeader header, Stream headerStream)
+        {
+            this.header = header;
+            ReadFrom(headerStream);
+        }
+
+        /// <summary>
+        /// Returns the read flags for the publish message (topic, messageid)
+        /// </summary>
+        protected override ReadWriteFlags ReadFlags
+        {
+            get
+            {
+                if (this.header.Qos == MqttQos.AtLeastOnce || this.header.Qos == MqttQos.ExactlyOnce)
+                {
+                    return
+                        ReadWriteFlags.TopicName |
+                        ReadWriteFlags.MessageIdentifier;
+                }
+                else
+                {
+                    return ReadWriteFlags.TopicName;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the read flags for the publish message (topic, messageid)
+        /// </summary>
+        protected override ReadWriteFlags WriteFlags
+        {
+            get
+            {
+                // Read and write flags are identical for Publish Messages
+                return ReadFlags;
+            }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            return
+                String.Format("Publish Variable Header: TopicName={0}, MessageIdentifier={1}, VH Length={2}",
+                    TopicName, MessageIdentifier, Length);
+        }
+    }
+}

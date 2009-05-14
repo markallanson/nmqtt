@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
-using nMqtt;
+using Nmqtt;
 
-namespace nMqttTests
+namespace NmqttTests
 {
     /// <summary>
     /// MQTT Message Tests with sample input data provided by andy@stanford-clark.com
     /// </summary>
-    public class MqttMessageTests
+    public class MqttMessage_ConnectTests
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
@@ -51,12 +51,13 @@ namespace nMqttTests
                 (byte)'1'
             };
 
-            MqttMessage message = MqttMessage.CreateFrom(sampleMessage);
+            MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
 
-            Console.WriteLine(message.ToString());
+            Console.WriteLine(baseMessage.ToString());
 
             // check that the message was correctly identified as a connect message.
-            Assert.IsType<MqttConnectMessage>(message);
+            Assert.IsType<MqttConnectMessage>(baseMessage);
+            MqttConnectMessage message = (MqttConnectMessage)baseMessage;
 
             // validate the message deserialization
             Assert.Equal<bool>(false, message.Header.Duplicate);

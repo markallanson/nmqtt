@@ -12,6 +12,8 @@
     <AssemblyName>nMqttTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>nMQTT.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,17 +51,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\MqttMessage_UnsubscribeTests.cs" />
+    <Compile Include="Messages\MqttMessage_SubscribeAckTests.cs" />
+    <Compile Include="Messages\MqttMessage_SubscriptionTests.cs" />
+    <Compile Include="Messages\MqttMessage_DisconnectTests.cs" />
+    <Compile Include="Messages\MqttMessage_PingResponseTests.cs" />
+    <Compile Include="Messages\MqttMessage_PingRequestTests.cs" />
+    <Compile Include="Messages\MqttMessage_UnSubscribeAckTests.cs" />
+    <Compile Include="Messages\MqttMessage_UnimplementedMessageTypeTests.cs" />
+    <Compile Include="Messages\MqttMessage_PublishAckTests.cs" />
+    <Compile Include="Messages\MqttMessage_PublishTests.cs" />
+    <Compile Include="FluentMqttHeaderTests.cs" />
+    <Compile Include="Messages\MqttMessage_ConnectAckTests.cs" />
     <Compile Include="MqttHeaderTests.cs" />
-    <Compile Include="MqttMessageTests.cs" />
+    <Compile Include="Messages\MqttMessage_ConnectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionBindingConstants.cs" />
     <Compile Include="MqttConnectFlagTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\nMQTT\nMQTT.csproj">
+    <ProjectReference Include="..\nMQTT\NMqtt.csproj">
       <Project>{6506A020-988F-48A1-BC7C-FCDB13E3A4CC}</Project>
-      <Name>nMQTT</Name>
+      <Name>NMqtt</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="nMQTT.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// Represents an MQTT message that contains a fixed header, variable header and message body.
@@ -28,19 +28,7 @@ namespace nMqtt
         /// <summary>
         /// The header of the MQTT Message. Contains metadata about the message
         /// </summary>
-        public MqttHeader Header { get; set; }
-
-        /// <summary>
-        /// Gets or sets the payload of the Mqtt Message.
-        /// </summary>
-        /// <value>The payload of the Mqtt Message.</value>
-        public MqttPayload Payload { get; set; }
-
-        /// <summary>
-        /// Gets or sets the variable header contents. Contains extended metadata about the message
-        /// </summary>
-        /// <value>The variable header.</value>
-        public MqttVariableHeader VariableHeader { get; set; }
+        public virtual MqttHeader Header { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttMessage"/> class.
@@ -49,7 +37,7 @@ namespace nMqtt
         /// Only called via the MqttMessage.Create operation during processing of an Mqtt message stream.
         /// </remarks>
         public MqttMessage()
-        {
+            {
         }
 
         /// <summary>
@@ -57,22 +45,9 @@ namespace nMqtt
         /// </summary>
         /// <param name="header">The header of the message.</param>
         /// <param name="payload">The payload of the message.</param>
-        public MqttMessage(MqttHeader header, MqttPayload payload)
+        public MqttMessage(MqttHeader header)
         {
             Header = header;
-            Payload = payload;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MqttMessage"/> class.
-        /// </summary>
-        /// <param name="header">The header of the message.</param>
-        /// <param name="payload">The payload of the message.</param>
-        /// <param name="variableHeader">The variable header of the message.</param>
-        public MqttMessage(MqttHeader header, MqttPayload payload, MqttVariableHeader variableHeader)
-            : this(header, payload)
-        {
-            VariableHeader = variableHeader;
         }
 
         /// <summary>
@@ -107,13 +82,20 @@ namespace nMqtt
         }
 
         /// <summary>
-        /// Writes the message to the supplied stream.
+        /// ss the message to the supplied stream.
         /// </summary>
         /// <param name="messageStream">The stream to write the message to.</param>
-        public void WriteTo(Stream messageStream)
+        public virtual void WriteTo(Stream messageStream)
         {
             Header.WriteTo(messageStream);
-            VariableHeader.WriteTo(messageStream);
+        }
+
+        /// <summary>
+        /// Reads a message from the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The message stream.</param>
+        public virtual void ReadFrom(Stream messageStream)
+        {
         }
 
         /// <summary>
@@ -130,16 +112,6 @@ namespace nMqtt
             sb.AppendLine(this.GetType().ToString());
 
             sb.Append(Header.ToString());
-
-            if (VariableHeader != null)
-            {
-                sb.Append(VariableHeader.ToString());
-            }
-
-            if (Payload != null)
-            {
-                sb.Append(Payload.ToString());
-            }
 
             return sb.ToString();
         }

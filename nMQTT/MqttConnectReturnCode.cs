@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// Enumeration of allowable connection request return codes.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32", Justification="Clarity with MQTT Spec")]
     public enum MqttConnectReturnCode : byte
     {
         ConnectionAccepted = 0,

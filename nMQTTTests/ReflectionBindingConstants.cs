@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace nMqttTests
+namespace NmqttTests
 {
     public class ReflectionBindingConstants
     {

@@ -1,0 +1,259 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Xunit;
+using Nmqtt;
+
+namespace NmqttTests
+{
+    /// <summary>
+    /// MQTT Message Tests with sample input data provided by andy@stanford-clark.com
+    /// </summary>
+    public class MqttMessage_SubscribeTests
+    {
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void Deserialize_Message_MessageType_Subscribe_SingleTopic()
+        {
+            // Message Specs________________
+            // <82><09><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
+            var sampleMessage = new[]
+            {
+                (byte)0x82,
+                (byte)0x09,
+                (byte)0x00,
+                (byte)0x02,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'f',
+                (byte)'r',
+                (byte)'e',
+                (byte)'d',
+                (byte)0x00,
+            };
+
+            MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
+
+            Console.WriteLine(baseMessage.ToString());
+
+            // check that the message was correctly identified as a connect message.
+            Assert.IsType<MqttSubscribeMessage>(baseMessage);
+            MqttSubscribeMessage message = (MqttSubscribeMessage)baseMessage;
+
+            Assert.Equal<int>(1, message.Payload.Subscriptions.Count);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("fred"));
+            Assert.Equal<MqttQos>(MqttQos.AtMostOnce, message.Payload.Subscriptions["fred"]);
+        }
+
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void Deserialize_Message_MessageType_Subscribe_MultiTopic()
+        {
+            // Message Specs________________
+            // <82><10><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
+            var sampleMessage = new[]
+            {
+                (byte)0x82,
+                (byte)0x10,
+                (byte)0x00,
+                (byte)0x02,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'f',
+                (byte)'r',
+                (byte)'e',
+                (byte)'d',
+                (byte)0x00,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'m',
+                (byte)'a',
+                (byte)'r',
+                (byte)'k',
+                (byte)0x00,
+            };
+
+            MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
+
+            Console.WriteLine(baseMessage.ToString());
+
+            // check that the message was correctly identified as a connect message.
+            Assert.IsType<MqttSubscribeMessage>(baseMessage);
+            MqttSubscribeMessage message = (MqttSubscribeMessage)baseMessage;
+
+            Assert.Equal<int>(2, message.Payload.Subscriptions.Count);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("fred"));
+            Assert.Equal<MqttQos>(MqttQos.AtMostOnce, message.Payload.Subscriptions["fred"]);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("mark"));
+            Assert.Equal<MqttQos>(MqttQos.AtMostOnce, message.Payload.Subscriptions["mark"]);
+        }
+
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void Deserialize_Message_MessageType_Subscribe_SingleTopic_AtLeastOnceQos()
+        {
+            // Message Specs________________
+            // <82><09><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
+            var sampleMessage = new[]
+            {
+                (byte)0x82,
+                (byte)0x09,
+                (byte)0x00,
+                (byte)0x02,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'f',
+                (byte)'r',
+                (byte)'e',
+                (byte)'d',
+                (byte)0x01,
+            };
+
+            MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
+
+            Console.WriteLine(baseMessage.ToString());
+
+            // check that the message was correctly identified as a connect message.
+            Assert.IsType<MqttSubscribeMessage>(baseMessage);
+            MqttSubscribeMessage message = (MqttSubscribeMessage)baseMessage;
+
+            Assert.Equal<int>(1, message.Payload.Subscriptions.Count);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("fred"));
+            Assert.Equal<MqttQos>(MqttQos.AtLeastOnce, message.Payload.Subscriptions["fred"]);
+        }
+
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void Deserialize_Message_MessageType_Subscribe_MultiTopic_AtLeastOnceQos()
+        {
+            // Message Specs________________
+            // <82><10><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
+            var sampleMessage = new[]
+            {
+                (byte)0x82,
+                (byte)0x10,
+                (byte)0x00,
+                (byte)0x02,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'f',
+                (byte)'r',
+                (byte)'e',
+                (byte)'d',
+                (byte)0x01,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'m',
+                (byte)'a',
+                (byte)'r',
+                (byte)'k',
+                (byte)0x01,
+            };
+
+            MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
+
+            Console.WriteLine(baseMessage.ToString());
+
+            // check that the message was correctly identified as a connect message.
+            Assert.IsType<MqttSubscribeMessage>(baseMessage);
+            MqttSubscribeMessage message = (MqttSubscribeMessage)baseMessage;
+
+            Assert.Equal<int>(2, message.Payload.Subscriptions.Count);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("fred"));
+            Assert.Equal<MqttQos>(MqttQos.AtLeastOnce, message.Payload.Subscriptions["fred"]);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("mark"));
+            Assert.Equal<MqttQos>(MqttQos.AtLeastOnce, message.Payload.Subscriptions["mark"]);
+        }
+
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void Deserialize_Message_MessageType_Subscribe_SingleTopic_ExactlyOnce()
+        {
+            // Message Specs________________
+            // <82><09><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
+            var sampleMessage = new[]
+            {
+                (byte)0x82,
+                (byte)0x09,
+                (byte)0x00,
+                (byte)0x02,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'f',
+                (byte)'r',
+                (byte)'e',
+                (byte)'d',
+                (byte)0x02,
+            };
+
+            MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
+
+            Console.WriteLine(baseMessage.ToString());
+
+            // check that the message was correctly identified as a connect message.
+            Assert.IsType<MqttSubscribeMessage>(baseMessage);
+            MqttSubscribeMessage message = (MqttSubscribeMessage)baseMessage;
+
+            Assert.Equal<int>(1, message.Payload.Subscriptions.Count);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("fred"));
+            Assert.Equal<MqttQos>(MqttQos.ExactlyOnce, message.Payload.Subscriptions["fred"]);
+        }
+
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void Deserialize_Message_MessageType_Subscribe_MultiTopic_ExactlyOnce()
+        {
+            // Message Specs________________
+            // <82><10><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
+            var sampleMessage = new[]
+            {
+                (byte)0x82,
+                (byte)0x10,
+                (byte)0x00,
+                (byte)0x02,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'f',
+                (byte)'r',
+                (byte)'e',
+                (byte)'d',
+                (byte)0x02,
+                (byte)0x00,
+                (byte)0x04,
+                (byte)'m',
+                (byte)'a',
+                (byte)'r',
+                (byte)'k',
+                (byte)0x02,
+            };
+
+            MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
+
+            Console.WriteLine(baseMessage.ToString());
+
+            // check that the message was correctly identified as a connect message.
+            Assert.IsType<MqttSubscribeMessage>(baseMessage);
+            MqttSubscribeMessage message = (MqttSubscribeMessage)baseMessage;
+
+            Assert.Equal<int>(2, message.Payload.Subscriptions.Count);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("fred"));
+            Assert.Equal<MqttQos>(MqttQos.ExactlyOnce, message.Payload.Subscriptions["fred"]);
+            Assert.True(message.Payload.Subscriptions.ContainsKey("mark"));
+            Assert.Equal<MqttQos>(MqttQos.ExactlyOnce, message.Payload.Subscriptions["mark"]);
+        }
+
+    } 
+}

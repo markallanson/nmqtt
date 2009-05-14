@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// A client class for interacting with MQTT Data Packets

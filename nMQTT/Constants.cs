@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace nMqtt
+namespace Nmqtt
 {
-    internal class Constants
+    internal static class Constants
     {
         /// <summary>
         /// The Maximum allowed message size as defined by the MQTT v3 Spec (256MB).

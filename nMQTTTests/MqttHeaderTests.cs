@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
-using nMqtt;
+using Nmqtt;
 using System.Reflection;
 using System.IO;
 
-namespace nMqttTests
+namespace NmqttTests
 {
     public class MqttHeaderTests
     {
@@ -213,6 +213,21 @@ namespace nMqttTests
             }
         }
 
+        /// <summary>
+        /// Ensures a header with an invalid message size portion is caught and thrown correctly.
+        /// </summary>
+        [Fact]
+        public void Deserialization_Header_CorruptHeader_Undersize()
+        {
+            MqttHeader outputHeader;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                stream.WriteByte(0);
+                stream.Seek(0, SeekOrigin.Begin);
+                Assert.Throws<InvalidHeaderException>(() => outputHeader = new MqttHeader(stream));
+            }
+        }
+
         [Fact]
         public void Deserialization_Header_Qos_AtMostOnce()
         {
@@ -325,7 +340,7 @@ namespace nMqttTests
         {
             var headerBytes = GetHeaderBytes(9 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
-            Assert.Equal<MqttMessageType>(MqttMessageType.SubscriptionAck, header.MessageType);
+            Assert.Equal<MqttMessageType>(MqttMessageType.SubscribeAck, header.MessageType);
         }
 
         [Fact]
@@ -341,7 +356,7 @@ namespace nMqttTests
         {
             var headerBytes = GetHeaderBytes(11 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
-            Assert.Equal<MqttMessageType>(MqttMessageType.UnsubsriptionAck, header.MessageType);
+            Assert.Equal<MqttMessageType>(MqttMessageType.UnsubscribeAck, header.MessageType);
         }
 
         [Fact]

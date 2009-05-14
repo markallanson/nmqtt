@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// An enumeration of all available MQTT Message Types
@@ -22,9 +22,9 @@ namespace nMqtt
         PublishRelease,
         PublishComplete,
         Subscribe,
-        SubscriptionAck,
+        SubscribeAck,
         Unsubscribe,
-        UnsubsriptionAck,
+        UnsubscribeAck,
         PingRequest,
         PingResponse,
         Disconnect,

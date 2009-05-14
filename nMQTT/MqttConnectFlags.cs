@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// Represents the connect flags part of the MQTT Variable Header
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Justification="Keeping terminology consistent with Mqtt Spec")]
     public class MqttConnectFlags
     {
         public bool Reserved1 { get; set; }

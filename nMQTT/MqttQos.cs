@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// Enumeration of available QoS types.

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
-using nMqtt;
+using Nmqtt;
 using System.IO;
 
-namespace nMqttTests
+namespace NmqttTests
 {
     public class MqttConnectFlagTests
     {

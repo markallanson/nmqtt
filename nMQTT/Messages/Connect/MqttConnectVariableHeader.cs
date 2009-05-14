@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// Implementation of the variable header for an MQTT Connect message.
     /// </summary>
-    public class MqttConnectVariableHeader : MqttVariableHeader
+    public sealed class MqttConnectVariableHeader : MqttVariableHeader
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
@@ -28,29 +28,31 @@ namespace nMqtt
         }
 
         /// <summary>
-        /// Writes the variable header for an MQTT Connect message to the supplied stream.
+        /// Returns the read flags for the connect variabe header (prot name, version, connect, keepalive)
         /// </summary>
-        /// <param name="headerStream"></param>
-        public override void WriteTo(System.IO.Stream headerStream)
+        protected override MqttVariableHeader.ReadWriteFlags ReadFlags
         {
-            WriteProtocolName(headerStream);
-            WriteProtocolVersion(headerStream);
-            WriteConnectFlags(headerStream);
-            WriteKeepAlive(headerStream);
+            get
+            {
+                return
+                    ReadWriteFlags.ProtocolName |
+                    ReadWriteFlags.ProtocolVersion |
+                    ReadWriteFlags.ConnectFlags |
+                    ReadWriteFlags.KeepAlive;
+            }
         }
 
         /// <summary>
-        /// Creates a variable header from the specified header stream.
+        /// Returns the write flags for the connect variabe header (prot name, version, connect, keepalive)
         /// </summary>
-        /// <param name="headerStream">The header stream.</param>
-        public override void ReadFrom(System.IO.Stream headerStream)
+        protected override MqttVariableHeader.ReadWriteFlags WriteFlags
         {
-            ReadProtocolName(headerStream);
-            ReadProtocolVersion(headerStream);
-            ReadConnectFlags(headerStream);
-            ReadKeepAlive(headerStream);
+            get
+            {
+                // we read and write the same values on the connect header.
+                return ReadFlags;
+            }
         }
-
 
         /// <summary>
         /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.

@@ -4,13 +4,29 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// Represents the payload (Body) of an MQTT Message.
     /// </summary>
-    public class MqttPayload
+    public abstract class MqttPayload
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MqttPayload"/> class.
+        /// </summary>
+        protected MqttPayload()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MqttPayload"/> class.
+        /// </summary>
+        /// <param name="payloadStream">The payload stream.</param>
+        protected MqttPayload(Stream payloadStream)
+        {
+            ReadFrom(payloadStream);
+        }
+
         /// <summary>
         /// Writes the payload to the supplied stream.
         /// </summary>
@@ -26,5 +42,9 @@ namespace nMqtt
         /// <param name="headerStream">The header stream.</param>
         public virtual void ReadFrom(Stream payloadStream) { }
 
+        public override string ToString()
+        {
+            return "Payload: (none)";
+        }
     }
 }

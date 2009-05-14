@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>Nmqtt</Word>
+      <Word>Mqtt</Word>
+      <Word>Qos</Word>
+      <Word>Ack</Word>
+    </Recognized>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>Nmqtt</Acronym>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

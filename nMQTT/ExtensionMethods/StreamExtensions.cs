@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using nMqtt.Encoding;
+using Nmqtt.Encoding;
 
-namespace nMqtt.ExtensionMethods
+namespace Nmqtt.ExtensionMethods
 {
     /// <summary>
     /// Provides stream extension methods useful for interacting with streams of MQTT messges.
@@ -42,32 +42,31 @@ namespace nMqtt.ExtensionMethods
         /// </summary>
         /// <param name="stream">The stream to read the string from.</param>
         /// <returns>The Mqtt String.</returns>
-        public static string ReadMqttString(this Stream stream)
+        public static string ReadMqttString(this Stream stringStream)
         {
-                int stringPosition = (int)stream.Position;
+            // read and check the length
+            var lengthBytes = new byte[2];
+            int bytesRead = stringStream.Read(lengthBytes, 0, 2);
+            if (bytesRead < 2)
+            {
+                throw new ArgumentException(
+                    "The stream did not have enough bytes to describe the length of the string",
+                    "stringStream");
+            }
 
-                // read and check the length
-                var lengthBytes = new byte[2];
-                int bytesRead = stream.Read(lengthBytes, 0, 2);
-                if (bytesRead < 2)
-                {
-                    throw new ArgumentException("stream", 
-                        String.Format("The stream did not have enough bytes to describe the length of the string at position {0}", stream.Position));
-                }
+            System.Text.Encoding enc = new MqttEncoding();
+            short stringLength = (short)enc.GetCharCount(lengthBytes);
 
-                System.Text.Encoding enc = new MqttEncoding();
-                short stringLength = (short)enc.GetCharCount(lengthBytes);
+            // read the bytes from the string, validate we have enough etc.
+            var stringBytes = new byte[stringLength];
+            bytesRead = stringStream.Read(stringBytes, 0, stringLength);
+            if (bytesRead < stringLength)
+            {
+                throw new ArgumentException("stream",
+                    String.Format("The stream did not have enough bytes to match the defined string length {0}", stringLength));
+            }
 
-                // read the bytes from the string, validate we have enough etc.
-                var stringBytes = new byte[stringLength];
-                bytesRead = stream.Read(stringBytes, 0, stringLength);
-                if (bytesRead < stringLength)
-                {
-                    throw new ArgumentException("stream", 
-                        String.Format("The stream did not have enough bytes to match the defined string length {0} defined at stream position {1}", stringLength, stream.Position));
-                }
-
-                return enc.GetString(stringBytes);
+            return enc.GetString(stringBytes);
         }
 
         /// <summary>
@@ -75,11 +74,11 @@ namespace nMqtt.ExtensionMethods
         /// </summary>
         /// <param name="stream">The stream.</param>
         /// <param name="stringToWrite">The string to write.</param>
-        public static void WriteMqttString(this Stream stream, string stringToWrite)
+        public static void WriteMqttString(this Stream stringStream, string stringToWrite)
         {
             System.Text.Encoding enc = new MqttEncoding();
             byte[] stringBytes = enc.GetBytes(stringToWrite);
-            stream.Write(stringBytes, 0, stringBytes.Length);
+            stringStream.Write(stringBytes, 0, stringBytes.Length);
         }
     }
 }

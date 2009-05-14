@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace nMqtt.Encoding
+namespace Nmqtt.Encoding
 {
     /// <summary>
     /// Encoding implementation that can encode and decode strings in the MQTT string format.
@@ -91,7 +91,7 @@ namespace nMqtt.Encoding
         /// Validates the string to ensure it doesn't contain any characters invalid within the Mqtt string format.
         /// </summary>
         /// <param name="s">The s.</param>
-        private void ValidateString(string s)
+        private static void ValidateString(string s)
         {
             foreach (char c in s)
             {

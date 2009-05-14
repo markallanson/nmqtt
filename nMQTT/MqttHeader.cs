@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace nMqtt
+namespace Nmqtt
 {
     /// <summary>
     /// Represents the Fixed Header of an MQTT message.
     /// </summary>
-    public class MqttHeader
+    public partial class MqttHeader
     {
         /// <summary>
         /// Backing storage for the payload size.
@@ -100,8 +100,6 @@ namespace nMqtt
                 throw new InvalidHeaderException("The supplied header is invalid. Header must be at least 2 bytes long.");
             }
 
-            MqttHeader header = new MqttHeader();
-
             int firstHeaderByte = headerStream.ReadByte();
             // pull out the first byte
             Retain = ((firstHeaderByte & 1) == 1 ? true : false);
@@ -150,7 +148,7 @@ namespace nMqtt
             // so throw it out because we really wouldn't have a clue what the message size actually is.
             do
             {
-                if (currentByteCount == 4)
+                if (currentByteCount++ == 4)
                 {
                     // we dont know the real payload size, so just report it as -1.
                     throw new InvalidPayloadSizeException(-1, Constants.MaxMessageSize);
