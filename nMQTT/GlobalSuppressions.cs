@@ -1,3 +1,14 @@
+/* 
+ * nMQTT, a .Net MQTT v3 client implementation.
+ * 
+ * Copyright (c) 2009 Mark Allanson (mark@markallanson.net)
+ *
+ * Licensed under the MIT License. You may not use this file except 
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ *     http://www.opensource.org/licenses/mit-license.php
+*/
+
 // This file is used by Code Analysis to maintain SuppressMessage 
 // attributes that are applied to this project. 
 // Project-level suppressions either have no target or are given 
