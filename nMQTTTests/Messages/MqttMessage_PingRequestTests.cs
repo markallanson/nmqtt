@@ -20,7 +20,7 @@ using Nmqtt;
 namespace NmqttTests
 {
     /// <summary>
-    /// MQTT Message Tests with sample input data provided by andy@stanford-clark.com
+    /// MQTT Message Ping Request Tests
     /// </summary>
     public class MqttMessage_PingRequestTests
     {

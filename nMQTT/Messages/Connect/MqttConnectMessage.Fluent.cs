@@ -17,6 +17,9 @@ using System.Text;
 
 namespace Nmqtt
 {
+    /// <summary>
+    /// Implementation of an Mqtt Connect Message. Used to initiate a connection to an RSMB
+    /// </summary>
     public sealed partial class MqttConnectMessage
     {
         /// <summary>

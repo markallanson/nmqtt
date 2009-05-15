@@ -20,7 +20,7 @@ using Nmqtt;
 namespace NmqttTests
 {
     /// <summary>
-    /// MQTT Message Tests with sample input data provided by andy@stanford-clark.com
+    /// MQTT Message Unsubscribe Tests
     /// </summary>
     public class MqttMessage_UnsubscribeAckTests
     {

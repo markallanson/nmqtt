@@ -1,4 +1,4 @@
-﻿/* 
+﻿ Unsubscrib/* 
  * nMQTT, a .Net MQTT v3 client implementation.
  * http://code.google.com/p/nmqtt
  * 
@@ -20,7 +20,7 @@ using Nmqtt;
 namespace NmqttTests
 {
     /// <summary>
-    /// MQTT Message Tests with sample input data provided by andy@stanford-clark.com
+    /// MQTT Message Unsubscribe Tests
     /// </summary>
     public class MqttMessage_UnsubscribeTests
     {
