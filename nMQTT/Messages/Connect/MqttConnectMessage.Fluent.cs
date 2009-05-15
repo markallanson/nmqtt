@@ -23,6 +23,28 @@ namespace Nmqtt
     public sealed partial class MqttConnectMessage
     {
         /// <summary>
+        /// Sets the name of the protocol to use.
+        /// </summary>
+        /// <param name="protocolName">Name of the protocol.</param>
+        /// <returns></returns>
+        public MqttConnectMessage WithProtocolName(string protocolName)
+        {
+            this.VariableHeader.ProtocolName = protocolName;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the protocol version. (Defaults to v3, the only protcol version supported)
+        /// </summary>
+        /// <param name="protocolVersion">The protocol version.</param>
+        /// <returns></returns>
+        public MqttConnectMessage WithProtocolVersion(byte protocolVersion)
+        {
+            this.VariableHeader.ProtocolVersion = protocolVersion;
+            return this;
+        }
+
+        /// <summary>
         /// Sets the startClean flag so that the broker drops any messages that were previously destined for us.
         /// </summary>
         /// <returns></returns>
