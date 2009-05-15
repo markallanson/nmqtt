@@ -1,4 +1,4 @@
-﻿ Unsubscrib/* 
+﻿/* 
  * nMQTT, a .Net MQTT v3 client implementation.
  * http://code.google.com/p/nmqtt
  * 
