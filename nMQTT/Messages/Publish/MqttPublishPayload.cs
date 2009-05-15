@@ -88,6 +88,29 @@ namespace Nmqtt
             }
         }
 
+
+        /// <summary>
+        /// Writes the payload to the supplied stream.
+        /// </summary>
+        /// <param name="payloadStream"></param>
+        /// <remarks>
+        /// A basic message has no Variable Header.
+        /// </remarks>
+        public override void WriteTo(Stream payloadStream)
+        {
+            payloadStream.Write(Message.ToArray<byte>(), 0, (int)Message.Count);
+        }
+
+        /// <summary>
+        /// Gets the length of the payload in bytes when written to a stream.
+        /// </summary>
+        /// <returns>The length of the payload in bytes.</returns>
+        internal override int GetWriteLength()
+        {
+            return Message.Count;
+        }
+
+
         /// <summary>
         /// Returns a string representation of the payload.
         /// </summary>

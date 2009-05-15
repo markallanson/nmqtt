@@ -28,5 +28,10 @@ namespace Nmqtt
         /// The Maximum allowed client identifier length.
         /// </summary>
         public const int MaxClientIdentifierLength = 23;
+
+        /// <summary>
+        /// The default Mqtt port to connect to.
+        /// </summary>
+        public const int DefaultMqttPort = 1883;
     }
 }

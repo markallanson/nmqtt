@@ -100,6 +100,29 @@ namespace Nmqtt.Encoding
         }
 
         /// <summary>
+        /// Calculates the number of bytes produced by encoding the characters in the specified <see cref="T:System.String"/>.
+        /// </summary>
+        /// <param name="chars">The <see cref="T:System.String"/> containing the set of characters to encode.</param>
+        /// <returns>
+        /// The number of bytes produced by encoding the specified characters.
+        /// </returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// 	<paramref name="chars"/> is null.
+        /// </exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// The resulting number of bytes is greater than the maximum number that can be returned as an integer.
+        /// </exception>
+        /// <exception cref="T:System.Text.EncoderFallbackException">
+        /// A fallback occurred (see Understanding Encodings for complete explanation)
+        /// -and-
+        /// <see cref="P:System.Text.Encoding.EncoderFallback"/> is set to <see cref="T:System.Text.EncoderExceptionFallback"/>.
+        /// </exception>
+        public override int GetByteCount(string chars)
+        {
+            return base.GetByteCount(chars) + 2;
+        }
+
+        /// <summary>
         /// Validates the string to ensure it doesn't contain any characters invalid within the Mqtt string format.
         /// </summary>
         /// <param name="s">The s.</param>

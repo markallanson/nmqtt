@@ -51,6 +51,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\MessageSerializationHelper.cs" />
+    <Compile Include="Messages\MqttMessage_PublishReceivedTests.cs" />
+    <Compile Include="Messages\MqttMessage_PublishReleaseTests.cs" />
+    <Compile Include="Messages\MqttMessage_PublishCompleteTests.cs" />
     <Compile Include="Messages\MqttMessage_UnsubscribeTests.cs" />
     <Compile Include="Messages\MqttMessage_SubscribeAckTests.cs" />
     <Compile Include="Messages\MqttMessage_SubscriptionTests.cs" />

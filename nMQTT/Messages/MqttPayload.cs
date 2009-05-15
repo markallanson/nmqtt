@@ -46,13 +46,19 @@ namespace Nmqtt
         /// <remarks>
         /// A basic message has no Variable Header.
         /// </remarks>
-        public virtual void WriteTo(Stream payloadStream) { }
+        public abstract void WriteTo(Stream payloadStream);
 
         /// <summary>
         /// Creates a payload from the specified header stream.
         /// </summary>
         /// <param name="headerStream">The header stream.</param>
-        public virtual void ReadFrom(Stream payloadStream) { }
+        public abstract void ReadFrom(Stream payloadStream);
+
+        /// <summary>
+        /// Gets the length of the payload in bytes when written to a stream.
+        /// </summary>
+        /// <returns>The length of the payload in bytes.</returns>
+        internal abstract int GetWriteLength();
 
         public override string ToString()
         {

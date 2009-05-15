@@ -177,7 +177,7 @@ namespace NmqttTests
 
             using (MemoryStream stream = new MemoryStream())
             {
-                inputHeader.WriteTo(stream);
+                inputHeader.WriteTo(0, stream);
 
                 // the stream will be chock full-o-bytes, rewind it so we can read it back
                 stream.Seek(0, SeekOrigin.Begin);
@@ -210,7 +210,7 @@ namespace NmqttTests
 
             using (MemoryStream stream = new MemoryStream())
             {
-                inputHeader.WriteTo(stream);
+                inputHeader.WriteTo(0, stream);
 
                 // fudge the header by making the last bit of the 4th message size byte a 1, therefore making the header
                 // invalid because the last bit of the 4th size byte should always be 0 (according to the spec). It's how 

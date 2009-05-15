@@ -39,3 +39,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flag", Scope = "member", Target = "Nmqtt.MqttConnectPayload.#.ctor(System.IO.Stream,System.Boolean)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttConnectFlags.#WriteTo(System.IO.Stream)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttConnectFlags.#.ctor(System.IO.Stream)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Scope = "member", Target = "Nmqtt.MqttVariableHeader.#GetWriteLength()")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "messageSize", Scope = "member", Target = "Nmqtt.MqttHeader.#WriteTo(System.Int32,System.IO.Stream)")]

@@ -58,11 +58,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientIdentifierException.cs" />
+    <Compile Include="ConnectionState.cs" />
+    <Compile Include="DataAvailableEventArgs.cs" />
     <Compile Include="Encoding\MqttEncoding.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Messages\ConnectAck\MqttConnectAckVariableHeader.cs" />
+    <Compile Include="Messages\Connect\MqttConnectMessage.Fluent.cs" />
     <Compile Include="Messages\Connect\MqttConnectPayload.cs" />
     <Compile Include="Messages\ConnectAck\MqttConnectAckMessage.cs" />
+    <Compile Include="Messages\PublishReceived\MqttPublishReceivedMessage.cs" />
+    <Compile Include="Messages\PublishReceived\MqttPublishReceivedVariableHeader.cs" />
+    <Compile Include="Messages\PublishRelease\MqttPublishReleaseMessage.cs" />
+    <Compile Include="Messages\PublishRelease\MqttPublishReleaseVariableHeader.cs" />
+    <Compile Include="Messages\PublishComplete\MqttPublishCompleteVariableHeader.cs" />
+    <Compile Include="Messages\PublishComplete\MqttPublishCompleteMessage.cs" />
     <Compile Include="Messages\UnSubscribe\MqttUnsubscribeMessage.cs" />
     <Compile Include="Messages\UnSubscribe\MqttUnsubscribePayload.cs" />
     <Compile Include="Messages\UnSubscribe\MqttUnsubscribeVariableHeader.cs" />
@@ -82,23 +91,24 @@
     <Compile Include="Messages\Publish\MqttPubishVariableHeader.cs" />
     <Compile Include="Messages\UnsubscribeAck\MqttUnsubscribeAckVariableHeader.cs" />
     <Compile Include="Messages\UnsubscribeAck\MqttUnsubscribeAckMessage.cs" />
-    <Compile Include="MqttConnectFlags.cs" />
+    <Compile Include="Messages\MqttConnectFlags.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
     <Compile Include="Messages\Connect\MqttConnectMessage.cs" />
     <Compile Include="Messages\Connect\MqttConnectVariableHeader.cs" />
     <Compile Include="InvalidHeaderException.cs" />
     <Compile Include="InvalidPayloadSizeException.cs" />
-    <Compile Include="MqttConnectReturnCode.cs" />
-    <Compile Include="MqttHeader.Fluent.cs" />
-    <Compile Include="MqttMessageFactory.cs" />
-    <Compile Include="MqttMessageType.cs" />
-    <Compile Include="MqttPayload.cs" />
+    <Compile Include="MqttConnection.cs" />
+    <Compile Include="Messages\MqttConnectReturnCode.cs" />
+    <Compile Include="Messages\MqttHeader.Fluent.cs" />
+    <Compile Include="Messages\MqttMessageFactory.cs" />
+    <Compile Include="Messages\MqttMessageType.cs" />
+    <Compile Include="Messages\MqttPayload.cs" />
     <Compile Include="MqttClient.cs" />
-    <Compile Include="MqttHeader.cs" />
-    <Compile Include="MqttMessage.cs" />
+    <Compile Include="Messages\MqttHeader.cs" />
+    <Compile Include="Messages\MqttMessage.cs" />
     <Compile Include="MqttQos.cs" />
-    <Compile Include="MqttVariableHeader.cs" />
+    <Compile Include="Messages\MqttVariableHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

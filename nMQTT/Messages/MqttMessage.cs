@@ -99,7 +99,7 @@ namespace Nmqtt
         /// <param name="messageStream">The stream to write the message to.</param>
         public virtual void WriteTo(Stream messageStream)
         {
-            Header.WriteTo(messageStream);
+            Header.WriteTo(0, messageStream);
         }
 
         /// <summary>

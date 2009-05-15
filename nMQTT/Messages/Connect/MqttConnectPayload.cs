@@ -17,6 +17,7 @@ using System.Text;
 using System.IO;
 
 using Nmqtt.ExtensionMethods;
+using Nmqtt.Encoding;
 
 namespace Nmqtt
 {
@@ -73,6 +74,23 @@ namespace Nmqtt
         }
 
         /// <summary>
+        /// Writes the connect message payload to the supplied stream.
+        /// </summary>
+        /// <param name="payloadStream"></param>
+        /// <remarks>
+        /// A basic message has no Variable Header.
+        /// </remarks>
+        public override void WriteTo(Stream payloadStream)
+        {
+            payloadStream.WriteMqttString(ClientIdentifier);
+            if (this.willFlag)
+            {
+                payloadStream.WriteMqttString(WillTopic);
+                payloadStream.WriteMqttString(WillMessage);
+            }
+        }
+
+        /// <summary>
         /// Creates a payload from the specified header stream.
         /// </summary>
         /// <param name="payloadStream"></param>
@@ -87,6 +105,22 @@ namespace Nmqtt
             }
         }
 
+        internal override int GetWriteLength()
+        {
+            int length = 0;
+            MqttEncoding enc = new MqttEncoding();
+            
+            length += enc.GetByteCount(ClientIdentifier);
+
+            if (this.willFlag)
+            {
+                length += enc.GetByteCount(WillTopic);
+                length += enc.GetByteCount(WillMessage);
+            }
+
+            return length;
+        }
+
         /// <summary>
         /// Returns a string representation of the payload.
         /// </summary>
@@ -96,5 +130,6 @@ namespace Nmqtt
             return String.Format("Payload: ClientIdentifier={0}, WillTopic={1}, WillMessage={2}",
                 ClientIdentifier, WillTopic, WillMessage);
         }
+
     }
 }

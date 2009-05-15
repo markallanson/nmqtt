@@ -17,6 +17,7 @@ using System.Text;
 using System.IO;
 
 using Nmqtt.ExtensionMethods;
+using Nmqtt.Encoding;
 
 namespace Nmqtt
 {
@@ -61,7 +62,7 @@ namespace Nmqtt
         /// </summary>
         public MqttVariableHeader()
         {
-            this.ProtocolName = "MQIspd";
+            this.ProtocolName = "MQIsdp";
             this.ProtocolVersion = 3;
         }
 
@@ -126,6 +127,28 @@ namespace Nmqtt
             if ((ReadFlags & ReadWriteFlags.MessageIdentifier) == ReadWriteFlags.MessageIdentifier) ReadMessageIdentifier(headerStream);
 
         }
+
+
+        /// <summary>
+        /// Gets the length of the write data when WriteTo will be called.
+        /// </summary>
+        /// <returns>The length of data witten by the call to GetWriteLength</returns>
+        public virtual int GetWriteLength()
+        {
+            int headerLength = 0;
+            MqttEncoding enc = new MqttEncoding();
+
+            if ((WriteFlags & ReadWriteFlags.ProtocolName) == ReadWriteFlags.ProtocolName)          headerLength += enc.GetByteCount(ProtocolName);
+            if ((WriteFlags & ReadWriteFlags.ProtocolVersion) == ReadWriteFlags.ProtocolVersion)    headerLength += sizeof(byte);
+            if ((WriteFlags & ReadWriteFlags.ConnectFlags) == ReadWriteFlags.ConnectFlags)          headerLength += MqttConnectFlags.GetWriteLength();
+            if ((WriteFlags & ReadWriteFlags.KeepAlive) == ReadWriteFlags.KeepAlive)                headerLength += sizeof(short);
+            if ((WriteFlags & ReadWriteFlags.ReturnCode) == ReadWriteFlags.ReturnCode)              headerLength += sizeof(byte);
+            if ((WriteFlags & ReadWriteFlags.TopicName) == ReadWriteFlags.TopicName)                headerLength += enc.GetByteCount(TopicName);
+            if ((WriteFlags & ReadWriteFlags.MessageIdentifier) == ReadWriteFlags.MessageIdentifier) headerLength += sizeof(short);
+
+            return headerLength;
+        }
+
 
         protected void WriteProtocolName(Stream stream)
         {

@@ -40,6 +40,12 @@ namespace Nmqtt
                     return new MqttPublishMessage(header, messageStream);
                 case MqttMessageType.PublishAck:
                     return new MqttPublishAckMessage(header, messageStream);
+                case MqttMessageType.PublishComplete:
+                    return new MqttPublishCompleteMessage(header, messageStream);
+                case MqttMessageType.PublishReceived:
+                    return new MqttPublishReceivedMessage(header, messageStream);
+                case MqttMessageType.PublishRelease:
+                    return new MqttPublishReleaseMessage(header, messageStream);
                 case MqttMessageType.Subscribe:
                     return new MqttSubscribeMessage(header, messageStream);
                 case MqttMessageType.SubscribeAck:

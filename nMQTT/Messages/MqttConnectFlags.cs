@@ -93,6 +93,15 @@ namespace Nmqtt
         }
 
         /// <summary>
+        /// Gets the length of data written when WriteTo is called.
+        /// </summary>
+        /// <returns></returns>
+        internal static int GetWriteLength()
+        {
+            return 1;
+        }
+
+        /// <summary>
         /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
         /// </summary>
         /// <returns>

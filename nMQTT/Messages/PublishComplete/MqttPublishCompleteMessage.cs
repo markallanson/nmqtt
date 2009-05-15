@@ -19,64 +19,43 @@ using System.IO;
 namespace Nmqtt
 {
     /// <summary>
-    /// An Mqtt message that is used to initiate a connection to a message broker.
+    /// Implementation of an MQTT Publish Complete Message.
     /// </summary>
-    public sealed partial class MqttConnectMessage : MqttMessage
+    public sealed class MqttPublishCompleteMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
         /// </summary>
         /// <value>The variable header.</value>
-        public MqttConnectVariableHeader VariableHeader { get; set; }
+        public MqttPublishCompleteVariableHeader VariableHeader { get; set; }
 
         /// <summary>
-        /// Gets or sets the payload of the Mqtt Message.
-        /// </summary>
-        /// <value>The payload of the Mqtt Message.</value>
-        public MqttConnectPayload Payload { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectMessage"/> class.
+        /// Initializes a new instance of the <see cref="MqttPublishCompleteMessage"/> class.
         /// </summary>
         /// <remarks>
         /// Only called via the MqttMessage.Create operation during processing of an Mqtt message stream.
         /// </remarks>
-        public MqttConnectMessage()
+        public MqttPublishCompleteMessage()
         {
             this.Header = new MqttHeader()
             {
-                MessageType = MqttMessageType.Connect
+                MessageType = MqttMessageType.PublishAck
             };
 
-            this.VariableHeader = new MqttConnectVariableHeader()
+            this.VariableHeader = new MqttPublishCompleteVariableHeader()
             {
                 ConnectFlags = new MqttConnectFlags()
             };
-
-            this.Payload = new MqttConnectPayload();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectMessage"/> class.
+        /// Initializes a new instance of the <see cref="MqttPublishCompleteMessage"/> class.
         /// </summary>
         /// <param name="messageStream">The message stream positioned after the header.</param>
-        internal MqttConnectMessage(MqttHeader header, Stream messageStream)
+        internal MqttPublishCompleteMessage(MqttHeader header, Stream messageStream)
         {
             this.Header = header;
-            ReadFrom(messageStream);
-        }
-
-        public override void WriteTo(Stream messageStream)
-        {
-            this.Header.WriteTo(VariableHeader.GetWriteLength() + Payload.GetWriteLength(), messageStream);
-            this.VariableHeader.WriteTo(messageStream);
-            this.Payload.WriteTo(messageStream);
-        }
-
-        public override void ReadFrom(Stream messageStream)
-        {
-            this.VariableHeader = new MqttConnectVariableHeader(messageStream);
-            this.Payload = new MqttConnectPayload(messageStream, VariableHeader.ConnectFlags.WillFlag);
+            this.VariableHeader = new MqttPublishCompleteVariableHeader(messageStream);
         }
 
         /// <summary>
@@ -91,10 +70,8 @@ namespace Nmqtt
 
             sb.Append(base.ToString());
             sb.AppendLine(VariableHeader.ToString());
-            sb.AppendLine(Payload.ToString());
 
             return sb.ToString();
         }
-
     }
 }

@@ -26,7 +26,8 @@ namespace Nmqtt
         /// Reserved by the MQTT spec, should not be used.
         /// </summary>
         Reserved1 = 0,
-        Connect = 1,
+
+        Connect,
         ConnectAck,
         Publish,
         PublishAck,

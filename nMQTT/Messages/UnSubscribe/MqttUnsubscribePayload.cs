@@ -18,6 +18,7 @@ using System.IO;
 
 using Nmqtt.ExtensionMethods;
 using System.Collections.ObjectModel;
+using Nmqtt.Encoding;
 
 namespace Nmqtt
 {
@@ -82,6 +83,35 @@ namespace Nmqtt
 
                 AddSubscription(topic);
             }
+        }
+
+        /// <summary>
+        /// Writes the payload to the supplied stream.
+        /// </summary>
+        /// <param name="payloadStream"></param>
+        public override void WriteTo(Stream payloadStream)
+        {
+            foreach (string topic in subscriptions)
+            {
+                payloadStream.WriteMqttString(topic);
+            }
+        }
+
+        /// <summary>
+        /// Gets the length of the payload in bytes when written to a stream.
+        /// </summary>
+        /// <returns>The length of the payload in bytes.</returns>
+        internal override int GetWriteLength()
+        {
+            int length = 0;
+            MqttEncoding enc = new MqttEncoding();
+
+            foreach (string topic in subscriptions)
+            {
+                length += enc.GetByteCount(topic);
+            }
+
+            return length;
         }
 
         /// <summary>

@@ -1,0 +1,14 @@
+﻿<TabItem x:Class="NmqttConsole.Views.ConnectionView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Header="New Connection">
+    <DockPanel>
+        <DockPanel x:Name="dpnlConnect" DockPanel.Dock="Top">
+            <Button x:Name="btnConnect" Margin="5" Content="Connect" Click="btnConnect_Click"  DockPanel.Dock="Left"/>
+            <TextBox x:Name="tbServerUrl" Margin="5" TextChanged="tbServerUrl_TextChanged" />
+        </DockPanel>
+        <TextBlock x:Name="tblkStatus">
+            Please Connect
+        </TextBlock>
+    </DockPanel>
+</TabItem>

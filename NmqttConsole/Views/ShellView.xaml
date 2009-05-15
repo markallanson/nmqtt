@@ -1,0 +1,16 @@
+﻿<Window x:Class="NmqttConsole.Views.ShellView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="nMqtt Console" Height="436" Width="471">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem x:Name="miFile" Header="_File">
+                <MenuItem x:Name="miNewConnection" Header="_New Connection" Click="miNewConnection_Click">
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <TabControl x:Name="tcMessageBrokers">
+
+        </TabControl>
+    </DockPanel>
+</Window>

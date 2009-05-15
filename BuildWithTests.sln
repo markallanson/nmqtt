@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NMqtt", "nMQTT\nMQTT.csproj", "{6506A020-988F-48A1-BC7C-FCDB13E3A4CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nMQTT", "nMQTT\nMQTT.csproj", "{6506A020-988F-48A1-BC7C-FCDB13E3A4CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nMQTTTests", "nMQTTTests\nMQTTTests.csproj", "{A2E6E140-AA67-4683-BD09-03C1B7FCB2F4}"
 EndProject
@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleMQTTMessageDump", "Sa
 	ProjectSection(SolutionItems) = preProject
 		nMQTTTests\inputData\mqtt_trace.txt = nMQTTTests\inputData\mqtt_trace.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NmqttConsole", "NmqttConsole\NmqttConsole.csproj", "{81C51FE0-2EA4-4DF7-82AD-1AE0EDD999DA}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
@@ -28,6 +30,10 @@ Global
 		{A2E6E140-AA67-4683-BD09-03C1B7FCB2F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2E6E140-AA67-4683-BD09-03C1B7FCB2F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2E6E140-AA67-4683-BD09-03C1B7FCB2F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81C51FE0-2EA4-4DF7-82AD-1AE0EDD999DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81C51FE0-2EA4-4DF7-82AD-1AE0EDD999DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81C51FE0-2EA4-4DF7-82AD-1AE0EDD999DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81C51FE0-2EA4-4DF7-82AD-1AE0EDD999DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -17,7 +17,7 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace nMqttTests
 {
     /// <summary>
     /// MQTT Message Tests with sample input data provided by andy@stanford-clark.com
@@ -145,6 +145,23 @@ namespace NmqttTests
             };
 
             Assert.Throws<ClientIdentifierException>(() => MqttMessage.CreateFrom(sampleMessage));
+        }
+
+        [Fact]
+        public void Serialize_Message_MessageType_Connect()
+        {
+            MqttConnectMessage msg = new MqttConnectMessage()
+                .WithClientIdentifier("mark")
+                .KeepAliveFor(30)
+                .StartClean();
+
+            Console.WriteLine(msg);
+
+            byte[] mb = MessageSerializationHelper.GetMessageBytes(msg);
+
+            Assert.Equal<byte>(0x10, mb[0]);
+            // VH will = 12, Msg = 6
+            Assert.Equal<byte>(18, mb[1]);
         }
     } 
 }

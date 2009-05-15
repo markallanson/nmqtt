@@ -94,8 +94,10 @@ namespace Nmqtt
         /// Writes the header to a supplied stream.
         /// </summary>
         /// <param name="messageStream">The stream to write the header bytes to.</param>
-        public void WriteTo(Stream messageStream)
+        public void WriteTo(int messageSize, Stream messageStream)
         {
+            this.MessageSize = messageSize;
+
             List<byte> headerBytes = HeaderBytes;
             messageStream.Write(headerBytes.ToArray(), 0, headerBytes.Count);
         }
@@ -150,35 +152,48 @@ namespace Nmqtt
 
         private static int ReadRemainingLength(Stream headerStream)
         {
+            List<byte> lengthBytes = ReadLengthBytes(headerStream);
+            return CalculateLength(lengthBytes);
+        }
+
+        /// <summary>
+        /// Calculates the remaining length of an mqttmessage from the bytes that make up the length
+        /// </summary>
+        /// <param name="lengthBytes">The length bytes.</param>
+        /// <returns></returns>
+        internal static int CalculateLength(List<byte> lengthBytes)
+        {
             var remainingLength = 0;
             var multiplier = 1;
-            var currentByteCount = 0;
-            var currentByte = 0;
 
-            // keep going while the last bit of the header bytes is zero, except if the 4th message size header
-            // byte has a 1 on the last bit, in which case the message is invalid (according to the spec)
-            // so throw it out because we really wouldn't have a clue what the message size actually is.
-            do
+            foreach (byte currentByte in lengthBytes)
             {
-                if (currentByteCount++ == 4)
-                {
-                    // we dont know the real payload size, so just report it as -1.
-                    throw new InvalidPayloadSizeException(-1, Constants.MaxMessageSize);
-                }
-
-                // read the next byte, but if this means we reach the end of the stream, then this is a problem
-                // becuase we haven't yet read all of the header - the message in the stream is corrupt
-                currentByte = headerStream.ReadByte();
-                if (currentByte == -1)
-                {
-                    throw new InvalidHeaderException("The header was not complete (too short). The message is malformed.");
-                }
-
-                remainingLength += (currentByte & 127) * multiplier;
-                multiplier *= 128;
-            } while ((currentByte & 128) != 0);
+                remainingLength += (currentByte & 0x7f) * multiplier;
+                multiplier *= 0x80;
+            }
 
             return remainingLength;
+        }
+
+        /// <summary>
+        /// Reads the length bytes of an MqttHeader from the supplied stream.
+        /// </summary>
+        /// <param name="headerStream">The header stream.</param>
+        /// <returns></returns>
+        internal static List<byte> ReadLengthBytes(Stream headerStream)
+        {
+            List<byte> lengthBytes = new List<byte>();
+
+            // read until we've got the entire size, or the 4 byte limit is reached
+            byte sizeByte;
+            int byteCount = 0;
+            do
+            {
+                sizeByte = (byte)headerStream.ReadByte();
+                lengthBytes.Add(sizeByte);
+            } while ((sizeByte & 0x80) == 0x80 || ++byteCount == 4);
+
+            return lengthBytes;
         }
 
         /// <summary>

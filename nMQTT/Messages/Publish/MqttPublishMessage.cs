@@ -66,6 +66,28 @@ namespace Nmqtt
         }
 
         /// <summary>
+        /// Reads a message from the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The message stream.</param>
+        public override void ReadFrom(Stream messageStream)
+        {
+            base.ReadFrom(messageStream);
+            this.VariableHeader = new MqttPublishVariableHeader(this.Header, messageStream);
+            this.Payload = new MqttPublishPayload(this.Header, this.VariableHeader, messageStream);
+        }
+
+        /// <summary>
+        /// ss the message to the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The stream to write the message to.</param>
+        public override void WriteTo(Stream messageStream)
+        {
+            this.Header.WriteTo(VariableHeader.GetWriteLength() + Payload.GetWriteLength(), messageStream);
+            this.VariableHeader.WriteTo(messageStream);
+            this.Payload.WriteTo(messageStream);
+        }
+
+        /// <summary>
         /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
         /// </summary>
         /// <returns>

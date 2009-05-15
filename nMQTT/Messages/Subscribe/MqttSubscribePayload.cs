@@ -17,6 +17,7 @@ using System.Text;
 using System.IO;
 
 using Nmqtt.ExtensionMethods;
+using Nmqtt.Encoding;
 
 namespace Nmqtt
 {
@@ -84,6 +85,24 @@ namespace Nmqtt
         }
 
         /// <summary>
+        /// Gets the length of the payload in bytes when written to a stream.
+        /// </summary>
+        /// <returns>The length of the payload in bytes.</returns>
+        internal override int GetWriteLength()
+        {
+            int length = 0;
+            MqttEncoding enc = new MqttEncoding();
+
+            foreach (KeyValuePair<string, MqttQos> sub in subscriptions)
+            {
+                length += enc.GetByteCount(sub.Key);
+                length += sizeof(MqttQos);
+            }
+
+            return length;
+        }
+
+        /// <summary>
         /// Adds a new subscription to the collection of subscriptions.
         /// </summary>
         /// <param name="topic">The topic to subscribe to.</param>
@@ -123,6 +142,11 @@ namespace Nmqtt
             }
 
             return sb.ToString();
+        }
+
+        public override void WriteTo(Stream payloadStream)
+        {
+            throw new NotImplementedException();
         }
     }
 }
