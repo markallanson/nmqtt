@@ -16,6 +16,9 @@ using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.IO;
+using System.Collections.ObjectModel;
+
+using Nmqtt.ExtensionMethods;
 
 namespace Nmqtt
 {
@@ -94,10 +97,11 @@ namespace Nmqtt
         private void ReadComplete(IAsyncResult asyncResult)
         {
             var bytesRead = 0;
+            Stream dataStream = (Stream)asyncResult.AsyncState;
 
             try
             {
-                bytesRead = networkStream.EndRead(asyncResult);
+                bytesRead = dataStream.EndRead(asyncResult);
             }
             catch (IOException)
             {
@@ -110,16 +114,16 @@ namespace Nmqtt
                 // ignore the read, try again
             }
 
-            List<byte> messageBytes = new List<byte>();
+            Collection<byte> messageBytes = new Collection<byte>();
             messageBytes.Add(headerByte[0]);
-            
-            List<byte> lengthBytes = MqttHeader.ReadLengthBytes((Stream)asyncResult.AsyncState);
+
+            Collection<byte> lengthBytes = MqttHeader.ReadLengthBytes(dataStream);
             int length = MqttHeader.CalculateLength(lengthBytes);
-            messageBytes.AddRange(messageBytes);
+            messageBytes.AddRange(lengthBytes);
 
             // we've got the bytes that make up the header, inc the size, read the .
             var remainingMessage = new byte[length];
-            int messageBytesRead = networkStream.Read(remainingMessage, 0, length);
+            int messageBytesRead = dataStream.Read(remainingMessage, 0, length);
             if (messageBytesRead < length)
             {
                 // we haven't got all the message, need to figure oput what to do.
@@ -129,12 +133,9 @@ namespace Nmqtt
             FireDataAvailableEvent(messageBytes);
         }
 
-        private void FireDataAvailableEvent(List<byte> messageBytes)
+        private void FireDataAvailableEvent(Collection<byte> messageBytes)
         {
-            using (MemoryStream stream = new MemoryStream(messageBytes.ToArray()))
-            {
-                DataAvailable(this, new DataAvailableEventArgs(stream));
-            }
+            DataAvailable(this, new DataAvailableEventArgs(messageBytes));
         }
 
         /// <summary>

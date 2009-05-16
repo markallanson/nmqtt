@@ -15,28 +15,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Collections.ObjectModel;
 
 namespace Nmqtt
 {
     /// <summary>
-    /// Event arguments for the Data Available event fired by the MqttConnection class.
+    /// Event arguments that represent the data present within an invalid message.
     /// </summary>
-    public class DataAvailableEventArgs : EventArgs
+    public class InvalidMessageEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets or sets the data stream that contains the data to read from.
+        /// Gets or sets the Exception that describes the invalid message problem.
         /// </summary>
         /// <value>The data stream.</value>
-        public IEnumerable<byte> MessageData { get; set; }
+        public InvalidMessageException Exception { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataAvailableEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="InvalidMessageEventArgs"/> class.
         /// </summary>
-        /// <param name="dataStream">The data stream containing the message available for processing.</param>
-        public DataAvailableEventArgs(IEnumerable<byte> messageData)
+        /// <param name="exception">The Exception that describes the message problem.</param>
+        public InvalidMessageEventArgs(InvalidMessageException exception)
         {
-            this.MessageData = messageData;
+            this.Exception = exception;
         }
     }
 }

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace Nmqtt
 {
@@ -152,7 +153,7 @@ namespace Nmqtt
 
         private static int ReadRemainingLength(Stream headerStream)
         {
-            List<byte> lengthBytes = ReadLengthBytes(headerStream);
+            Collection<byte> lengthBytes = ReadLengthBytes(headerStream);
             return CalculateLength(lengthBytes);
         }
 
@@ -161,7 +162,7 @@ namespace Nmqtt
         /// </summary>
         /// <param name="lengthBytes">The length bytes.</param>
         /// <returns></returns>
-        internal static int CalculateLength(List<byte> lengthBytes)
+        internal static int CalculateLength(IEnumerable<byte> lengthBytes)
         {
             var remainingLength = 0;
             var multiplier = 1;
@@ -180,9 +181,9 @@ namespace Nmqtt
         /// </summary>
         /// <param name="headerStream">The header stream.</param>
         /// <returns></returns>
-        internal static List<byte> ReadLengthBytes(Stream headerStream)
+        internal static Collection<byte> ReadLengthBytes(Stream headerStream)
         {
-            List<byte> lengthBytes = new List<byte>();
+            Collection<byte> lengthBytes = new Collection<byte>();
 
             // read until we've got the entire size, or the 4 byte limit is reached
             byte sizeByte;

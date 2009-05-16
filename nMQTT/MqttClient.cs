@@ -48,7 +48,18 @@ namespace Nmqtt
             }
         }
 
-        private ConnectionState connectionState = ConnectionState.Disconnected;
+        private string clientIdentifier;
+        /// <summary>
+        /// Gets the Client Identifier of this instance of the MqttClient
+        /// </summary>
+        public string ClientIdentifier
+        {
+            get
+            {
+                return clientIdentifier;
+            }
+        }
+
         /// <summary>
         /// Gets the current conneciton state of the Mqtt Client.
         /// </summary>
@@ -56,14 +67,21 @@ namespace Nmqtt
         {
             get
             {
-                return connectionState;
+                if (connectionHandler != null)
+                {
+                    return connectionHandler.State;
+                }
+                else
+                {
+                    return Nmqtt.ConnectionState.Disconnected;
+                }
             }
         }
 
         /// <summary>
-        /// The raw connection to the Mqtt Broker.
+        /// The Handler that is managing the connection to the remote server.
         /// </summary>
-        private MqttConnection connection;
+        private MqttConnectionHandler connectionHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttClient"/> class using the default Mqtt Port.
@@ -85,17 +103,40 @@ namespace Nmqtt
         {
             this.server = server;
             this.port = port;
+            this.clientIdentifier = clientIdentifier;
+        }
 
-            connection = MqttConnection.Connect(server, port);
-            connection.DataAvailable += new EventHandler<DataAvailableEventArgs>(DataAvailableEventHandler);
-            connectionState = ConnectionState.Connected;
+        /// <summary>
+        /// Performs a synchronous connect to the message broker.
+        /// </summary>
+        public ConnectionState Connect()
+        {
+            MqttConnectMessage connectMessage = GetConnectMessage();
+            connectionHandler = new SynchronousMqttConnectionHandler();
+            connectionHandler.MessageReceived += connectionHandler_MessageReceived;
+            return connectionHandler.Connect(this.server, this.port, connectMessage);
+        }
 
-            MqttConnectMessage connectMsg = new MqttConnectMessage()
+        /// <summary>
+        /// Initiates an Asynchronous connection to the message broker. The ConnectComplete 
+        /// event is fired when connection has finished.
+        /// </summary>
+        //public void BeginConnect()
+        //{
+        //    MqttConnectMessage connectMessage = GetConnectMessage();
+        //}
+
+        /// <summary>
+        /// Gets a configured connect message.
+        /// </summary>
+        /// <returns>An MqttConnectMessage that can be used to connect to a message broker.</returns>
+        private MqttConnectMessage GetConnectMessage()
+        {
+            return new MqttConnectMessage()
                 .WithClientIdentifier(clientIdentifier)
                 .KeepAliveFor(500)
                 .StartClean();
 
-            SendMessage(connectMsg);
         }
 
         /// <summary>
@@ -103,43 +144,70 @@ namespace Nmqtt
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DataAvailableEventHandler(object sender, DataAvailableEventArgs e)
+        private void connectionHandler_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
-        //    MqttMessage message = MqttMessage.CreateFrom(e.DataStream);
+            try
+            {
+                // TODO: Decide whether we should spawn our message processing on a new thread.
+                HandleReceivedMessage(e.Message);
+            }
+            catch (InvalidMessageException ex)
+            {
+                if (InvalidMessageReceived != null)
+                {
+                    // TODO: Implement the Invalid Message Event Args properly.
+                    InvalidMessageReceived(this, new InvalidMessageEventArgs(ex));
+                }
+            }
         }
 
         /// <summary>
-        /// Sends a message to the broker.
+        /// Handles the processing of messages arriving from the message broker.
         /// </summary>
-        /// <param name="message">The message.</param>
-        private void SendMessage(MqttMessage message)
+        /// <param name="mqttMessage"></param>
+        private void HandleReceivedMessage(MqttMessage message)
         {
-            using (MemoryStream stream = new MemoryStream())
+            // handle the basic publish message by firing the PublishMessageReceived event of the client
+            // for application level handling of message data.
+            if (message.Header.MessageType == MqttMessageType.Publish)
             {
-                message.WriteTo(stream);
-                stream.Seek(0, SeekOrigin.Begin);
-                connection.Send(stream);
+                MqttPublishMessage published = (MqttPublishMessage)message;
+                if (PublishMessageReceived != null)
+                {
+                    PublishMessageReceived(this, new PublishEventArgs(published.Payload.Message));
+                }
             }
         }
+
+        /// <summary>
+        /// Event fired when the connect to a remove server has been completed.
+        /// </summary>
+        //public event EventHandler<EventArgs> ConnectComplete;
+
+        /// <summary>
+        /// Event fired when a publish message has been received by the client. 
+        /// </summary>
+        public event EventHandler<PublishEventArgs> PublishMessageReceived;
+
+        /// <summary>
+        /// Event fired when a message received from the connect message broker could not be processed.
+        /// </summary>
+        public event EventHandler<InvalidMessageEventArgs> InvalidMessageReceived;
 
         /// <summary>
         /// Closes the MQTT Client.
         /// </summary>
         public void Close()
         {
-            if (connectionState == ConnectionState.Connected && connection != null)
-            {
-                // send a disconnect message to the broker and dispose the connection object.
-                SendMessage(new MqttDisconnectMessage());
-                connection.Dispose();
-            }
+            connectionHandler.Close();
         }
 
         #region IDisposable Members
 
         public void Dispose()
         {
-            Close();
+            this.Close();
+            connectionHandler.Dispose();
         }
 
         #endregion

@@ -58,7 +58,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientIdentifierException.cs" />
-    <Compile Include="ConnectionState.cs" />
+    <Compile Include="ConnectionHandlers\SynchronousMqttConnectionHandler.cs" />
+    <Compile Include="ConnectionHandlers\ConnectionState.cs" />
+    <Compile Include="ConnectionHandlers\MqttConnectionHandler.cs" />
+    <Compile Include="ExtensionMethods\CollectionExtensions.cs" />
+    <Compile Include="PublishEventArgs.cs" />
+    <Compile Include="MessageReceivedEventArgs.cs" />
+    <Compile Include="InvalidMessageEventArgs.cs" />
+    <Compile Include="InvalidMessageException.cs" />
     <Compile Include="DataAvailableEventArgs.cs" />
     <Compile Include="Encoding\MqttEncoding.cs" />
     <Compile Include="GlobalSuppressions.cs" />

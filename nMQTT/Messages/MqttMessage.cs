@@ -82,15 +82,22 @@ namespace Nmqtt
         /// <returns>An MqttMessage containing details of the message.</returns>
         public static MqttMessage CreateFrom(Stream messageStream)
         {
-            MqttHeader header = new MqttHeader();
+            try
+            {
+                MqttHeader header = new MqttHeader();
 
-            // pass the input stream sequentially through the component deserialization(create) methods
-            // to build a full MqttMessage.
-            header = new MqttHeader(messageStream);
+                // pass the input stream sequentially through the component deserialization(create) methods
+                // to build a full MqttMessage.
+                header = new MqttHeader(messageStream);
 
-            MqttMessage message = MqttMessageFactory.GetMessage(header, messageStream);
+                MqttMessage message = MqttMessageFactory.GetMessage(header, messageStream);
 
-            return message;
+                return message;
+            }
+            catch (InvalidHeaderException ex)
+            {
+                throw new InvalidMessageException("The data provided in the message stream was not a valid MQTT Message", ex);
+            }
         }
 
         /// <summary>
