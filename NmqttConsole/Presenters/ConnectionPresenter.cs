@@ -1,4 +1,16 @@
-﻿using System;
+﻿/* 
+ * nMQTT, a .Net MQTT v3 client implementation.
+ * http://code.google.com/p/nmqtt
+ * 
+ * Copyright (c) 2009 Mark Allanson (mark@markallanson.net)
+ *
+ * Licensed under the MIT License. You may not use this file except 
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ *     http://www.opensource.org/licenses/mit-license.php
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,6 +50,7 @@ namespace NmqttConsole.Presenters
         {
             mqttClient.Dispose();
             mqttClient = null;
+            View.AppendStatusLine("Disconnected.");
         }
 
         private void Connect()
@@ -63,14 +76,29 @@ namespace NmqttConsole.Presenters
             if (port == 0)
             {
                 mqttClient = new MqttClient(server, "nMqttClient");
-                View.AppendStatusLine("Connected to server " + server);
             }
             else
             {
                 mqttClient = new MqttClient(server, port, "nMqttClient");
-                View.AppendStatusLine("Connected to server " + server + " on port " + port);
             }
 
+            mqttClient.PublishMessageReceived += mqttClient_PublishMessageReceived;
+            mqttClient.InvalidMessageReceived += mqttClient_InvalidMessageReceived;
+            mqttClient.Connect();
+
+            View.AppendStatusLine(
+                String.Format("Connected to server {0} on port {1} with client identifier {2}",
+                    mqttClient.Server, mqttClient.Port, mqttClient.ClientIdentifier));
+        }
+
+        void mqttClient_InvalidMessageReceived(object sender, InvalidMessageEventArgs e)
+        {
+            View.AppendStatusLine(String.Format("Invalid Message Data Received: {0}", e.Exception));
+        }
+
+        void mqttClient_PublishMessageReceived(object sender, PublishEventArgs e)
+        {
+            View.AppendStatusLine(e.GetAsAsciiString());
         }
     }
 }

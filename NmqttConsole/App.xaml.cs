@@ -18,6 +18,7 @@ namespace NmqttConsole
         {
             ShellPresenter shell = new ShellPresenter();
             shell.Show();
+            shell.View.Closed += (sender, closedEventArgs) => this.Shutdown();
         }
     }
 }
