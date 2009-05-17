@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientIdentifierException.cs" />
+    <Compile Include="ConnectionHandling\ConnectionDroppedEventArgs.cs" />
     <Compile Include="ConnectionHandling\SynchronousMqttConnectionHandler.cs" />
     <Compile Include="ConnectionHandling\ConnectionState.cs" />
     <Compile Include="ConnectionHandling\MqttConnectionHandler.cs" />

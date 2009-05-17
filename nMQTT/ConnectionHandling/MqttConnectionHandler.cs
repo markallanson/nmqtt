@@ -52,7 +52,15 @@ namespace Nmqtt
         public ConnectionState Connect(string server, int port, MqttConnectMessage message)
         {
             this.connectMessage = message;
-            return InternalConnect(server, port, message);
+            ConnectionState state = InternalConnect(server, port, message);
+
+            // if we managed to connection, ensure we catch any unexpected disconnects
+            if (state == ConnectionState.Connected)
+            {
+                this.connection.ConnectionDropped += (sender, e) => { this.connectionState = ConnectionState.Disconnected; };
+            }
+
+            return state;
         }
 
         /// <summary>
@@ -69,6 +77,11 @@ namespace Nmqtt
         /// <param name="message"></param>
         public void SendMessage(MqttMessage message)
         {
+            if (this.connectionState != ConnectionState.Connected)
+            {
+                throw new InvalidOperationException("You cannot send a message when not connected to a message broker");
+            }
+
             using (MemoryStream stream = new MemoryStream())
             {
                 message.WriteTo(stream);

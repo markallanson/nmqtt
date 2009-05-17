@@ -64,6 +64,7 @@ namespace Nmqtt
         /// </summary>
         private void Disconnect()
         {
+            networkStream.Close();
             tcpClient.Close();
         }
 
@@ -111,38 +112,44 @@ namespace Nmqtt
             try
             {
                 bytesRead = dataStream.EndRead(asyncResult);
+
+                if (bytesRead < 1)
+                {
+                    // ignore the read, try again
+                }
+
+                Collection<byte> messageBytes = new Collection<byte>();
+                messageBytes.Add(headerByte[0]);
+
+                Collection<byte> lengthBytes = MqttHeader.ReadLengthBytes(dataStream);
+                int length = MqttHeader.CalculateLength(lengthBytes);
+                messageBytes.AddRange(lengthBytes);
+
+                // we've got the bytes that make up the header, inc the size, read the .
+                var remainingMessage = new byte[length];
+                int messageBytesRead = dataStream.Read(remainingMessage, 0, length);
+                if (messageBytesRead < length)
+                {
+                    // we haven't got all the message, need to figure oput what to do.
+                }
+                messageBytes.AddRange(remainingMessage);
+
+                FireDataAvailableEvent(messageBytes);
+
+                // initiate a read for the next byte which will be the header bytes
+                dataStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), dataStream);
+
             }
-            catch (IOException)
+            catch (IOException ex)
             {
-                // TODO: Implement handling of dropped connections from the other end.
-                return;
+                // close the underlying connection
+                this.Disconnect();
+
+                if (ConnectionDropped != null)
+                {
+                    ConnectionDropped(this, new ConnectionDroppedEventArgs(ex));
+                }
             }
-
-            if (bytesRead < 1)
-            {
-                // ignore the read, try again
-            }
-
-            Collection<byte> messageBytes = new Collection<byte>();
-            messageBytes.Add(headerByte[0]);
-
-            Collection<byte> lengthBytes = MqttHeader.ReadLengthBytes(dataStream);
-            int length = MqttHeader.CalculateLength(lengthBytes);
-            messageBytes.AddRange(lengthBytes);
-
-            // we've got the bytes that make up the header, inc the size, read the .
-            var remainingMessage = new byte[length];
-            int messageBytesRead = dataStream.Read(remainingMessage, 0, length);
-            if (messageBytesRead < length)
-            {
-                // we haven't got all the message, need to figure oput what to do.
-            }
-            messageBytes.AddRange(remainingMessage);
-
-            FireDataAvailableEvent(messageBytes);
-
-            // initiate a read for the next byte which will be the header bytes
-            dataStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), dataStream);
         }
 
         private void FireDataAvailableEvent(Collection<byte> messageBytes)
@@ -154,6 +161,11 @@ namespace Nmqtt
         /// Occurs when Data is available for processing from the underlying network stream.
         /// </summary>
         public event EventHandler<DataAvailableEventArgs> DataAvailable;
+
+        /// <summary>
+        /// Occurs when the connection to the remote server drops unexpectedly.
+        /// </summary>
+        public event EventHandler<ConnectionDroppedEventArgs> ConnectionDropped;
 
         #region IDisposable Members
 
