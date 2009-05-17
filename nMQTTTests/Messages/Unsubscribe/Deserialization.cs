@@ -17,18 +17,18 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.Unsubscribe
 {
     /// <summary>
     /// MQTT Message Unsubscribe Tests
     /// </summary>
-    public class MqttMessage_UnsubscribeTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Unsubscribe_SingleTopic()
+        public void SingleTopic()
         {
             // Message Specs________________
             // <A2><08><00><03><00><04>fred (Unsubscribe to topic fred)
@@ -62,7 +62,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Unsubscribe_MultiTopic()
+        public void MultiTopic()
         {
             // Message Specs________________
             // <A2><0E><00><03><00><04>fred<00><04>mark (Unsubscribe to topic fred, mark)

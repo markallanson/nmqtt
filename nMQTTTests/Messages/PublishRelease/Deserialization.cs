@@ -17,24 +17,24 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.PublishRelease
 {
     /// <summary>
-    /// Tests for the Publish Received message type.
+    /// Tests for the Publish Release message type.
     /// </summary>
-    public class MqttMessage_PublishReceivedTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_PublishReceived_ValidPayload()
+        public void ValidPayload()
         {
             // Message Specs________________
-            // <40><02><00><04> (Pub Received for Message ID 4)
+            // <40><02><00><04> (Pub Release for Message ID 4)
             var sampleMessage = new[]
             {
-                (byte)0x50,
+                (byte)0x60,
                 (byte)0x02,
                 (byte)0x0,
                 (byte)0x4,
@@ -45,11 +45,11 @@ namespace NmqttTests
             Console.WriteLine(baseMessage.ToString());
 
             // check that the message was correctly identified as a connect message.
-            Assert.IsType<MqttPublishReceivedMessage>(baseMessage);
-            MqttPublishReceivedMessage message = (MqttPublishReceivedMessage)baseMessage;
+            Assert.IsType<MqttPublishReleaseMessage>(baseMessage);
+            MqttPublishReleaseMessage message = (MqttPublishReleaseMessage)baseMessage;
 
             // validate the message deserialization
-            Assert.Equal<MqttMessageType>(MqttMessageType.PublishReceived, message.Header.MessageType);
+            Assert.Equal<MqttMessageType>(MqttMessageType.PublishRelease, message.Header.MessageType);
             Assert.Equal<int>(2, message.Header.MessageSize);
 
             // make sure the publish message length matches the expectred size.

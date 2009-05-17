@@ -17,38 +17,27 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.PublishComplete
 {
     /// <summary>
-    /// MQTT Message Publish Tests
+    /// Tests for the Publish Complete message type.
     /// </summary>
-    public class MqttMessage_PublishTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Publish_ValidPayload()
+        public void ValidPayload()
         {
             // Message Specs________________
-            // <30><0C><00><04>fredhello!
+            // <40><02><00><04> (Pub complete for Message ID 4)
             var sampleMessage = new[]
             {
-                (byte)0x30,
-                (byte)0x0C,
+                (byte)0x70,
+                (byte)0x02,
                 (byte)0x0,
                 (byte)0x4,
-                (byte)'f',
-                (byte)'r',
-                (byte)'e',
-                (byte)'d',
-                // message payload is here
-                (byte)'h',
-                (byte)'e',
-                (byte)'l',
-                (byte)'l',
-                (byte)'o',
-                (byte)'!',
             };
 
             MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
@@ -56,18 +45,15 @@ namespace NmqttTests
             Console.WriteLine(baseMessage.ToString());
 
             // check that the message was correctly identified as a connect message.
-            Assert.IsType<MqttPublishMessage>(baseMessage);
-            MqttPublishMessage message = (MqttPublishMessage)baseMessage;
+            Assert.IsType<MqttPublishCompleteMessage>(baseMessage);
+            MqttPublishCompleteMessage message = (MqttPublishCompleteMessage)baseMessage;
 
             // validate the message deserialization
-            Assert.Equal<bool>(false, message.Header.Duplicate);
-            Assert.Equal<bool>(false, message.Header.Retain);
-            Assert.Equal<MqttQos>(MqttQos.AtMostOnce, message.Header.Qos);
-            Assert.Equal<MqttMessageType>(MqttMessageType.Publish, message.Header.MessageType);
-            Assert.Equal<int>(12, message.Header.MessageSize);
+            Assert.Equal<MqttMessageType>(MqttMessageType.PublishComplete, message.Header.MessageType);
+            Assert.Equal<int>(2, message.Header.MessageSize);
 
             // make sure the publish message length matches the expectred size.
-            Assert.Equal<int>(6, message.Payload.Message.Count);
+            Assert.Equal<int>(4, message.VariableHeader.MessageIdentifier);
         }
     } 
 }

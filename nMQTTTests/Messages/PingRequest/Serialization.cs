@@ -16,38 +16,18 @@ using System.Linq;
 using System.Text;
 using Xunit;
 using Nmqtt;
+using NmqttTests.Messages;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.PingRequest
 {
     /// <summary>
     /// MQTT Message Ping Request Tests
     /// </summary>
-    public class MqttMessage_PingRequestTests
+    public class Serialization
     {
-        /// <summary>
-        /// Tests basic message deserialization from a raw byte array.
-        /// </summary>
-        [Fact]
-        public void Deserialize_Message_MessageType_PingRequest()
-        {
-            // Message Specs________________
-            // <C0><00>
-            var sampleMessage = new[]
-            {
-                (byte)0xC0,
-                (byte)0x00,
-            };
-
-            MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
-
-            Console.WriteLine(baseMessage.ToString());
-
-            // check that the message was correctly identified as a connect message.
-            Assert.IsType<MqttPingRequestMessage>(baseMessage);
-        }
 
         [Fact]
-        public void Serialize_Message_MessageType_PingRequest()
+        public void BasicSerialization()
         {
             MqttPingRequestMessage pingReqMsg = new MqttPingRequestMessage();
             byte[] bytes = MessageSerializationHelper.GetMessageBytes(pingReqMsg);

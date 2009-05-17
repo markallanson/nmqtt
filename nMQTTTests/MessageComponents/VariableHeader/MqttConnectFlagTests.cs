@@ -18,7 +18,7 @@ using Xunit;
 using Nmqtt;
 using System.IO;
 
-namespace NmqttTests
+namespace NmqttTests.MessageComponents.VariableHeader
 {
     public class MqttConnectFlagTests
     {

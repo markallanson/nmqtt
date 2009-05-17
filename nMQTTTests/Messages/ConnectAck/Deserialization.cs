@@ -17,18 +17,18 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.ConnectAck
 {
     /// <summary>
     /// MQTT Message Connect Acknowledgement Tests
     /// </summary>
-    public class MqttMessage_ConnectAckTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_ConnectAck_ConnectionAccepted()
+        public void ConnectionAccepted()
         {
             // Our test deserialization message, with the following properties. Note this message is not 
             // yet a real MQTT message, because not everything is implemented, but it must be modified
@@ -68,7 +68,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_ConnectAck_UnacceptableProtocolVersion()
+        public void UnacceptableProtocolVersion()
         {
             // Our test deserialization message, with the following properties. Note this message is not 
             // yet a real MQTT message, because not everything is implemented, but it must be modified
@@ -108,7 +108,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_ConnectAck_IdentifierRejected()
+        public void IdentifierRejected()
         {
             // Our test deserialization message, with the following properties. Note this message is not 
             // yet a real MQTT message, because not everything is implemented, but it must be modified
@@ -148,7 +148,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_ConnectAck_BrokerUnavailable()
+        public void BrokerUnavailable()
         {
             // Our test deserialization message, with the following properties. Note this message is not 
             // yet a real MQTT message, because not everything is implemented, but it must be modified

@@ -17,12 +17,12 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.Unimplemented
 {
     /// <summary>
     /// MQTT Message Tests with sample input data provided by andy@stanford-clark.com
     /// </summary>
-    public class MqttMessage_UnimplementedMessageTypeTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
@@ -40,7 +40,7 @@ namespace NmqttTests
                 (byte)0x4,
             };
 
-            Assert.Throws<InvalidHeaderException>(() => MqttMessage.CreateFrom(sampleMessage));
+            Assert.Throws<InvalidMessageException>(() => MqttMessage.CreateFrom(sampleMessage));
         }
     } 
 }

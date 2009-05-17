@@ -17,27 +17,25 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.PingResponse
 {
     /// <summary>
-    /// MQTT Message Ping Acknowledgement Tests
+    /// MQTT Message Ping Response Tests
     /// </summary>
-    public class MqttMessage_PublishAckTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_PublishAck_ValidPayload()
+        public void BasicDeserialization()
         {
             // Message Specs________________
-            // <40><02><00><04> (Pub ack for Message ID 4)
+            // <D0><00>
             var sampleMessage = new[]
             {
-                (byte)0x40,
-                (byte)0x02,
-                (byte)0x0,
-                (byte)0x4,
+                (byte)0xD0,
+                (byte)0x00,
             };
 
             MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
@@ -45,15 +43,7 @@ namespace NmqttTests
             Console.WriteLine(baseMessage.ToString());
 
             // check that the message was correctly identified as a connect message.
-            Assert.IsType<MqttPublishAckMessage>(baseMessage);
-            MqttPublishAckMessage message = (MqttPublishAckMessage)baseMessage;
-
-            // validate the message deserialization
-            Assert.Equal<MqttMessageType>(MqttMessageType.PublishAck, message.Header.MessageType);
-            Assert.Equal<int>(2, message.Header.MessageSize);
-
-            // make sure the publish message length matches the expectred size.
-            Assert.Equal<int>(4, message.VariableHeader.MessageIdentifier);
+            Assert.IsType<MqttPingResponseMessage>(baseMessage);
         }
     } 
 }

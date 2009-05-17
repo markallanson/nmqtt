@@ -17,18 +17,18 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.Subscribe
 {
     /// <summary>
     /// MQTT Message Subscribe Tests
     /// </summary>
-    public class MqttMessage_SubscribeTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_SingleTopic()
+        public void SingleTopic()
         {
             // Message Specs________________
             // <82><09><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
@@ -64,7 +64,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_MultiTopic()
+        public void MultiTopic()
         {
             // Message Specs________________
             // <82><10><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
@@ -109,7 +109,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_SingleTopic_AtLeastOnceQos()
+        public void SingleTopic_AtLeastOnceQos()
         {
             // Message Specs________________
             // <82><09><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
@@ -145,7 +145,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_MultiTopic_AtLeastOnceQos()
+        public void MultiTopic_AtLeastOnceQos()
         {
             // Message Specs________________
             // <82><10><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
@@ -190,7 +190,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_SingleTopic_ExactlyOnce()
+        public void SingleTopic_ExactlyOnce()
         {
             // Message Specs________________
             // <82><09><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)
@@ -226,7 +226,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_MultiTopic_ExactlyOnce()
+        public void MultiTopic_ExactlyOnce()
         {
             // Message Specs________________
             // <82><10><00><02><00><04>fred<00> (subscribe to topic fred at qos 0)

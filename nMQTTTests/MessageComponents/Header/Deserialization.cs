@@ -19,145 +19,10 @@ using Nmqtt;
 using System.Reflection;
 using System.IO;
 
-namespace NmqttTests
+namespace NmqttTests.MessageComponents.Header
 {
-    public class MqttHeaderTests
+    public class Deserialization
     {
-        /// <summary>
-        /// Tests decoding of a single byte payload size.
-        /// </summary>
-        [Fact]
-        public void SingleBytePayloadSize()
-        {
-            // validates a payload size of a single byte using the example values supplied in the MQTT spec
-            List<byte> returnedBytes = CallGetRemainingBytesWithValue(127);
-
-            // test that the count of bytes returned is only 1, and the value of the byte is correct.
-            Assert.Equal<int>(returnedBytes.Count, 1);
-            Assert.Equal<byte>(127, returnedBytes[0]);
-        }
-
-        /// <summary>
-        /// Tests decoding of the lower boundary (128) of a double byte payload size
-        /// </summary>
-        [Fact]
-        public void DoubleBytePayloadSizeLowerBoundary()
-        {
-            List<byte> returnedBytes = CallGetRemainingBytesWithValue(128);
-
-            Assert.Equal<int>(returnedBytes.Count, 2);
-            Assert.Equal<byte>(0x80, returnedBytes[0]);
-            Assert.Equal<byte>(0x01, returnedBytes[1]);
-        }
-
-        /// <summary>
-        /// Tests decoding of the upper boundary of a double byte payload size (16383)
-        /// </summary>
-        [Fact]
-        public void DoubleBytePayloadSizeUpperBoundary()
-        {
-            List<byte> returnedBytes = CallGetRemainingBytesWithValue(16383);
-
-            Assert.Equal<int>(returnedBytes.Count, 2);
-            Assert.Equal<byte>(0xFF, returnedBytes[0]);
-            Assert.Equal<byte>(0x7F, returnedBytes[1]);
-        }
-
-        /// <summary>
-        /// Tests the lower boundary of the triple byte payload size (16384)
-        /// </summary>
-        [Fact]
-        public void TripleBytePayloadSizeLowerBoundary()
-        {
-            List<byte> returnedBytes = CallGetRemainingBytesWithValue(16384);
-
-            Assert.Equal<int>(returnedBytes.Count, 3);
-            Assert.Equal<byte>(0x80, returnedBytes[0]);
-            Assert.Equal<byte>(0x80, returnedBytes[1]);
-            Assert.Equal<byte>(0x01, returnedBytes[2]);
-        }
-
-        /// <summary>
-        /// Tests the upper boundary of the triple byte payload size (2097151)
-        /// </summary>
-        [Fact]
-        public void TripleBytePayloadSizeUpperBoundary()
-        {
-            List<byte> returnedBytes = CallGetRemainingBytesWithValue(2097151);
-
-            Assert.Equal<int>(returnedBytes.Count, 3);
-            Assert.Equal<byte>(0xFF, returnedBytes[0]);
-            Assert.Equal<byte>(0xFF, returnedBytes[1]);
-            Assert.Equal<byte>(0x7F, returnedBytes[2]);
-        }
-
-        /// <summary>
-        /// Tests the lower boundary of the quad byte payload size (2097152)
-        /// </summary>        
-        [Fact]
-        public void QuadrupleBytePayloadSizeLowerBoundary()
-        {
-            // validates a payload size of a single byte using the example values supplied in the MQTT spec
-            List<byte> returnedBytes = CallGetRemainingBytesWithValue(2097152);
-
-            Assert.Equal<int>(returnedBytes.Count, 4);
-            Assert.Equal<byte>(0x80, returnedBytes[0]);
-            Assert.Equal<byte>(0x80, returnedBytes[1]);
-            Assert.Equal<byte>(0x80, returnedBytes[2]);
-            Assert.Equal<byte>(0x01, returnedBytes[3]);
-        }
-
-        /// <summary>
-        /// Tests the upper boundary of the quad byte payload size (268435455)
-        /// </summary>        
-        [Fact]
-        public void QuadrupleBytePayloadSizeUpperBoundary()
-        {
-            // validates a payload size of a single byte using the example values supplied in the MQTT spec
-            List<byte> returnedBytes = CallGetRemainingBytesWithValue(268435455);
-
-            Assert.Equal<int>(returnedBytes.Count, 4);
-            Assert.Equal<byte>(0xFF, returnedBytes[0]);
-            Assert.Equal<byte>(0xFF, returnedBytes[1]);
-            Assert.Equal<byte>(0xFF, returnedBytes[2]);
-            Assert.Equal<byte>(0x7F, returnedBytes[3]);
-        }
-
-        /// <summary>
-        /// Test helper method to call Get Remaining Bytes with a specific value
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        private List<byte> CallGetRemainingBytesWithValue(int value)
-        {
-            // validates a payload size of a single byte using the example values supplied in the MQTT spec
-            MqttHeader header = new MqttHeader();
-            header.MessageSize = value;
-
-            MethodInfo mi = typeof(MqttHeader).GetMethod("GetRemainingLengthBytes", ReflectionBindingConstants.NonpublicMethod);
-            return (List<byte>)mi.Invoke(header, null);
-        }
-
-        /// <summary>
-        /// Tests that payload sizes outside of the maximum allowed upper range are caught and exception thrown.
-        /// </summary>
-        [Fact]
-        public void PayloadSizeOutOfUpperRange()
-        {
-            MqttHeader header = new MqttHeader();
-            Assert.Throws<InvalidPayloadSizeException>(() => header.MessageSize = 268435456);
-        }
-
-        /// <summary>
-        /// Tests that payload sizes outside of the maximum allowed lower range are caught and exception thrown.
-        /// </summary>
-        [Fact]
-        public void PayloadSizeOutOfLowerRange()
-        {
-            MqttHeader header = new MqttHeader();
-            Assert.Throws<InvalidPayloadSizeException>(() => header.MessageSize = -1);
-        }
-
         /// <summary>
         /// Ensures that header can survive the serialization->deserialization round trip without corruption.
         /// </summary>
@@ -195,7 +60,7 @@ namespace NmqttTests
         /// Ensures a header with an invalid message size portion is caught and thrown correctly.
         /// </summary>
         [Fact]
-        public void Deserialization_Header_CorruptHeader_InvalidMessageSize()
+        public void CorruptHeader_InvalidMessageSize()
         {
             MqttHeader inputHeader = new MqttHeader()
             {
@@ -210,7 +75,7 @@ namespace NmqttTests
 
             using (MemoryStream stream = new MemoryStream())
             {
-                inputHeader.WriteTo(0, stream);
+                inputHeader.WriteTo(268435455, stream);
 
                 // fudge the header by making the last bit of the 4th message size byte a 1, therefore making the header
                 // invalid because the last bit of the 4th size byte should always be 0 (according to the spec). It's how 
@@ -229,7 +94,7 @@ namespace NmqttTests
         /// Ensures a header with an invalid message size portion is caught and thrown correctly.
         /// </summary>
         [Fact]
-        public void Deserialization_Header_CorruptHeader_Undersize()
+        public void CorruptHeader_Undersize()
         {
             MqttHeader outputHeader;
             using (MemoryStream stream = new MemoryStream())
@@ -241,7 +106,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_Qos_AtMostOnce()
+        public void Qos_AtMostOnce()
         {
             var headerBytes = GetHeaderBytes(1, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -249,7 +114,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_Qos_AtLeastOnce()
+        public void Qos_AtLeastOnce()
         {
             var headerBytes = GetHeaderBytes(2, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -257,7 +122,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_Qos_ExactlyOnce()
+        public void Qos_ExactlyOnce()
         {
             var headerBytes = GetHeaderBytes(4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -265,7 +130,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_Qos_Reserved1()
+        public void Qos_Reserved1()
         {
             var headerBytes = GetHeaderBytes(6, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -274,7 +139,7 @@ namespace NmqttTests
 
 
         [Fact]
-        public void Deserialization_Header_MessageType_Reserved1()
+        public void MessageType_Reserved1()
         {
             var headerBytes = GetHeaderBytes(0, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -282,7 +147,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_Connect()
+        public void MessageType_Connect()
         {
             var headerBytes = GetHeaderBytes(1 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -291,7 +156,7 @@ namespace NmqttTests
 
 
         [Fact]
-        public void Deserialization_Header_MessageType_ConnectAck()
+        public void MessageType_ConnectAck()
         {
             var headerBytes = GetHeaderBytes(2 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -299,7 +164,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_Publish()
+        public void MessageType_Publish()
         {
             var headerBytes = GetHeaderBytes(3 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -307,7 +172,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_PublishAck()
+        public void MessageType_PublishAck()
         {
             var headerBytes = GetHeaderBytes(4 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -315,7 +180,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_PublishReceived()
+        public void MessageType_PublishReceived()
         {
             var headerBytes = GetHeaderBytes(5 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -324,7 +189,7 @@ namespace NmqttTests
 
 
         [Fact]
-        public void Deserialization_Header_MessageType_PublishRelease()
+        public void MessageType_PublishRelease()
         {
             var headerBytes = GetHeaderBytes(6 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -332,7 +197,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_PublishComplete()
+        public void MessageType_PublishComplete()
         {
             var headerBytes = GetHeaderBytes(7 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -340,7 +205,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_Subscribe()
+        public void MessageType_Subscribe()
         {
             var headerBytes = GetHeaderBytes(8 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -348,7 +213,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_SubscriptionAck()
+        public void MessageType_SubscriptionAck()
         {
             var headerBytes = GetHeaderBytes(9 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -356,7 +221,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_Unsubscribe()
+        public void MessageType_Unsubscribe()
         {
             var headerBytes = GetHeaderBytes(10 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -364,7 +229,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_UnsubsriptionAck()
+        public void MessageType_UnsubsriptionAck()
         {
             var headerBytes = GetHeaderBytes(11 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -372,7 +237,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_PingRequest()
+        public void MessageType_PingRequest()
         {
             var headerBytes = GetHeaderBytes(12 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -380,7 +245,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_PingResponse()
+        public void MessageType_PingResponse()
         {
             var headerBytes = GetHeaderBytes(13 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -388,7 +253,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_MessageType_Disconnect()
+        public void MessageType_Disconnect()
         {
             var headerBytes = GetHeaderBytes(14 << 4, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -396,7 +261,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_Duplicate_True()
+        public void Duplicate_True()
         {
             var headerBytes = GetHeaderBytes(8, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -404,7 +269,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_Duplicate_False()
+        public void Duplicate_False()
         {
             var headerBytes = GetHeaderBytes(0, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -412,7 +277,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_Retain_True()
+        public void Retain_True()
         {
             var headerBytes = GetHeaderBytes(1, 0);
             MqttHeader header = GetMqttHeader(headerBytes);
@@ -420,7 +285,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialization_Header_Retain_False()
+        public void Retain_False()
         {
             var headerBytes = GetHeaderBytes(0, 0);
             MqttHeader header = GetMqttHeader(headerBytes);

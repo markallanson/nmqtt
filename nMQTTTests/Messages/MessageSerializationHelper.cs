@@ -5,7 +5,7 @@ using System.Text;
 using Nmqtt;
 using System.IO;
 
-namespace NmqttTests
+namespace NmqttTests.Messages
 {
     /// <summary>
     /// Helper methods for test message serialization and deserialization 

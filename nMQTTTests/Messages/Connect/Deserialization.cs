@@ -17,18 +17,18 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.Connect
 {
     /// <summary>
     /// MQTT Message Connect Tests
     /// </summary>
-    public class MqttMessage_ConnectTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Connect_FromDump()
+        public void BasicDeserialization()
         {
             // Our test deserialization message, with the following properties. Note this message is not 
             // yet a real MQTT message, because not everything is implemented, but it must be modified
@@ -88,7 +88,7 @@ namespace NmqttTests
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Connect_Payload_InvalidClientIdenfierLength()
+        public void Payload_InvalidClientIdenfierLength()
         {
             // Our test deserialization message, with the following properties. Note this message is not 
             // yet a real MQTT message, because not everything is implemented, but it must be modified
@@ -145,23 +145,6 @@ namespace NmqttTests
             };
 
             Assert.Throws<ClientIdentifierException>(() => MqttMessage.CreateFrom(sampleMessage));
-        }
-
-        [Fact]
-        public void Serialize_Message_MessageType_Connect()
-        {
-            MqttConnectMessage msg = new MqttConnectMessage()
-                .WithClientIdentifier("mark")
-                .KeepAliveFor(30)
-                .StartClean();
-
-            Console.WriteLine(msg);
-
-            byte[] mb = MessageSerializationHelper.GetMessageBytes(msg);
-
-            Assert.Equal<byte>(0x10, mb[0]);
-            // VH will = 12, Msg = 6
-            Assert.Equal<byte>(18, mb[1]);
         }
     } 
 }

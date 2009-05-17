@@ -17,18 +17,18 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.SubscribeAck
 {
     /// <summary>
     /// MQTT Message Subscribe Acknowledgement Tests
     /// </summary>
-    public class MqttMessage_SubscribeAckTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_SingleQos_AtMostOnce()
+        public void SingleQos_AtMostOnce()
         {
             // Message Specs________________
             // <90><03><00><02><00> 
@@ -54,7 +54,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_SingleQos_AtLeastOnce()
+        public void SingleQos_AtLeastOnce()
         {
             // Message Specs________________
             // <90><03><00><02><00> 
@@ -80,7 +80,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_SingleQos_ExactlyOnce()
+        public void SingleQos_ExactlyOnce()
         {
             // Message Specs________________
             // <90><03><00><02><00> 
@@ -106,7 +106,7 @@ namespace NmqttTests
         }
 
         [Fact]
-        public void Deserialize_Message_MessageType_Subscribe_MultipleQos()
+        public void MultipleQos()
         {
             // Message Specs________________
             // <90><03><00><02><00> 

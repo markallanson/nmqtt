@@ -17,40 +17,40 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.MessageComponents.Header
 {
-    public class FluentMqttHeaderTests
+    public class Fluent
     {
         [Fact]
-        public void FluentMqttHeader_SettingDuplicate()
+        public void SettingDuplicate()
         {
             MqttHeader header = new MqttHeader().IsDuplicate();
             Assert.True(header.Duplicate);
         }
 
         [Fact]
-        public void FluentMqttHeader_SettingQos()
+        public void SettingQos()
         {
             MqttHeader header = new MqttHeader().WithQos(MqttQos.AtMostOnce);
             Assert.Equal<MqttQos>(MqttQos.AtMostOnce, header.Qos);
         }
 
         [Fact]
-        public void FluentMqttHeader_SettingMessageType()
+        public void SettingMessageType()
         {
             MqttHeader header = new MqttHeader().AsType(MqttMessageType.PublishComplete);
             Assert.Equal<MqttMessageType>(MqttMessageType.PublishComplete, header.MessageType);
         }
 
         [Fact]
-        public void FluentMqttHeader_SettingRetain()
+        public void SettingRetain()
         {
             MqttHeader header = new MqttHeader().ShouldBeRetained();
             Assert.True(header.Retain);
         }
 
         [Fact]
-        public void FluentMqttHeader_UseAll()
+        public void UseAll()
         {
             MqttHeader header
                 = new MqttHeader()

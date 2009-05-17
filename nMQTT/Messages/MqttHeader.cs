@@ -122,9 +122,9 @@ namespace Nmqtt
             Duplicate = (((firstHeaderByte & 8) >> 3) == 1 ? true : false);
             MessageType = (MqttMessageType)((firstHeaderByte & 240) >> 4);
 
+            // decode the remaining bytes as the remaining/payload size, input param is the 2nd to last byte of the header byte list
             try
             {
-                // decode the remaining bytes as the remaining/payload size, input param is the 2nd to last byte of the header byte list
                 MessageSize = ReadRemainingLength(headerStream);
             }
             catch (InvalidPayloadSizeException ex)
@@ -192,7 +192,7 @@ namespace Nmqtt
             {
                 sizeByte = (byte)headerStream.ReadByte();
                 lengthBytes.Add(sizeByte);
-            } while ((sizeByte & 0x80) == 0x80 || ++byteCount == 4);
+            } while (++byteCount <= 4 && (sizeByte & 0x80) == 0x80);
 
             return lengthBytes;
         }

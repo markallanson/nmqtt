@@ -17,25 +17,27 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.UnsubscribeAck
 {
     /// <summary>
-    /// MQTT Message Ping Response Tests
+    /// MQTT Message Unsubscribe Tests
     /// </summary>
-    public class MqttMessage_PingResponseTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_PingResponse()
+        public void ValidPayload()
         {
             // Message Specs________________
-            // <D0><00>
+            // <B0><02><00><04> (Subscribe ack for message id 4)
             var sampleMessage = new[]
             {
-                (byte)0xD0,
-                (byte)0x00,
+                (byte)0xB0,
+                (byte)0x02,
+                (byte)0x0,
+                (byte)0x4,
             };
 
             MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
@@ -43,7 +45,15 @@ namespace NmqttTests
             Console.WriteLine(baseMessage.ToString());
 
             // check that the message was correctly identified as a connect message.
-            Assert.IsType<MqttPingResponseMessage>(baseMessage);
+            Assert.IsType<MqttUnsubscribeAckMessage>(baseMessage);
+            MqttUnsubscribeAckMessage message = (MqttUnsubscribeAckMessage)baseMessage;
+
+            // validate the message deserialization
+            Assert.Equal<MqttMessageType>(MqttMessageType.UnsubscribeAck, message.Header.MessageType);
+            Assert.Equal<int>(2, message.Header.MessageSize);
+
+            // make sure the UnSubscribe message length matches the expectred size.
+            Assert.Equal<int>(4, message.VariableHeader.MessageIdentifier);
         }
     } 
 }

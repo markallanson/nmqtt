@@ -16,26 +16,27 @@ using System.Linq;
 using System.Text;
 using Xunit;
 using Nmqtt;
+using NmqttTests.Messages;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.PingRequest
 {
     /// <summary>
-    /// MQTT Message Disconnect Tests
+    /// MQTT Message Ping Request Tests
     /// </summary>
-    public class MqttMessage_DisconnectTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_Disconnect()
+        public void BasicDeserialization()
         {
             // Message Specs________________
-            // <E0><00>
+            // <C0><00>
             var sampleMessage = new[]
             {
-                (byte)0xE0,
-                (byte)0x00
+                (byte)0xC0,
+                (byte)0x00,
             };
 
             MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
@@ -43,7 +44,7 @@ namespace NmqttTests
             Console.WriteLine(baseMessage.ToString());
 
             // check that the message was correctly identified as a connect message.
-            Assert.IsType<MqttDisconnectMessage>(baseMessage);
+            Assert.IsType<MqttPingRequestMessage>(baseMessage);
         }
     } 
 }

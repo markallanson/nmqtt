@@ -51,27 +51,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageComponents\Header\Deserialization.cs" />
+    <Compile Include="Messages\Connect\Deserialization.cs" />
     <Compile Include="Messages\MessageSerializationHelper.cs" />
-    <Compile Include="Messages\MqttMessage_PublishReceivedTests.cs" />
-    <Compile Include="Messages\MqttMessage_PublishReleaseTests.cs" />
-    <Compile Include="Messages\MqttMessage_PublishCompleteTests.cs" />
-    <Compile Include="Messages\MqttMessage_UnsubscribeTests.cs" />
-    <Compile Include="Messages\MqttMessage_SubscribeAckTests.cs" />
-    <Compile Include="Messages\MqttMessage_SubscriptionTests.cs" />
-    <Compile Include="Messages\MqttMessage_DisconnectTests.cs" />
-    <Compile Include="Messages\MqttMessage_PingResponseTests.cs" />
-    <Compile Include="Messages\MqttMessage_PingRequestTests.cs" />
-    <Compile Include="Messages\MqttMessage_UnSubscribeAckTests.cs" />
-    <Compile Include="Messages\MqttMessage_UnimplementedMessageTypeTests.cs" />
-    <Compile Include="Messages\MqttMessage_PublishAckTests.cs" />
-    <Compile Include="Messages\MqttMessage_PublishTests.cs" />
-    <Compile Include="FluentMqttHeaderTests.cs" />
-    <Compile Include="Messages\MqttMessage_ConnectAckTests.cs" />
-    <Compile Include="MqttHeaderTests.cs" />
-    <Compile Include="Messages\MqttMessage_ConnectTests.cs" />
+    <Compile Include="Messages\PingRequest\Serialization.cs" />
+    <Compile Include="Messages\PublishReceived\Deserialization.cs" />
+    <Compile Include="Messages\PublishRelease\Deserialization.cs" />
+    <Compile Include="Messages\PublishComplete\Deserialization.cs" />
+    <Compile Include="Messages\Unsubscribe\Deserialization.cs" />
+    <Compile Include="Messages\SubscribeAck\Deserialization.cs" />
+    <Compile Include="Messages\Subscribe\Deserialization.cs" />
+    <Compile Include="Messages\Disconnect\Deserialization.cs" />
+    <Compile Include="Messages\PingResponse\Deserialization.cs" />
+    <Compile Include="Messages\PingRequest\Deserialization.cs" />
+    <Compile Include="Messages\UnsubscribeAck\Deserialization.cs" />
+    <Compile Include="Messages\Unimplemented\Deserialization.cs" />
+    <Compile Include="Messages\PublishAck\Deserialization.cs" />
+    <Compile Include="Messages\Publish\Deserialization.cs" />
+    <Compile Include="MessageComponents\Header\Fluent.cs" />
+    <Compile Include="Messages\ConnectAck\Deserialization.cs" />
+    <Compile Include="MessageComponents\Header\HeaderFunctions.cs" />
+    <Compile Include="Messages\Connect\Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionBindingConstants.cs" />
-    <Compile Include="MqttConnectFlagTests.cs" />
+    <Compile Include="MessageComponents\VariableHeader\MqttConnectFlagTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nMQTT\NMqtt.csproj">

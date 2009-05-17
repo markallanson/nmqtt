@@ -17,24 +17,24 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace NmqttTests
+namespace NmqttTests.Messages.PublishAck
 {
     /// <summary>
-    /// MQTT Message Unsubscribe Tests
+    /// MQTT Message Ping Acknowledgement Tests
     /// </summary>
-    public class MqttMessage_UnsubscribeAckTests
+    public class Deserialization
     {
         /// <summary>
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void Deserialize_Message_MessageType_UnsubscribeAck_ValidPayload()
+        public void ValidPayload()
         {
             // Message Specs________________
-            // <B0><02><00><04> (Subscribe ack for message id 4)
+            // <40><02><00><04> (Pub ack for Message ID 4)
             var sampleMessage = new[]
             {
-                (byte)0xB0,
+                (byte)0x40,
                 (byte)0x02,
                 (byte)0x0,
                 (byte)0x4,
@@ -45,14 +45,14 @@ namespace NmqttTests
             Console.WriteLine(baseMessage.ToString());
 
             // check that the message was correctly identified as a connect message.
-            Assert.IsType<MqttUnsubscribeAckMessage>(baseMessage);
-            MqttUnsubscribeAckMessage message = (MqttUnsubscribeAckMessage)baseMessage;
+            Assert.IsType<MqttPublishAckMessage>(baseMessage);
+            MqttPublishAckMessage message = (MqttPublishAckMessage)baseMessage;
 
             // validate the message deserialization
-            Assert.Equal<MqttMessageType>(MqttMessageType.UnsubscribeAck, message.Header.MessageType);
+            Assert.Equal<MqttMessageType>(MqttMessageType.PublishAck, message.Header.MessageType);
             Assert.Equal<int>(2, message.Header.MessageSize);
 
-            // make sure the UnSubscribe message length matches the expectred size.
+            // make sure the publish message length matches the expectred size.
             Assert.Equal<int>(4, message.VariableHeader.MessageIdentifier);
         }
     } 
