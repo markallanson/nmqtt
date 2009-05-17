@@ -40,7 +40,7 @@ namespace Nmqtt
             tcpClient = new TcpClient(server, port);
             networkStream = new BufferedStream(tcpClient.GetStream());
 
-            // initiate a read for the next 2 bytesm which should be header bytes.
+            // initiate a read for the next byte which will be the header bytes
             networkStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), networkStream);
         }
 
@@ -131,6 +131,9 @@ namespace Nmqtt
             messageBytes.AddRange(remainingMessage);
 
             FireDataAvailableEvent(messageBytes);
+
+            // initiate a read for the next byte which will be the header bytes
+            dataStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), dataStream);
         }
 
         private void FireDataAvailableEvent(Collection<byte> messageBytes)
