@@ -24,6 +24,12 @@ namespace Nmqtt
     internal abstract class MqttConnectionHandler : IDisposable
     {
         protected MqttConnection connection;
+        protected MqttConnectionKeepAlive keepAlive;
+        
+        /// <summary>
+        /// The message that was used to perform the initial connection to the broker.
+        /// </summary>
+        protected MqttConnectMessage connectMessage;
 
         protected ConnectionState connectionState = ConnectionState.Disconnected;
         /// <summary>
@@ -43,7 +49,19 @@ namespace Nmqtt
         /// <param name="server">The server to connect to.</param>
         /// <param name="port">The port to connect to.</param>
         /// <param name="message">The connect message to use as part of the connection process.</param>
-        public abstract ConnectionState Connect(string server, int port, MqttConnectMessage message);
+        public ConnectionState Connect(string server, int port, MqttConnectMessage message)
+        {
+            this.connectMessage = message;
+            return InternalConnect(server, port, message);
+        }
+
+        /// <summary>
+        /// Connect to the specific Mqtt Connection.
+        /// </summary>
+        /// <param name="server">The server to connect to.</param>
+        /// <param name="port">The port to connect to.</param>
+        /// <param name="message">The connect message to use as part of the connection process.</param>
+        protected abstract ConnectionState InternalConnect(string server, int port, MqttConnectMessage message);
 
         /// <summary>
         /// Sends a message to the broker through the current connection.
@@ -90,7 +108,10 @@ namespace Nmqtt
         {
             try
             {
+                // read the message, and if it's valid, signal to the keepalive so that we don't
+                // spam ping requests at the broker.
                 MqttMessage msg = MqttMessage.CreateFrom(e.MessageData);
+                keepAlive.MessageReceived();
 
                 // filter out messages that are not related to standard message processing
                 if (msg.Header.MessageType == MqttMessageType.Connect ||
@@ -98,6 +119,17 @@ namespace Nmqtt
                     msg.Header.MessageType == MqttMessageType.Disconnect)
                 {
                     return;
+                }
+                else if (msg.Header.MessageType == MqttMessageType.PingResponse)
+                {
+                    // let the keepalive know we've had an ack to our ping request.
+                    keepAlive.MessageReceived();
+                    return;
+                }
+                else if (msg.Header.MessageType == MqttMessageType.PingRequest)
+                {
+                    // if we have received a ping request from the broker ensure we response to it
+                    keepAlive.PingRequestReceived();
                 }
 
                 // we've got a non connection based message so forward it on to the client
@@ -124,6 +156,12 @@ namespace Nmqtt
         /// </summary>
         public void Dispose()
         {
+            // important that we get rid of the keepalive before the connection handler.
+            if (keepAlive != null)
+            {
+                keepAlive.Dispose();
+            }
+
             if (connection != null)
             {
                 this.Close();

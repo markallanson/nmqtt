@@ -58,10 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientIdentifierException.cs" />
-    <Compile Include="ConnectionHandlers\SynchronousMqttConnectionHandler.cs" />
-    <Compile Include="ConnectionHandlers\ConnectionState.cs" />
-    <Compile Include="ConnectionHandlers\MqttConnectionHandler.cs" />
+    <Compile Include="ConnectionHandling\SynchronousMqttConnectionHandler.cs" />
+    <Compile Include="ConnectionHandling\ConnectionState.cs" />
+    <Compile Include="ConnectionHandling\MqttConnectionHandler.cs" />
     <Compile Include="ExtensionMethods\CollectionExtensions.cs" />
+    <Compile Include="ConnectionHandling\MqttConnectionKeepAlive.cs" />
     <Compile Include="PublishEventArgs.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="InvalidMessageEventArgs.cs" />
@@ -105,7 +106,7 @@
     <Compile Include="Messages\Connect\MqttConnectVariableHeader.cs" />
     <Compile Include="InvalidHeaderException.cs" />
     <Compile Include="InvalidPayloadSizeException.cs" />
-    <Compile Include="MqttConnection.cs" />
+    <Compile Include="ConnectionHandling\MqttConnection.cs" />
     <Compile Include="Messages\MqttConnectReturnCode.cs" />
     <Compile Include="Messages\MqttHeader.Fluent.cs" />
     <Compile Include="Messages\MqttMessageFactory.cs" />

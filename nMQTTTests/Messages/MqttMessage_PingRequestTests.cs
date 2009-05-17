@@ -45,5 +45,15 @@ namespace NmqttTests
             // check that the message was correctly identified as a connect message.
             Assert.IsType<MqttPingRequestMessage>(baseMessage);
         }
+
+        [Fact]
+        public void Serialize_Message_MessageType_PingRequest()
+        {
+            MqttPingRequestMessage pingReqMsg = new MqttPingRequestMessage();
+            byte[] bytes = MessageSerializationHelper.GetMessageBytes(pingReqMsg);
+
+            Assert.Equal<byte>(192, bytes[0]);
+        }
+
     } 
 }

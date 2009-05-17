@@ -25,9 +25,14 @@ namespace Nmqtt
     internal class MqttConnection : IDisposable
     {
         private TcpClient tcpClient;
-        private BufferedStream networkStream;
+        private NetworkStream networkStream;
 
         private byte[] headerByte = new byte[1];
+
+        /// <summary>
+        /// Sync lock object to ensure that only a single message is sent through the connection handler at once.
+        /// </summary>
+        protected object sendPadlock = new object();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnection"/> class.
@@ -38,7 +43,7 @@ namespace Nmqtt
         {
             // connect and save off the stream.
             tcpClient = new TcpClient(server, port);
-            networkStream = new BufferedStream(tcpClient.GetStream());
+            networkStream = tcpClient.GetStream();
 
             // initiate a read for the next byte which will be the header bytes
             networkStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), networkStream);
@@ -79,14 +84,18 @@ namespace Nmqtt
         /// <param name="message">The message.</param>
         public void Send(byte[] message)
         {
-            if (networkStream != null)
+            // ensure only a single thread gets through to do wire ops at once.
+            lock (sendPadlock)
             {
-                networkStream.Write(message, 0, message.Length);
-                networkStream.Flush();
-            }
-            else
-            {
-                // todo: throw an exception if there is no network stream.
+                if (networkStream != null)
+                {
+                    networkStream.Write(message, 0, message.Length);
+                    networkStream.Flush();
+                }
+                else
+                {
+                    // todo: throw an exception if there is no network stream.
+                }
             }
         }
 

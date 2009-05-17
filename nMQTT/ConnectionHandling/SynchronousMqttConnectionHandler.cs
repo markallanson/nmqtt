@@ -29,7 +29,7 @@ namespace Nmqtt
         /// Synchronously connect to the specific Mqtt Connection.
         /// </summary>
         /// <param name="connection"></param>
-        public override ConnectionState Connect(string server, int port, MqttConnectMessage connectMessage)
+        protected override ConnectionState InternalConnect(string server, int port, MqttConnectMessage connectMessage)
         {
             // Initiate the connection
             connectionState = ConnectionState.Connecting;
@@ -93,8 +93,13 @@ namespace Nmqtt
                         // TODO: Decide on a way to let the client know why we have been rejected.
                         PerformConnectionDisconnect();
                     }
+                    else
+                    {
+                        // initialize the keepalive to start the ping based keepalive process.
+                        keepAlive = new MqttConnectionKeepAlive(this, connectMessage.VariableHeader.KeepAlive);
+                        connectionState = ConnectionState.Connected;
+                    }
 
-                    connectionState = ConnectionState.Connected;
                     connectionResetEvent.Set();
                 }
             }

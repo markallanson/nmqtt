@@ -134,7 +134,7 @@ namespace Nmqtt
         {
             return new MqttConnectMessage()
                 .WithClientIdentifier(clientIdentifier)
-                .KeepAliveFor(500)
+                .KeepAliveFor(30)
                 .StartClean();
 
         }

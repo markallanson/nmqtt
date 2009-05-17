@@ -17,7 +17,7 @@ using System.Text;
 using Xunit;
 using Nmqtt;
 
-namespace nMqttTests
+namespace NmqttTests
 {
     /// <summary>
     /// MQTT Message Connect Tests
