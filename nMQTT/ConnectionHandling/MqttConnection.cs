@@ -43,6 +43,7 @@ namespace Nmqtt
         {
             // connect and save off the stream.
             tcpClient = new TcpClient(server, port);
+            tcpClient.ReceiveTimeout = 5000;
             networkStream = tcpClient.GetStream();
 
             // initiate a read for the next byte which will be the header bytes
@@ -107,38 +108,35 @@ namespace Nmqtt
         private void ReadComplete(IAsyncResult asyncResult)
         {
             var bytesRead = 0;
-            Stream dataStream = (Stream)asyncResult.AsyncState;
+            NetworkStream dataStream = (NetworkStream)asyncResult.AsyncState;
 
             try
             {
-                bytesRead = dataStream.EndRead(asyncResult);
-
-                if (bytesRead < 1)
+                if (dataStream.DataAvailable)
                 {
-                    // ignore the read, try again
+                    bytesRead = dataStream.EndRead(asyncResult);
+
+                    if (bytesRead == 1)
+                    {
+                        Collection<byte> messageBytes = new Collection<byte>();
+                        messageBytes.Add(headerByte[0]);
+
+                        Collection<byte> lengthBytes = MqttHeader.ReadLengthBytes(dataStream);
+                        int length = MqttHeader.CalculateLength(lengthBytes);
+                        messageBytes.AddRange(lengthBytes);
+
+                        // we've got the bytes that make up the header, inc the size, read the .
+                        var remainingMessage = new byte[length];
+                        int messageBytesRead = dataStream.Read(remainingMessage, 0, length);
+                        if (messageBytesRead < length)
+                        {
+                            // we haven't got all the message, need to figure oput what to do.
+                        }
+                        messageBytes.AddRange(remainingMessage);
+
+                        FireDataAvailableEvent(messageBytes);
+                    }
                 }
-
-                Collection<byte> messageBytes = new Collection<byte>();
-                messageBytes.Add(headerByte[0]);
-
-                Collection<byte> lengthBytes = MqttHeader.ReadLengthBytes(dataStream);
-                int length = MqttHeader.CalculateLength(lengthBytes);
-                messageBytes.AddRange(lengthBytes);
-
-                // we've got the bytes that make up the header, inc the size, read the .
-                var remainingMessage = new byte[length];
-                int messageBytesRead = dataStream.Read(remainingMessage, 0, length);
-                if (messageBytesRead < length)
-                {
-                    // we haven't got all the message, need to figure oput what to do.
-                }
-                messageBytes.AddRange(remainingMessage);
-
-                FireDataAvailableEvent(messageBytes);
-
-                // initiate a read for the next byte which will be the header bytes
-                dataStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), dataStream);
-
             }
             catch (IOException ex)
             {
@@ -150,6 +148,9 @@ namespace Nmqtt
                     ConnectionDropped(this, new ConnectionDroppedEventArgs(ex));
                 }
             }
+
+            // initiate a read for the next byte which will be the header bytes
+            dataStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), dataStream);
         }
 
         private void FireDataAvailableEvent(Collection<byte> messageBytes)
