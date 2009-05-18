@@ -20,7 +20,8 @@ namespace Nmqtt
     /// <summary>
     /// Enumeration of available QoS types.
     /// </summary>
-    public enum MqttQos
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32", Justification="Consistency with MQTT Spec")]
+    public enum MqttQos : byte
     {
         AtMostOnce = 0,
         AtLeastOnce,

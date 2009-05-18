@@ -59,10 +59,5 @@ namespace Nmqtt
         /// </summary>
         /// <returns>The length of the payload in bytes.</returns>
         internal abstract int GetWriteLength();
-
-        public override string ToString()
-        {
-            return "Payload: (none)";
-        }
     }
 }

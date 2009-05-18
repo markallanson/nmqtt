@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Publish Message, used for publishing telemetry data along a live MQTT stream.
     /// </summary>
-    public sealed class MqttPublishMessage : MqttMessage
+    public sealed partial class MqttPublishMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -43,15 +43,9 @@ namespace Nmqtt
         /// </remarks>
         public MqttPublishMessage()
         {
-            this.Header = new MqttHeader()
-            {
-                MessageType = MqttMessageType.Publish
-            };
-
-            this.VariableHeader = new MqttPublishVariableHeader()
-            {
-                ConnectFlags = new MqttConnectFlags()
-            };
+            this.Header = new MqttHeader().AsType(MqttMessageType.Publish);
+            this.VariableHeader = new MqttPublishVariableHeader(this.Header);
+            this.Payload = new MqttPublishPayload();
         }
 
         /// <summary>
@@ -61,8 +55,7 @@ namespace Nmqtt
         internal MqttPublishMessage(MqttHeader header, Stream messageStream)
         {
             this.Header = header;
-            this.VariableHeader = new MqttPublishVariableHeader(header, messageStream);
-            this.Payload = new MqttPublishPayload(Header, (MqttPublishVariableHeader)VariableHeader, messageStream);
+            ReadFrom(messageStream);
         }
 
         /// <summary>

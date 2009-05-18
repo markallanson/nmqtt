@@ -77,11 +77,6 @@ namespace Nmqtt
         /// <param name="message"></param>
         public void SendMessage(MqttMessage message)
         {
-            if (this.connectionState != ConnectionState.Connected)
-            {
-                throw new InvalidOperationException("You cannot send a message when not connected to a message broker");
-            }
-
             using (MemoryStream stream = new MemoryStream())
             {
                 message.WriteTo(stream);

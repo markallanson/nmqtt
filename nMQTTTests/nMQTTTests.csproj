@@ -8,8 +8,8 @@
     <ProjectGuid>{A2E6E140-AA67-4683-BD09-03C1B7FCB2F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>nMqttTests</RootNamespace>
-    <AssemblyName>nMqttTests</AssemblyName>
+    <RootNamespace>NmqttTests</RootNamespace>
+    <AssemblyName>NmqttTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -51,13 +51,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Encoding\MqttEncoding.cs" />
+    <Compile Include="Exceptions\ClientIdentifierException.cs" />
+    <Compile Include="ExtensionMethods\StreamExtensionMethods.cs" />
     <Compile Include="MessageComponents\Header\Deserialization.cs" />
+    <Compile Include="Messages\ConnectAck\Serialization.cs" />
     <Compile Include="Messages\Connect\Deserialization.cs" />
+    <Compile Include="Messages\Disconnect\Serialization.cs" />
     <Compile Include="Messages\MessageSerializationHelper.cs" />
     <Compile Include="Messages\PingRequest\Serialization.cs" />
+    <Compile Include="Messages\PingResponse\Serialization.cs" />
+    <Compile Include="Messages\PublishAck\Serialization.cs" />
+    <Compile Include="Messages\PublishComplete\Serialization.cs" />
     <Compile Include="Messages\PublishReceived\Deserialization.cs" />
+    <Compile Include="Messages\PublishReceived\Serialization.cs" />
     <Compile Include="Messages\PublishRelease\Deserialization.cs" />
     <Compile Include="Messages\PublishComplete\Deserialization.cs" />
+    <Compile Include="Messages\PublishRelease\Serialization.cs" />
+    <Compile Include="Messages\Publish\Fluent.cs" />
+    <Compile Include="Messages\Publish\Serialization.cs" />
+    <Compile Include="Messages\SubscribeAck\Serialization.cs" />
+    <Compile Include="Messages\Subscribe\Serialization.cs" />
+    <Compile Include="Messages\UnsubscribeAck\Serialization.cs" />
+    <Compile Include="Messages\Unsubscribe\Serialization.cs" />
     <Compile Include="Messages\Unsubscribe\Deserialization.cs" />
     <Compile Include="Messages\SubscribeAck\Deserialization.cs" />
     <Compile Include="Messages\Subscribe\Deserialization.cs" />

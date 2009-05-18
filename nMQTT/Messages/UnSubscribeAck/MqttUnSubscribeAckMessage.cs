@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Unsubscribe ACK Message, used to acknowledge that an unsubscribe message has been processed.
     /// </summary>
-    public sealed class MqttUnsubscribeAckMessage : MqttMessage
+    public sealed partial class MqttUnsubscribeAckMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -37,10 +37,7 @@ namespace Nmqtt
         /// </remarks>
         public MqttUnsubscribeAckMessage()
         {
-            this.Header = new MqttHeader()
-            {
-                MessageType = MqttMessageType.UnsubscribeAck
-            };
+            this.Header = new MqttHeader().AsType(MqttMessageType.UnsubscribeAck);
 
             this.VariableHeader = new MqttUnsubscribeAckVariableHeader()
             {
@@ -55,7 +52,26 @@ namespace Nmqtt
         internal MqttUnsubscribeAckMessage(MqttHeader header, Stream messageStream)
         {
             this.Header = header;
+            ReadFrom(messageStream);
+        }
+
+        /// <summary>
+        /// Reads a message from the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The message stream.</param>
+        public override void ReadFrom(Stream messageStream)
+        {
             this.VariableHeader = new MqttUnsubscribeAckVariableHeader(messageStream);
+        }
+
+        /// <summary>
+        /// Writes the message to the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The stream to write the message to.</param>
+        public override void WriteTo(Stream messageStream)
+        {
+            this.Header.WriteTo(VariableHeader.GetWriteLength(), messageStream);
+            this.VariableHeader.WriteTo(messageStream);
         }
 
         /// <summary>

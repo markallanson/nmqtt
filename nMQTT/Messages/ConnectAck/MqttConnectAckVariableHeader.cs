@@ -45,9 +45,8 @@ namespace Nmqtt
         /// <param name="headerStream"></param>
         public override void WriteTo(System.IO.Stream headerStream)
         {
-            // TODO: Replace this once "Topic Compression" byte that is in connectack spec but not variableheader spec has been resolved.           
+            // unused additional "compression" byte used within the variable header acknowledgement.
             headerStream.WriteByte(0);
-
             WriteReturnCode(headerStream);
         }
 
@@ -57,10 +56,25 @@ namespace Nmqtt
         /// <param name="headerStream">The header stream.</param>
         public override void ReadFrom(System.IO.Stream headerStream)
         {
-            // TODO: Replace this once "Topic Compression" byte that is in connectack spec but not variableheader spec has been resolved.           
+            // unused additional "compression" byte used within the variable header acknowledgement.
             headerStream.ReadByte();
- 
             ReadReturnCode(headerStream);
+        }
+
+        /// <summary>
+        /// Gets the length of the write data when WriteTo will be called.
+        /// </summary>
+        /// <returns>
+        /// The length of data witten by the call to GetWriteLength
+        /// </returns>
+        /// <remarks>
+        /// This method is overriden by the ConnectAckVariableHeader because the variable header of this
+        /// message type, for some reason, contains an extra byte that is not present in the variable
+        /// header spec, meaning we have to do some custom serialization and deserialization.
+        /// </remarks>
+        public override int GetWriteLength()
+        {
+            return sizeof(MqttConnectReturnCode) + 1; // +1 for compression level byte
         }
 
         /// <summary>

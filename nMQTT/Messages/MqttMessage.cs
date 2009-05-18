@@ -101,7 +101,7 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// ss the message to the supplied stream.
+        /// Writes the message to the supplied stream.
         /// </summary>
         /// <param name="messageStream">The stream to write the message to.</param>
         public virtual void WriteTo(Stream messageStream)

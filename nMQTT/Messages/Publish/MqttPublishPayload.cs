@@ -48,6 +48,7 @@ namespace Nmqtt
         /// </summary>
         public MqttPublishPayload()
         {
+            this.message = new Collection<byte>();
         }
 
         /// <summary>
@@ -76,8 +77,6 @@ namespace Nmqtt
             var messageBytes = new byte[header.MessageSize - variableHeader.Length];
             int messageBytesRead = payloadStream.Read(messageBytes, 0, messageBytes.Length);
             message = new Collection<byte>(messageBytes);
-
-            // TODO: If we're processing a raw TCP stream, we might want to go into a loop here to keep reading bytes until we have read the amount we expect.
 
             // Throw out an exception we don't have enough bytes in the underlying stream.
             if (messageBytesRead < Message.Count)

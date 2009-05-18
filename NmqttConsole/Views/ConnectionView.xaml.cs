@@ -33,6 +33,7 @@ namespace NmqttConsole.Views
         }
 
         public event EventHandler<EventArgs> ConnectRequested;
+        public event EventHandler<EventArgs> SubscribeRequested;
 
         private void tbServerUrl_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -45,7 +46,7 @@ namespace NmqttConsole.Views
         /// <param name="status">The status.</param>
         internal void AppendStatusLine(string status)
         {
-            tblkStatus.Text += Environment.NewLine + status;
+            Dispatcher.Invoke((Action)(() => tblkStatus.Text += Environment.NewLine + status));
         }
 
         /// <summary>
@@ -54,7 +55,15 @@ namespace NmqttConsole.Views
         /// <param name="status">The status.</param>
         internal void AppendStatus(string status)
         {
-            tblkStatus.Text += status;
+            Dispatcher.Invoke((Action)(() => tblkStatus.Text += status));
+        }
+
+        private void btnSubscribeToTopic_Click(object sender, RoutedEventArgs e)
+        {
+            if (SubscribeRequested != null)
+            {
+                SubscribeRequested(this, new EventArgs());
+            }
         }
     }
 }

@@ -61,7 +61,7 @@ namespace Nmqtt.Encoding
         /// <returns>
         /// A <see cref="T:System.String"/> containing the results of decoding the specified sequence of bytes.
         /// </returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exceptionGetCharCount cref="T:System.ArgumentNullException">
         /// 	<paramref name="bytes"/> is null.
         /// </exception>
         /// <exception cref="T:System.Text.DecoderFallbackException">
@@ -119,6 +119,7 @@ namespace Nmqtt.Encoding
         /// </exception>
         public override int GetByteCount(string chars)
         {
+            ValidateString(chars);
             return base.GetByteCount(chars) + 2;
         }
 

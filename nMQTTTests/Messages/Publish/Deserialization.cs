@@ -69,5 +69,34 @@ namespace NmqttTests.Messages.Publish
             // make sure the publish message length matches the expectred size.
             Assert.Equal<int>(6, message.Payload.Message.Count);
         }
+
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void PayloadTooShort()
+        {
+            // Message Specs________________
+            // <30><0C><00><04>fredhello!
+            var sampleMessage = new[]
+            {
+                (byte)0x30,
+                (byte)0x0C,
+                (byte)0x0,
+                (byte)0x4,
+                (byte)'f',
+                (byte)'r',
+                (byte)'e',
+                (byte)'d',
+                // message payload is here
+                (byte)'h',
+                (byte)'e',
+                (byte)'l',
+                (byte)'l',
+                (byte)'o',
+            };
+
+            Assert.Throws<InvalidPayloadSizeException>(() => MqttMessage.CreateFrom(sampleMessage));
+        }
     } 
 }

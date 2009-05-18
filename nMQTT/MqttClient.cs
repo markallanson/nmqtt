@@ -84,6 +84,11 @@ namespace Nmqtt
         private MqttConnectionHandler connectionHandler;
 
         /// <summary>
+        /// 
+        /// </summary>
+        private SubscriptionsManager subscriptionsManager = new SubscriptionsManager();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MqttClient"/> class using the default Mqtt Port.
         /// </summary>
         /// <param name="server">The server hostname to connect to.</param>
@@ -155,7 +160,6 @@ namespace Nmqtt
             {
                 if (InvalidMessageReceived != null)
                 {
-                    // TODO: Implement the Invalid Message Event Args properly.
                     InvalidMessageReceived(this, new InvalidMessageEventArgs(ex));
                 }
             }
@@ -176,6 +180,10 @@ namespace Nmqtt
                 {
                     PublishMessageReceived(this, new PublishEventArgs(published.Payload.Message));
                 }
+            }
+            else if (message.Header.MessageType == MqttMessageType.SubscribeAck)
+            {
+                subscriptionsManager.ConfirmSubscription((MqttSubscribeAckMessage)message);
             }
         }
 
@@ -200,6 +208,25 @@ namespace Nmqtt
         public void Close()
         {
             connectionHandler.Close();
+        }
+
+        /// <summary>
+        /// Initiates a topic subscription request to the connected broker.
+        /// </summary>
+        /// <param name="topic">The topic to subscribe to.</param>
+        /// <returns>
+        /// The identifier assigned to the subscription.
+        /// </returns>
+        public short Subscribe(string topic, MqttQos qosLevel)
+        {
+            if (connectionHandler.State != ConnectionState.Connected)
+            {
+                throw new ConnectionException(connectionHandler.State);
+            }
+
+            MqttSubscribeMessage msg = subscriptionsManager.RegisterSubscription(topic, qosLevel);
+            connectionHandler.SendMessage(msg);
+            return msg.VariableHeader.MessageIdentifier;
         }
 
         #region IDisposable Members

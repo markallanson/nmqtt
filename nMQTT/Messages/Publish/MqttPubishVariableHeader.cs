@@ -31,8 +31,9 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
         /// </summary>
-        public MqttPublishVariableHeader()
+        public MqttPublishVariableHeader(MqttHeader header)
         {
+            this.header = header;
         }
 
         /// <summary>
@@ -40,8 +41,8 @@ namespace Nmqtt
         /// </summary>
         /// <param name="headerStream">A stream containing the header of the message.</param>
         public MqttPublishVariableHeader(MqttHeader header, Stream headerStream)
+            : this(header)
         {
-            this.header = header;
             ReadFrom(headerStream);
         }
 

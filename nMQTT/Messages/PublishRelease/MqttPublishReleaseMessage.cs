@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Publish Release Message.
     /// </summary>
-    public sealed class MqttPublishReleaseMessage : MqttMessage
+    public sealed partial class MqttPublishReleaseMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -39,7 +39,7 @@ namespace Nmqtt
         {
             this.Header = new MqttHeader()
             {
-                MessageType = MqttMessageType.PublishAck
+                MessageType = MqttMessageType.PublishRelease
             };
 
             this.VariableHeader = new MqttPublishReleaseVariableHeader()
@@ -56,6 +56,16 @@ namespace Nmqtt
         {
             this.Header = header;
             this.VariableHeader = new MqttPublishReleaseVariableHeader(messageStream);
+        }
+
+        /// <summary>
+        /// Writes the message to the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The stream to write the message to.</param>
+        public override void WriteTo(Stream messageStream)
+        {
+            this.Header.WriteTo(VariableHeader.GetWriteLength(), messageStream);
+            this.VariableHeader.WriteTo(messageStream);
         }
 
         /// <summary>

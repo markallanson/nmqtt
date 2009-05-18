@@ -18,7 +18,10 @@ using System.IO;
 
 namespace Nmqtt
 {
-    public sealed class MqttConnectAckMessage : MqttMessage
+    /// <summary>
+    /// Message that indicates a connection acknowledgement.
+    /// </summary>
+    public sealed partial class MqttConnectAckMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -41,7 +44,7 @@ namespace Nmqtt
 
             this.VariableHeader = new MqttConnectAckVariableHeader()
             {
-                ConnectFlags = new MqttConnectFlags()
+                ReturnCode = MqttConnectReturnCode.ConnectionAccepted
             };
         }
 
@@ -53,8 +56,27 @@ namespace Nmqtt
         internal MqttConnectAckMessage(MqttHeader header, Stream messageStream)
         {
             this.Header = header;
+            ReadFrom(messageStream);
+        }
+
+        /// <summary>
+        /// Reads a message from the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The message stream.</param>
+        public override void ReadFrom(Stream messageStream)
+        {
+            base.ReadFrom(messageStream);
             this.VariableHeader = new MqttConnectAckVariableHeader(messageStream);
-            // no payload in connectack messages
+        }
+
+        /// <summary>
+        /// Writes a message to the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The stream to write the message to.</param>
+        public override void WriteTo(Stream messageStream)
+        {
+            this.Header.WriteTo(VariableHeader.GetWriteLength(), messageStream);
+            this.VariableHeader.WriteTo(messageStream);
         }
 
         /// <summary>

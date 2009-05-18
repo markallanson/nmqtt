@@ -57,7 +57,7 @@ namespace NmqttTests.Messages.SubscribeAck
         public void SingleQos_AtLeastOnce()
         {
             // Message Specs________________
-            // <90><03><00><02><00> 
+            // <90><03><00><02><01> 
             var sampleMessage = new[]
             {
                 (byte)0x90,
@@ -83,7 +83,7 @@ namespace NmqttTests.Messages.SubscribeAck
         public void SingleQos_ExactlyOnce()
         {
             // Message Specs________________
-            // <90><03><00><02><00> 
+            // <90><03><00><02><02> 
             var sampleMessage = new[]
             {
                 (byte)0x90,
@@ -109,7 +109,7 @@ namespace NmqttTests.Messages.SubscribeAck
         public void MultipleQos()
         {
             // Message Specs________________
-            // <90><03><00><02><00> 
+            // <90><03><00><02><00> <01><02>
             var sampleMessage = new[]
             {
                 (byte)0x90,

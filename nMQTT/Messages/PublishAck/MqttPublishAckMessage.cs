@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Publish Acknowledgement Message, used to ACK a publish message that has it's QOS set to AtLeast or Exactly Once.
     /// </summary>
-    public sealed class MqttPublishAckMessage : MqttMessage
+    public sealed partial class MqttPublishAckMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -58,6 +58,11 @@ namespace Nmqtt
             this.VariableHeader = new MqttPublishAckVariableHeader(messageStream);
         }
 
+        public override void WriteTo(Stream messageStream)
+        {
+            this.Header.WriteTo(this.VariableHeader.GetWriteLength(), messageStream);
+            this.VariableHeader.WriteTo(messageStream);
+        }
         /// <summary>
         /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
         /// </summary>

@@ -18,7 +18,7 @@ using System.IO;
 
 namespace Nmqtt
 {
-    public sealed class MqttSubscribeAckMessage : MqttMessage
+    public sealed partial class MqttSubscribeAckMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -41,10 +41,8 @@ namespace Nmqtt
         public MqttSubscribeAckMessage()
         {
             this.Header = new MqttHeader().AsType(MqttMessageType.SubscribeAck);
-
-            this.VariableHeader = new MqttSubscribeAckVariableHeader()
-            {
-            };
+            this.VariableHeader = new MqttSubscribeAckVariableHeader();
+            this.Payload = new MqttSubscribeAckPayload();
         }
 
         /// <summary>
@@ -57,6 +55,22 @@ namespace Nmqtt
             ReadFrom(messageStream);
         }
 
+        /// <summary>
+        /// Writes the message to the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The stream to write the message to.</param>
+        public override void WriteTo(Stream messageStream)
+        {
+            this.Header.WriteTo(this.VariableHeader.GetWriteLength() + this.Payload.GetWriteLength(),
+                messageStream);
+            this.VariableHeader.WriteTo(messageStream);
+            this.Payload.WriteTo(messageStream);
+        }
+
+        /// <summary>
+        /// Reads a message from the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The message stream.</param>
         public override void ReadFrom(Stream messageStream)
         {
             this.VariableHeader = new MqttSubscribeAckVariableHeader(messageStream);

@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Publish Complete Message.
     /// </summary>
-    public sealed class MqttPublishCompleteMessage : MqttMessage
+    public sealed partial class MqttPublishCompleteMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -39,7 +39,7 @@ namespace Nmqtt
         {
             this.Header = new MqttHeader()
             {
-                MessageType = MqttMessageType.PublishAck
+                MessageType = MqttMessageType.PublishComplete
             };
 
             this.VariableHeader = new MqttPublishCompleteVariableHeader()
@@ -56,6 +56,16 @@ namespace Nmqtt
         {
             this.Header = header;
             this.VariableHeader = new MqttPublishCompleteVariableHeader(messageStream);
+        }
+
+        /// <summary>
+        /// Writes the message to the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The stream to write the message to.</param>
+        public override void WriteTo(Stream messageStream)
+        {
+            this.Header.WriteTo(VariableHeader.GetWriteLength(), messageStream);
+            this.VariableHeader.WriteTo(messageStream);
         }
 
         /// <summary>

@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Publish Received Message.
     /// </summary>
-    public sealed class MqttPublishReceivedMessage : MqttMessage
+    public sealed partial class MqttPublishReceivedMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -39,7 +39,7 @@ namespace Nmqtt
         {
             this.Header = new MqttHeader()
             {
-                MessageType = MqttMessageType.PublishAck
+                MessageType = MqttMessageType.PublishReceived
             };
 
             this.VariableHeader = new MqttPublishReceivedVariableHeader()
@@ -58,6 +58,15 @@ namespace Nmqtt
             this.VariableHeader = new MqttPublishReceivedVariableHeader(messageStream);
         }
 
+        /// <summary>
+        /// Writes the message to the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The stream to write the message to.</param>
+        public override void WriteTo(Stream messageStream)
+        {
+            this.Header.WriteTo(VariableHeader.GetWriteLength(), messageStream);
+            this.VariableHeader.WriteTo(messageStream);
+        }
         /// <summary>
         /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
         /// </summary>

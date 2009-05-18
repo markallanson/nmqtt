@@ -30,6 +30,13 @@ namespace NmqttConsole.Presenters
             View = new ConnectionView();
 
             View.ConnectRequested += new EventHandler<EventArgs>(View_ConnectRequested);
+            View.SubscribeRequested += new EventHandler<EventArgs>(View_SubscribeRequested);
+        }
+
+        void View_SubscribeRequested(object sender, EventArgs e)
+        {
+            mqttClient.Subscribe(View.tbSubTopicName.Text, MqttQos.AtMostOnce);
+            View.lbSubscriptions.Items.Add(View.tbSubTopicName.Text);
         }
 
         void View_ConnectRequested(object sender, EventArgs e)

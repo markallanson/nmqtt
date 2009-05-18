@@ -7,8 +7,18 @@
             <Button x:Name="btnConnect" Margin="5" Content="Connect" Click="btnConnect_Click"  DockPanel.Dock="Left"/>
             <TextBox x:Name="tbServerUrl" Margin="5" TextChanged="tbServerUrl_TextChanged" />
         </DockPanel>
-        <TextBlock x:Name="tblkStatus">
-            Please Connect
-        </TextBlock>
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Right" Width="200">
+                <DockPanel DockPanel.Dock="Top">
+                    <Button x:Name="btnSubscribeToTopic" DockPanel.Dock="Right" Click="btnSubscribeToTopic_Click" Content="Subscribe"/>
+                    <TextBox x:Name="tbSubTopicName" /> 
+                </DockPanel>
+                <ListBox x:Name="lbSubscriptions">
+                </ListBox>
+            </DockPanel>
+            <TextBlock x:Name="tblkStatus">
+                Please Connect
+            </TextBlock>
+        </DockPanel>
     </DockPanel>
 </TabItem>

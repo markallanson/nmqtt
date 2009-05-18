@@ -66,6 +66,10 @@ namespace Nmqtt
             ReadFrom(messageStream);
         }
 
+        /// <summary>
+        /// ss the message to the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The stream to write the message to.</param>
         public override void WriteTo(Stream messageStream)
         {
             this.Header.WriteTo(VariableHeader.GetWriteLength() + Payload.GetWriteLength(), messageStream);
@@ -73,6 +77,10 @@ namespace Nmqtt
             this.Payload.WriteTo(messageStream);
         }
 
+        /// <summary>
+        /// Reads a message from the supplied stream.
+        /// </summary>
+        /// <param name="messageStream">The message stream.</param>
         public override void ReadFrom(Stream messageStream)
         {
             this.VariableHeader = new MqttConnectVariableHeader(messageStream);

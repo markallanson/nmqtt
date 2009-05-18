@@ -64,6 +64,7 @@ namespace Nmqtt
         {
             this.ProtocolName = "MQIsdp";
             this.ProtocolVersion = 3;
+            this.ConnectFlags = new MqttConnectFlags();
         }
 
         /// <summary>
@@ -225,20 +226,6 @@ namespace Nmqtt
         {
             ConnectFlags = new MqttConnectFlags(stream);
             length += 1;
-        }
-
-        /// <summary>
-        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-        /// </returns>
-        public override string ToString()
-        {
-            return
-                String.Format("Variable Header: ProtocolName={0}, ProtocolVersion={1}, ConnectFlags=({2}), KeepAlive={3}, " +
-                    "ReturnCode={4}, TopicName={5}, MessageIdentfier={6}",
-                    ProtocolName, ProtocolVersion, ConnectFlags, KeepAlive, ReturnCode, TopicName, MessageIdentifier);
         }
 
         /// <summary>

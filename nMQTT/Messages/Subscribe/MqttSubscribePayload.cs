@@ -64,6 +64,22 @@ namespace Nmqtt
         }
 
         /// <summary>
+        /// Writes the payload to the supplied stream.
+        /// </summary>
+        /// <param name="payloadStream"></param>
+        /// <remarks>
+        /// A basic message has no Variable Header.
+        /// </remarks>
+        public override void WriteTo(Stream payloadStream)
+        {
+            foreach (KeyValuePair<string, MqttQos> subscription in Subscriptions)
+            {
+                payloadStream.WriteMqttString(subscription.Key);
+                payloadStream.WriteByte((byte)subscription.Value);
+            }
+        }
+
+        /// <summary>
         /// Creates a payload from the specified header stream.
         /// </summary>
         /// <param name="payloadStream"></param>
@@ -144,9 +160,5 @@ namespace Nmqtt
             return sb.ToString();
         }
 
-        public override void WriteTo(Stream payloadStream)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
