@@ -86,7 +86,12 @@ namespace Nmqtt
         /// <summary>
         /// 
         /// </summary>
-        private SubscriptionsManager subscriptionsManager = new SubscriptionsManager();
+        private SubscriptionsManager subscriptionsManager;
+
+        /// <summary>
+        /// Handles the connection management while idle.
+        /// </summary>
+        private MqttConnectionKeepAlive keepAlive;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttClient"/> class using the default Mqtt Port.
@@ -118,7 +123,14 @@ namespace Nmqtt
         {
             MqttConnectMessage connectMessage = GetConnectMessage();
             connectionHandler = new SynchronousMqttConnectionHandler();
-            connectionHandler.MessageReceived += connectionHandler_MessageReceived;
+
+            // TODO: Get Get timeout from config or ctor or elsewhere.
+            keepAlive = new MqttConnectionKeepAlive(connectionHandler, 30);
+            subscriptionsManager = new SubscriptionsManager(connectionHandler);
+
+            // register for messages explicitly handled by the client
+            connectionHandler.RegisterForMessage(MqttMessageType.Publish, HandlePublishMessage);
+
             return connectionHandler.Connect(this.server, this.port, connectMessage);
         }
 
@@ -145,31 +157,10 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// The primary message processor that deals with incoming messages from thr Mqtt Connection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void connectionHandler_MessageReceived(object sender, MessageReceivedEventArgs e)
-        {
-            try
-            {
-                // TODO: Decide whether we should spawn our message processing on a new thread.
-                HandleReceivedMessage(e.Message);
-            }
-            catch (InvalidMessageException ex)
-            {
-                if (InvalidMessageReceived != null)
-                {
-                    InvalidMessageReceived(this, new InvalidMessageEventArgs(ex));
-                }
-            }
-        }
-
-        /// <summary>
         /// Handles the processing of messages arriving from the message broker.
         /// </summary>
         /// <param name="mqttMessage"></param>
-        private void HandleReceivedMessage(MqttMessage message)
+        private bool HandlePublishMessage(MqttMessage message)
         {
             // handle the basic publish message by firing the PublishMessageReceived event of the client
             // for application level handling of message data.
@@ -181,10 +172,8 @@ namespace Nmqtt
                     PublishMessageReceived(this, new PublishEventArgs(published.Payload.Message));
                 }
             }
-            else if (message.Header.MessageType == MqttMessageType.SubscribeAck)
-            {
-                subscriptionsManager.ConfirmSubscription((MqttSubscribeAckMessage)message);
-            }
+
+            return true;
         }
 
         /// <summary>
@@ -200,15 +189,8 @@ namespace Nmqtt
         /// <summary>
         /// Event fired when a message received from the connect message broker could not be processed.
         /// </summary>
-        public event EventHandler<InvalidMessageEventArgs> InvalidMessageReceived;
+//        public event EventHandler<InvalidMessageEventArgs> InvalidMessageReceived;
 
-        /// <summary>
-        /// Closes the MQTT Client.
-        /// </summary>
-        public void Close()
-        {
-            connectionHandler.Close();
-        }
 
         /// <summary>
         /// Initiates a topic subscription request to the connected broker.
@@ -231,10 +213,27 @@ namespace Nmqtt
 
         #region IDisposable Members
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
-            this.Close();
-            connectionHandler.Dispose();
+            if (keepAlive != null)
+            {
+                keepAlive.Dispose();
+            }
+
+            if (subscriptionsManager != null)
+            {
+                subscriptionsManager.Dispose();
+            }
+
+            if (connectionHandler != null)
+            {
+                connectionHandler.Dispose();
+            }
+
+            GC.SuppressFinalize(this);
         }
 
         #endregion

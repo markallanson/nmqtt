@@ -34,7 +34,7 @@ namespace Nmqtt
             // Initiate the connection
             connectionState = ConnectionState.Connecting;
             connection = MqttConnection.Connect(server, port);
-            connection.DataAvailable += connection_ConnectDataAvailable;
+            this.RegisterForMessage(MqttMessageType.ConnectAck, ConnectAckProcessor);
             connection.DataAvailable += connection_MessageDataAvailable;
 
             // transmit the required connection message to the broker.
@@ -69,48 +69,46 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Handles the DataAvailable event of the connection control for handling connection messages.
+        /// Processes the connect acknowledgement message.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="Nmqtt.DataAvailableEventArgs"/> instance containing the event data.</param>
-        void connection_ConnectDataAvailable(object sender, DataAvailableEventArgs e)
+        /// <param name="msg">The connect acknowledgement message.</param>
+        private bool ConnectAckProcessor(MqttMessage msg)
         {
             try
             {
-                MqttMessage msg = MqttMessage.CreateFrom(e.MessageData);
+                MqttConnectAckMessage ackMsg = (MqttConnectAckMessage)msg;
 
-                // Ignore any non connection based messages.
-                if (msg.Header.MessageType == MqttMessageType.ConnectAck)
+                // drop the connection if our connect request has been rejected.
+                if (ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.BrokerUnavailable ||
+                    ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.IdentifierRejected ||
+                    ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.UnacceptedProtocolVersion)
                 {
-                    connection.DataAvailable -= connection_ConnectDataAvailable;                
-                    MqttConnectAckMessage ackMsg = (MqttConnectAckMessage)msg;
-
-                    // drop the connection if our connect request has been rejected.
-                    if (ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.BrokerUnavailable ||
-                        ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.IdentifierRejected ||
-                        ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.UnacceptedProtocolVersion)
-                    {
-                        // TODO: Decide on a way to let the client know why we have been rejected.
-                        PerformConnectionDisconnect();
-                    }
-                    else
-                    {
-                        // initialize the keepalive to start the ping based keepalive process.
-                        keepAlive = new MqttConnectionKeepAlive(this, connectMessage.VariableHeader.KeepAlive);
-                        connectionState = ConnectionState.Connected;
-                    }
-
-                    connectionResetEvent.Set();
+                    // TODO: Decide on a way to let the client know why we have been rejected.
+                    PerformConnectionDisconnect();
                 }
+                else
+                {
+                    // initialize the keepalive to start the ping based keepalive process.
+                    connectionState = ConnectionState.Connected;
+                }
+
+                connectionResetEvent.Set();
             }
             catch (InvalidMessageException)
             {
-                connection.DataAvailable -= connection_ConnectDataAvailable;
                 PerformConnectionDisconnect();
 
                 // not exactly, ready, but we've reached an end state so we should signal a bad connection attempt.
                 connectionResetEvent.Set();
             }
+            finally
+            {
+                // connected or disconnected now, don't need to process no more.
+                // TODO: Implement one time only message registrations
+                //this.UnRegisterForMessage(MqttMessageType.ConnectAck, ConnectAckProcessor);
+            }
+
+            return true;
         }
     }
 }

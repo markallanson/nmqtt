@@ -17,7 +17,7 @@ using System.Text;
 
 namespace Nmqtt
 {
-    internal class SubscriptionsManager
+    internal class SubscriptionsManager : IDisposable
     {
         /// <summary>
         /// List of confirmed subscriptions, keyed on the topic name.
@@ -28,6 +28,14 @@ namespace Nmqtt
         /// A list of subscriptions that are pending acknowledgement, keyed on the message identifier.
         /// </summary>
         private Dictionary<int, Subscription> pendingSubscriptions = new Dictionary<int, Subscription>();
+
+        private MqttConnectionHandler connectionHandler;
+
+        public SubscriptionsManager(MqttConnectionHandler connectionHandler)
+        {
+            this.connectionHandler = connectionHandler;
+            this.connectionHandler.RegisterForMessage(MqttMessageType.SubscribeAck, ConfirmSubscription);
+        }
 
         /// <summary>
         /// Registers a new subscription with the subscription manager.
@@ -76,8 +84,10 @@ namespace Nmqtt
         /// Confirms a subscription has been made with the broker. Marks the sub as confirmed in the subs storage.
         /// </summary>
         /// <param name="subAck"></param>
-        internal void ConfirmSubscription(MqttSubscribeAckMessage subAck)
+        private bool ConfirmSubscription(MqttMessage msg)
         {
+            MqttSubscribeAckMessage subAck = (MqttSubscribeAckMessage)msg;
+
             Subscription sub;
             if (!pendingSubscriptions.TryGetValue(subAck.VariableHeader.MessageIdentifier, out sub))
             {
@@ -86,6 +96,25 @@ namespace Nmqtt
             }
 
             subscriptions.Add(sub.Topic, sub);
+
+            return true;
         }
+
+        #region IDisposable Members
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (connectionHandler != null)
+            {
+                connectionHandler.UnRegisterForMessage(MqttMessageType.SubscribeAck, ConfirmSubscription);
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }

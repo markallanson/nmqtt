@@ -90,7 +90,7 @@ namespace NmqttConsole.Presenters
             }
 
             mqttClient.PublishMessageReceived += mqttClient_PublishMessageReceived;
-            mqttClient.InvalidMessageReceived += mqttClient_InvalidMessageReceived;
+//            mqttClient.InvalidMessageReceived += mqttClient_InvalidMessageReceived;
             mqttClient.Connect();
 
             View.AppendStatusLine(

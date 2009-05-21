@@ -24,14 +24,26 @@ namespace Nmqtt
     internal abstract class MqttConnectionHandler : IDisposable
     {
         protected MqttConnection connection;
-        protected MqttConnectionKeepAlive keepAlive;
         
         /// <summary>
-        /// The message that was used to perform the initial connection to the broker.
+        /// Registry of message processors
         /// </summary>
-        protected MqttConnectMessage connectMessage;
-
+        private Dictionary<MqttMessageType, List<Func<MqttMessage, bool>>> messageProcessorRegistry = new Dictionary<MqttMessageType, List<Func<MqttMessage, bool>>>();
+        
         protected ConnectionState connectionState = ConnectionState.Disconnected;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MqttConnectionHandler"/> class.
+        /// </summary>
+        public MqttConnectionHandler()
+        {
+            // pre-prepare the message processor registry
+            foreach (MqttMessageType type in Enum.GetValues(typeof(MqttMessageType)))
+            {
+                messageProcessorRegistry.Add(type, new List<Func<MqttMessage,bool>>());
+            }
+        }
+
         /// <summary>
         /// Gets the current conneciton state of the Mqtt Client.
         /// </summary>
@@ -51,7 +63,6 @@ namespace Nmqtt
         /// <param name="message">The connect message to use as part of the connection process.</param>
         public ConnectionState Connect(string server, int port, MqttConnectMessage message)
         {
-            this.connectMessage = message;
             ConnectionState state = InternalConnect(server, port, message);
 
             // if we managed to connection, ensure we catch any unexpected disconnects
@@ -108,6 +119,26 @@ namespace Nmqtt
         }
 
         /// <summary>
+        /// Registers for the receipt of messages when they arrive.
+        /// </summary>
+        /// <param name="msgType">The message type to register for.</param>
+        /// <param name="msgProcessor">The callback function that will be executed when the message arrives.</param>
+        public void RegisterForMessage(MqttMessageType msgType, Func<MqttMessage, bool> msgProcessorCallback)
+        {
+            messageProcessorRegistry[msgType].Add(msgProcessorCallback);
+        }
+
+        /// <summary>
+        /// UnRegisters for the receipt of messages when they arrive.
+        /// </summary>
+        /// <param name="msgType">The message type to register for.</param>
+        /// <param name="msgProcessorCallback">The MSG processor callback.</param>
+        public void UnRegisterForMessage(MqttMessageType msgType, Func<MqttMessage, bool> msgProcessorCallback)
+        {
+            messageProcessorRegistry[msgType].Remove(msgProcessorCallback);
+        }
+
+        /// <summary>
         /// Handles the DataAvailable event of the connection control for handling non connection messages
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -119,31 +150,11 @@ namespace Nmqtt
                 // read the message, and if it's valid, signal to the keepalive so that we don't
                 // spam ping requests at the broker.
                 MqttMessage msg = MqttMessage.CreateFrom(e.MessageData);
-                keepAlive.MessageReceived();
 
-                // filter out messages that are not related to standard message processing
-                if (msg.Header.MessageType == MqttMessageType.Connect ||
-                    msg.Header.MessageType == MqttMessageType.ConnectAck ||
-                    msg.Header.MessageType == MqttMessageType.Disconnect)
+                List<Func<MqttMessage, bool>> callbacks = messageProcessorRegistry[msg.Header.MessageType];
+                foreach (Func<MqttMessage, bool> callback in callbacks)
                 {
-                    return;
-                }
-                else if (msg.Header.MessageType == MqttMessageType.PingResponse)
-                {
-                    // let the keepalive know we've had an ack to our ping request.
-                    keepAlive.MessageReceived();
-                    return;
-                }
-                else if (msg.Header.MessageType == MqttMessageType.PingRequest)
-                {
-                    // if we have received a ping request from the broker ensure we response to it
-                    keepAlive.PingRequestReceived();
-                }
-
-                // we've got a non connection based message so forward it on to the client
-                if (MessageReceived != null)
-                {
-                    MessageReceived(this, new MessageReceivedEventArgs(msg));
+                    callback(msg);
                 }
             }
             catch (InvalidMessageException)
@@ -152,11 +163,6 @@ namespace Nmqtt
             }
         }
 
-        /// <summary>
-        /// Event fired by the connection handler when a message has been received.
-        /// </summary>
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-
         #region IDisposable Members
 
         /// <summary>
@@ -164,12 +170,6 @@ namespace Nmqtt
         /// </summary>
         public void Dispose()
         {
-            // important that we get rid of the keepalive before the connection handler.
-            if (keepAlive != null)
-            {
-                keepAlive.Dispose();
-            }
-
             if (connection != null)
             {
                 this.Close();

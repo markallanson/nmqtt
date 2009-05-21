@@ -56,6 +56,10 @@ namespace Nmqtt
             this.connectionHandler = connectionHandler;
             this.keepAlivePeriod = keepAliveSeconds * 1000;
             
+            // register for message handling of ping request and response messages.
+            connectionHandler.RegisterForMessage(MqttMessageType.PingRequest, PingRequestReceived);
+            connectionHandler.RegisterForMessage(MqttMessageType.PingResponse, PingResponseReceived);
+
             // Start the timer so we do a ping whenever required.
             pingTimer = new Timer(PingRequired, null, keepAlivePeriod, keepAlivePeriod); 
         }
@@ -89,7 +93,7 @@ namespace Nmqtt
         /// The effect of calling this method on the keepalive handler is the transmission of a ping response
         /// message to the message broker on the current connection.
         /// </remarks>
-        public void PingRequestReceived()
+        private bool PingRequestReceived(MqttMessage pingMsg)
         {
             Monitor.Enter(shutdownPadlock);
             try
@@ -106,6 +110,18 @@ namespace Nmqtt
             {
                 Monitor.Exit(shutdownPadlock);
             }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Processed ping response messages received from a message broker.
+        /// </summary>
+        /// <param name="pingMsg"></param>
+        /// <returns></returns>
+        private bool PingResponseReceived(MqttMessage pingMsg)
+        {
+            return true;
         }
 
         /// <summary>
@@ -115,6 +131,7 @@ namespace Nmqtt
         /// Getting a signal that a message has been received means that we should reset our 
         /// ping timer and wait for a full duration before initiating the next ping.
         /// </remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public void MessageReceived()
         {
             pingTimer.Change(keepAlivePeriod, keepAlivePeriod);
@@ -131,6 +148,13 @@ namespace Nmqtt
             // disposing. Never release this monitor, we're going down anyway.
             Monitor.Enter(shutdownPadlock);
             this.disposed = true;
+
+            if (connectionHandler != null)
+            {
+                connectionHandler.UnRegisterForMessage(MqttMessageType.PingRequest, PingRequestReceived);
+                connectionHandler.UnRegisterForMessage(MqttMessageType.PingRequest, PingResponseReceived);
+            }
+
 
             if (pingTimer != null)
             {

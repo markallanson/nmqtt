@@ -77,7 +77,7 @@
     <Compile Include="Messages\UnsubscribeAck\MqttUnsubscribeAckMessage.Fluent.cs" />
     <Compile Include="Messages\Unsubscribe\MqttUnsubscribeMessage.Fluent.cs" />
     <Compile Include="PublishEventArgs.cs" />
-    <Compile Include="MessageReceivedEventArgs.cs" />
+    <None Include="MessageReceivedEventArgs.cs" />
     <Compile Include="InvalidMessageEventArgs.cs" />
     <Compile Include="InvalidMessageException.cs" />
     <Compile Include="DataAvailableEventArgs.cs" />
