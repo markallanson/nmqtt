@@ -18,23 +18,24 @@ using System.Text;
 namespace Nmqtt
 {
     /// <summary>
-    /// Event Arguments that represent a connection dropped reason. 
+    /// Describes the status of a subscription
     /// </summary>
-    public class ConnectionDroppedEventArgs : EventArgs
+    public enum SubscriptionStatus
     {
-        /// <summary>
-        /// The exception that caused the connection to drop.
-        /// </summary>
-        /// <value>The </value>
-        public Exception Exception { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConnectionDroppedEventArgs"/> class.
+        /// The subscription does not exist / is not known
         /// </summary>
-        /// <param name="exception">The Exception that describes the reason for disconnection.</param>
-        public ConnectionDroppedEventArgs(Exception exception)
-        {
-            this.Exception = exception;
-        }
+        DoesNotExist,
+
+        /// <summary>
+        /// The subscription is currently pending acknowledgement by a broker.
+        /// </summary>
+        Pending,
+
+        /// <summary>
+        /// The subscription is currently active and messages will be received.
+        /// </summary>
+        Active
     }
 }

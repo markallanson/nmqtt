@@ -120,5 +120,22 @@ namespace NmqttTests.Messages.Unsubscribe
             Assert.Equal<byte>(expected[14], actual[14]); // e
             Assert.Equal<byte>(expected[15], actual[15]); // d
         }
+
+        [Fact]
+        public void ClearSubscriptions()
+        {
+            MqttUnsubscribeMessage msg = new MqttUnsubscribeMessage()
+                .FromTopic("fred")
+                .FromTopic("mark")
+                .WithMessageIdentifier(3)
+                .ExpectAcknowledgement();
+            Console.WriteLine(msg);
+
+            Assert.Equal<int>(2, msg.Payload.Subscriptions.Count);
+
+            msg.Payload.ClearSubscriptions();
+
+            Assert.Equal<int>(0, msg.Payload.Subscriptions.Count);
+        }
     } 
 }

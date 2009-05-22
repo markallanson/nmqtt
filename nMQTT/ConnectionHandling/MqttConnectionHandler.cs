@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Abstract base that provides shared connection functionality to connection handler impementations.
     /// </summary>
-    internal abstract class MqttConnectionHandler : IDisposable
+    internal abstract class MqttConnectionHandler : IMqttConnectionHandler
     {
         protected MqttConnection connection;
         
@@ -30,6 +30,11 @@ namespace Nmqtt
         /// </summary>
         private Dictionary<MqttMessageType, List<Func<MqttMessage, bool>>> messageProcessorRegistry = new Dictionary<MqttMessageType, List<Func<MqttMessage, bool>>>();
         
+        /// <summary>
+        /// Registry of sent message callbacks
+        /// </summary>
+        private List<Func<MqttMessage, bool>> sentMessageCallbacks = new List<Func<MqttMessage,bool>>();
+
         protected ConnectionState connectionState = ConnectionState.Disconnected;
 
         /// <summary>
@@ -94,6 +99,12 @@ namespace Nmqtt
                 stream.Seek(0, SeekOrigin.Begin);
                 connection.Send(stream);
             }
+
+            // let any registered people know we're doing a message.
+            foreach (Func<MqttMessage, bool> callback in sentMessageCallbacks)
+            {
+                callback(message);
+            }
         }
 
         /// <summary>
@@ -136,6 +147,15 @@ namespace Nmqtt
         public void UnRegisterForMessage(MqttMessageType msgType, Func<MqttMessage, bool> msgProcessorCallback)
         {
             messageProcessorRegistry[msgType].Remove(msgProcessorCallback);
+        }
+
+        /// <summary>
+        /// Registers a callback to be called whenever a message is sent.
+        /// </summary>
+        /// <param name="sentMsgCallback">The sent MSG callback.</param>
+        public void RegisterForAllSentMessages(Func<MqttMessage, bool> sentMsgCallback)
+        {
+            sentMessageCallbacks.Add(sentMsgCallback);
         }
 
         /// <summary>

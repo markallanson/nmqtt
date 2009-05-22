@@ -28,7 +28,70 @@ namespace NmqttTests.Messages.Publish
         /// Tests basic message deserialization from a raw byte array.
         /// </summary>
         [Fact]
-        public void ValidPayload()
+        public void QosLevel2ExactlyOnce()
+        {
+            // expected response
+            var expected = new[]
+            {
+                (byte)0x34,
+                (byte)0x0E,
+                (byte)0x0,
+                (byte)0x4,
+                (byte)'f',
+                (byte)'r',
+                (byte)'e',
+                (byte)'d',
+                (byte)0x0,
+                (byte)0x0A,
+                // message payload is here
+                (byte)'h',
+                (byte)'e',
+                (byte)'l',
+                (byte)'l',
+                (byte)'o',
+                (byte)'!',
+            };
+
+            MqttMessage msg = new MqttPublishMessage()
+                .WithQos(MqttQos.ExactlyOnce)
+                .WithMessageIdentifier(10)
+                .ToTopic("fred")
+                .PublishData(new[] 
+                    {                 
+                        (byte)'h',
+                        (byte)'e',
+                        (byte)'l',
+                        (byte)'l',
+                        (byte)'o',
+                        (byte)'!',
+                    }
+                );
+            Console.WriteLine(msg);
+
+            byte[] actual = MessageSerializationHelper.GetMessageBytes(msg);
+
+            Assert.Equal<int>(expected.Length, actual.Length);
+            Assert.Equal<byte>(expected[0], actual[0]); // msg type of header + other bits
+            Assert.Equal<byte>(expected[1], actual[1]); // remaining length
+            Assert.Equal<byte>(expected[2], actual[2]); // first topic length byte
+            Assert.Equal<byte>(expected[3], actual[3]); // second topic length byte
+            Assert.Equal<byte>(expected[4], actual[4]); // f
+            Assert.Equal<byte>(expected[5], actual[5]); // r
+            Assert.Equal<byte>(expected[6], actual[6]); // e
+            Assert.Equal<byte>(expected[7], actual[7]); // d
+            Assert.Equal<byte>(expected[8], actual[8]); // h
+            Assert.Equal<byte>(expected[9], actual[9]); // e
+            Assert.Equal<byte>(expected[10], actual[10]); // l
+            Assert.Equal<byte>(expected[11], actual[11]); // l
+            Assert.Equal<byte>(expected[12], actual[12]); // o
+            Assert.Equal<byte>(expected[13], actual[13]); // !
+        }
+
+        /// <summary>
+        /// Tests basic message deserialization from a raw byte array.
+        /// </summary>
+        [Fact]
+        public void QosLevel0WithNoMessageIdentifer()
         {
             // expected response
             var expected = new[]
@@ -82,5 +145,22 @@ namespace NmqttTests.Messages.Publish
             Assert.Equal<byte>(expected[12], actual[12]); // o
             Assert.Equal<byte>(expected[13], actual[13]); // !
         }
+
+        [Fact]
+        public void WithNonDefaultQos()
+        {
+            // set up some publish data
+            MqttPublishMessage msg = new MqttPublishMessage()
+                .ToTopic("mark")
+                .WithQos(MqttQos.AtLeastOnce)
+                .WithMessageIdentifier(4)
+                .PublishData(new[] { (byte)9 });
+
+            var msgBytes = MessageSerializationHelper.GetMessageBytes(msg);
+
+            // 2 (header + 6 (topic) + 2 (msg id) + 1 (data size)
+            Assert.Equal<int>(11, msgBytes.Length);
+        }
+
     } 
 }

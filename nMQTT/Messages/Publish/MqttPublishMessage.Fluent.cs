@@ -46,6 +46,28 @@ namespace Nmqtt
             this.Payload.Message.AddRange(new System.Collections.ObjectModel.Collection<byte>(data));
             return this;
         }
+        
+        /// <summary>
+        /// Sets the message identifier of the message.
+        /// </summary>
+        /// <param name="messageIdentifier">The ID of the message.</param>
+        /// <returns>An updated instance of the message.</returns>
+        public MqttPublishMessage WithMessageIdentifier(short messageIdentifier)
+        {
+            this.VariableHeader.MessageIdentifier = messageIdentifier;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the Qos of the published message.
+        /// </summary>
+        /// <param name="qos">The qos to set.</param>
+        /// <returns>The updated instance of the message.</returns>
+        public MqttPublishMessage WithQos(MqttQos qos)
+        {
+            this.Header.WithQos(qos);
+            return this;
+        }
 
         /// <summary>
         /// Removes the current published data.

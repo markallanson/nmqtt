@@ -29,9 +29,9 @@ namespace Nmqtt
         /// </summary>
         private Dictionary<int, Subscription> pendingSubscriptions = new Dictionary<int, Subscription>();
 
-        private MqttConnectionHandler connectionHandler;
+        private IMqttConnectionHandler connectionHandler;
 
-        public SubscriptionsManager(MqttConnectionHandler connectionHandler)
+        public SubscriptionsManager(IMqttConnectionHandler connectionHandler)
         {
             this.connectionHandler = connectionHandler;
             this.connectionHandler.RegisterForMessage(MqttMessageType.SubscribeAck, ConfirmSubscription);
@@ -42,8 +42,8 @@ namespace Nmqtt
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="qos"></param>
-        /// <returns></returns>
-        internal MqttSubscribeMessage RegisterSubscription(string topic, MqttQos qos)
+        /// <returns>The subscription message identifier.</returns>
+        internal short RegisterSubscription(string topic, MqttQos qos)
         {
             // check we don't have a pending subscription request for the topic.
             var pendingSubs = from ps in pendingSubscriptions.Values
@@ -77,7 +77,8 @@ namespace Nmqtt
                 .ToTopic(sub.Topic)
                 .AtQos(sub.Qos);
 
-            return msg;
+            connectionHandler.SendMessage(msg);
+            return msg.VariableHeader.MessageIdentifier;
         }
 
         /// <summary>
@@ -95,9 +96,35 @@ namespace Nmqtt
                     String.Format("There is no pending subscription against message identifier {0}", subAck.VariableHeader.MessageIdentifier));
             }
 
+            // move it to the subscriptions pool, and out of the pending pool.
             subscriptions.Add(sub.Topic, sub);
+            pendingSubscriptions.Remove(subAck.VariableHeader.MessageIdentifier);
 
             return true;
+        }
+
+        /// <summary>
+        /// Gets the current status of a subscription
+        /// </summary>
+        /// <param name="topic">The topic to check the subscription for.</param>
+        /// <returns>The current status of the subscription</returns>
+        public SubscriptionStatus GetSubscriptionsStatus(string topic)
+        {
+            SubscriptionStatus status = SubscriptionStatus.DoesNotExist;
+
+            // if its live, return active
+            if (subscriptions.ContainsKey(topic))
+            {
+                status = SubscriptionStatus.Active;
+            }
+            
+            // if its pending, return pending.
+            if (pendingSubscriptions.Values.Count<Subscription>(subs => subs.Topic.Equals(topic, StringComparison.Ordinal)) >= 1)
+            {
+                status = SubscriptionStatus.Pending;
+            }
+
+            return status;
         }
 
         #region IDisposable Members

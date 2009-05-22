@@ -59,10 +59,12 @@
   <ItemGroup>
     <Compile Include="ClientIdentifierException.cs" />
     <Compile Include="ConnectionHandling\ConnectionDroppedEventArgs.cs" />
+    <Compile Include="ConnectionHandling\IMqttConnectionHandler.cs" />
     <Compile Include="ConnectionHandling\SynchronousMqttConnectionHandler.cs" />
     <Compile Include="ConnectionHandling\ConnectionState.cs" />
     <Compile Include="ConnectionHandling\MqttConnectionHandler.cs" />
     <Compile Include="ConnectionException.cs" />
+    <Compile Include="Diagnostics\MessageLogger.cs" />
     <Compile Include="ExtensionMethods\CollectionExtensions.cs" />
     <Compile Include="ConnectionHandling\MqttConnectionKeepAlive.cs" />
     <Compile Include="MessageIdentifierDispenser.cs" />
@@ -76,6 +78,11 @@
     <Compile Include="Messages\Subscribe\MqttSubscribeMessage.Fluent.cs" />
     <Compile Include="Messages\UnsubscribeAck\MqttUnsubscribeAckMessage.Fluent.cs" />
     <Compile Include="Messages\Unsubscribe\MqttUnsubscribeMessage.Fluent.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="PublishEventArgs.cs" />
     <None Include="MessageReceivedEventArgs.cs" />
     <Compile Include="InvalidMessageEventArgs.cs" />
@@ -131,14 +138,21 @@
     <Compile Include="MqttQos.cs" />
     <Compile Include="Messages\MqttVariableHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublishingManager.cs" />
     <Compile Include="Subscription.cs" />
     <Compile Include="SubscriptionsManager.cs" />
+    <Compile Include="SubscriptionStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="CodeAnalysisDictionary.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="nMQTT.snk" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

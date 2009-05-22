@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System;
 using System.IO;
+using Nmqtt.Diagnostics;
 
 namespace Nmqtt
 {
@@ -94,6 +95,16 @@ namespace Nmqtt
         private MqttConnectionKeepAlive keepAlive;
 
         /// <summary>
+        /// Handles everything to do with publication management.
+        /// </summary>
+        private PublishingManager publishingManager;
+
+        /// <summary>
+        /// Handles the logging of received messages for diagnostic purpose.
+        /// </summary>
+        private MessageLogger messageLogger;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MqttClient"/> class using the default Mqtt Port.
         /// </summary>
         /// <param name="server">The server hostname to connect to.</param>
@@ -127,21 +138,11 @@ namespace Nmqtt
             // TODO: Get Get timeout from config or ctor or elsewhere.
             keepAlive = new MqttConnectionKeepAlive(connectionHandler, 30);
             subscriptionsManager = new SubscriptionsManager(connectionHandler);
-
-            // register for messages explicitly handled by the client
-            connectionHandler.RegisterForMessage(MqttMessageType.Publish, HandlePublishMessage);
+            messageLogger = new MessageLogger(connectionHandler);
+            publishingManager = new PublishingManager(connectionHandler, HandlePublishMessage);
 
             return connectionHandler.Connect(this.server, this.port, connectMessage);
         }
-
-        /// <summary>
-        /// Initiates an Asynchronous connection to the message broker. The ConnectComplete 
-        /// event is fired when connection has finished.
-        /// </summary>
-        //public void BeginConnect()
-        //{
-        //    MqttConnectMessage connectMessage = GetConnectMessage();
-        //}
 
         /// <summary>
         /// Gets a configured connect message.
@@ -206,9 +207,38 @@ namespace Nmqtt
                 throw new ConnectionException(connectionHandler.State);
             }
 
-            MqttSubscribeMessage msg = subscriptionsManager.RegisterSubscription(topic, qosLevel);
-            connectionHandler.SendMessage(msg);
-            return msg.VariableHeader.MessageIdentifier;
+            short messageIdentifier = subscriptionsManager.RegisterSubscription(topic, qosLevel);
+            return messageIdentifier;
+        }
+
+        /// <summary>
+        /// Publishes a message to the message broker.
+        /// </summary>
+        /// <param name="topic">The topic to publish the message to.</param>
+        /// <param name="message">The message to publish.</param>
+        /// <returns>The message identiier assigned to the message.</returns>
+        public short PublishMessage(string topic, byte[] message)
+        {
+            return PublishMessage(topic, MqttQos.AtMostOnce, message);
+        }
+
+        /// <summary>
+        /// Publishes a message to the message broker.
+        /// </summary>
+        /// <param name="topic">The topic to publish the message to.</param>
+        /// <param name="qualityOfService">The quality of service to attach to the message.</param>
+        /// <param name="message">The message to publish.</param>
+        /// <returns>
+        /// The message identiier assigned to the message.
+        /// </returns>
+        public short PublishMessage(string topic, MqttQos qualityOfService, byte[] message)
+        {
+            if (connectionHandler.State != ConnectionState.Connected)
+            {
+                throw new ConnectionException(connectionHandler.State);
+            }
+
+            return publishingManager.Publish(topic, qualityOfService, message);
         }
 
         #region IDisposable Members
@@ -226,6 +256,11 @@ namespace Nmqtt
             if (subscriptionsManager != null)
             {
                 subscriptionsManager.Dispose();
+            }
+
+            if (messageLogger != null)
+            {
+                messageLogger.Dispose();
             }
 
             if (connectionHandler != null)

@@ -43,7 +43,6 @@ namespace Nmqtt
         {
             // connect and save off the stream.
             tcpClient = new TcpClient(server, port);
-            tcpClient.ReceiveTimeout = 5000;
             networkStream = tcpClient.GetStream();
 
             // initiate a read for the next byte which will be the header bytes
@@ -137,6 +136,9 @@ namespace Nmqtt
                         FireDataAvailableEvent(messageBytes);
                     }
                 }
+
+                // initiate a read for the next byte which will be the header bytes
+                dataStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), dataStream);
             }
             catch (IOException ex)
             {
@@ -148,9 +150,6 @@ namespace Nmqtt
                     ConnectionDropped(this, new ConnectionDroppedEventArgs(ex));
                 }
             }
-
-            // initiate a read for the next byte which will be the header bytes
-            dataStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), dataStream);
         }
 
         private void FireDataAvailableEvent(Collection<byte> messageBytes)

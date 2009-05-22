@@ -39,8 +39,8 @@ namespace Nmqtt
             {
                 if (!idStorage.ContainsKey(key))
                 {
-                    idStorage.Add(key, 0); // add a new key
-                    return 0;
+                    idStorage.Add(key, 1); // add a new key, start at 1, 0 is reserved for invalid msg.
+                    return 1;
                 }
                 else
                 {

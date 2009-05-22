@@ -59,9 +59,28 @@ namespace Nmqtt
             // register for message handling of ping request and response messages.
             connectionHandler.RegisterForMessage(MqttMessageType.PingRequest, PingRequestReceived);
             connectionHandler.RegisterForMessage(MqttMessageType.PingResponse, PingResponseReceived);
+            connectionHandler.RegisterForAllSentMessages(MessageSent);
 
             // Start the timer so we do a ping whenever required.
             pingTimer = new Timer(PingRequired, null, keepAlivePeriod, keepAlivePeriod); 
+        }
+
+        /// <summary>
+        /// Handles the MessageSent event of the connectionHandler control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private bool MessageSent(MqttMessage msg)
+        {
+            if (!this.disposed)
+            {
+                pingTimer.Change(keepAlivePeriod, keepAlivePeriod);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -124,19 +143,6 @@ namespace Nmqtt
             return true;
         }
 
-        /// <summary>
-        /// Signal to the keep alive handler that a message has been received.
-        /// </summary>
-        /// <remarks>
-        /// Getting a signal that a message has been received means that we should reset our 
-        /// ping timer and wait for a full duration before initiating the next ping.
-        /// </remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public void MessageReceived()
-        {
-            pingTimer.Change(keepAlivePeriod, keepAlivePeriod);
-        }
-
         #region IDisposable Members
 
         /// <summary>
@@ -154,7 +160,6 @@ namespace Nmqtt
                 connectionHandler.UnRegisterForMessage(MqttMessageType.PingRequest, PingRequestReceived);
                 connectionHandler.UnRegisterForMessage(MqttMessageType.PingRequest, PingResponseReceived);
             }
-
 
             if (pingTimer != null)
             {
