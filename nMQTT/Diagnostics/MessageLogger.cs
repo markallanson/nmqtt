@@ -24,6 +24,8 @@ namespace Nmqtt.Diagnostics
     /// </summary>
     internal class MessageLogger : IDisposable
     {
+        private bool disposed;
+
         private MqttConnectionHandler connectionHandler;
         private StreamWriter logFileWriter;
 
@@ -75,11 +77,14 @@ namespace Nmqtt.Diagnostics
         /// <param name="msg"></param>
         public void LogMessage(MqttMessage msg, bool inbound)
         {
-            if (logFileWriter != null)
+            if (!disposed)
             {
-                logFileWriter.WriteLine(String.Format("{0} {1} ]>----<[ {2} ]>----|", inbound ? "<<<<" : ">>>>", DateTime.Now, msg.Header.MessageType));
-                logFileWriter.WriteLine(msg.ToString());
-                logFileWriter.Flush();
+                if (logFileWriter != null)
+                {
+                    logFileWriter.WriteLine(String.Format("{0} {1} ]>----<[ {2} ]>----|", inbound ? "<<<<" : ">>>>", DateTime.Now, msg.Header.MessageType));
+                    logFileWriter.WriteLine(msg.ToString());
+                    logFileWriter.Flush();
+                }
             }
         }
 
@@ -90,6 +95,8 @@ namespace Nmqtt.Diagnostics
         /// </summary>
         public void Dispose()
         {
+            disposed = true;
+
             // subscribe to ALL events received.
             foreach (MqttMessageType msgType in Enum.GetValues(typeof(MqttMessageType)))
             {

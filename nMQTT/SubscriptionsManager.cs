@@ -131,6 +131,26 @@ namespace Nmqtt
             return status;
         }
 
+        /// <summary>
+        /// Gets the subscription data method registered for a subscription topic.
+        /// </summary>
+        /// <param name="topic">The topic to retrieve the subscription data for.</param>
+        /// <returns>The subscription data for a subscription, or null if there is no registered subscription.</returns>
+        /// <remarks>
+        /// This will ignore pending subscriptions, so any messages that arrive for pending subscriptions will NOT be delivered. This
+        /// policy may change in the future if I find that some brokers might be a bit shifty. Sending messages to callbacks that
+        /// are not yet confirmed might not be handled gracefully by client consumers.
+        /// </remarks>
+        public Subscription GetSubscription(string topic)
+        {
+            Subscription subs;
+            if (!subscriptions.TryGetValue(topic, out subs))
+            {
+                return null;
+            }
+            return subs;
+        }
+
         #region IDisposable Members
 
         /// <summary>

@@ -163,24 +163,16 @@ namespace Nmqtt
         /// <param name="mqttMessage"></param>
         private bool HandlePublishMessage(MqttMessage message)
         {
-            // handle the basic publish message by firing the PublishMessageReceived event of the client
-            // for application level handling of message data.
-            if (message.Header.MessageType == MqttMessageType.Publish)
+            MqttPublishMessage pubMsg = (MqttPublishMessage)message;
+            Subscription subs = subscriptionsManager.GetSubscription(pubMsg.VariableHeader.TopicName);
+            if (subs == null)
             {
-                MqttPublishMessage published = (MqttPublishMessage)message;
-                if (PublishMessageReceived != null)
-                {
-                    PublishMessageReceived(this, new PublishEventArgs(published.Payload.Message));
-                }
+                return false;
             }
 
-            return true;
+            // run the registered data processor over the subscription
+            return subs.SubscriptionCallback(pubMsg.VariableHeader.TopicName, subs.DataProcessor.Process(pubMsg.Payload.Message.ToArray()));
         }
-
-        /// <summary>
-        /// Event fired when a publish message has been received by the client. 
-        /// </summary>
-        public event EventHandler<PublishEventArgs> PublishMessageReceived;
 
         /// <summary>
         /// Subscribles the specified topic with a callback function that accepts the raw message data.
