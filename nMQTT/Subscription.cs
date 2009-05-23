@@ -20,7 +20,7 @@ namespace Nmqtt
     /// <summary>
     /// Entity that captures data related to an individual subscription
     /// </summary>
-    internal class Subscription
+    public class Subscription
     {
         /// <summary>
         /// The message identifier assigned to the subscription

@@ -142,6 +142,8 @@
     <Compile Include="PublishingManager.cs" />
     <Compile Include="DataConverters\AsciiStringPublishDataConverter.cs" />
     <Compile Include="DataConverters\PassthroughPublishDataConverter.cs" />
+    <Compile Include="Storage\InMemoryStorage.cs" />
+    <Compile Include="Storage\IStorage.cs" />
     <Compile Include="Subscription.cs" />
     <Compile Include="SubscriptionsManager.cs" />
     <Compile Include="SubscriptionStatus.cs" />
