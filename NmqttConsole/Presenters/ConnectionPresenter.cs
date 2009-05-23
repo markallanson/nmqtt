@@ -35,7 +35,7 @@ namespace NmqttConsole.Presenters
 
         void View_SubscribeRequested(object sender, EventArgs e)
         {
-            mqttClient.Subscribe<AsciiStringReceivedDataProcessor>(View.tbSubTopicName.Text, MqttQos.AtMostOnce,
+            mqttClient.Subscribe<AsciiStringPublishDataConverter>(View.tbSubTopicName.Text, MqttQos.AtMostOnce,
                 (pubTopic, pubData) => 
                 {
                     View.AppendStatusLine((string)pubData);

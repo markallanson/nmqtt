@@ -171,7 +171,7 @@ namespace Nmqtt
             }
 
             // run the registered data processor over the subscription
-            return subs.SubscriptionCallback(pubMsg.VariableHeader.TopicName, subs.DataProcessor.Process(pubMsg.Payload.Message.ToArray()));
+            return subs.SubscriptionCallback(pubMsg.VariableHeader.TopicName, subs.DataProcessor.ConvertFromBytes(pubMsg.Payload.Message.ToArray()));
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace Nmqtt
         /// <returns></returns>
         public short Subscribe(string topic, MqttQos qosLevel, Func<string, object, bool> subscriptionCallback)
         {
-            return Subscribe<ByteArrayReceivedDataProcessor>(topic, qosLevel, subscriptionCallback);
+            return Subscribe<PassThroughPublishDataConverter>(topic, qosLevel, subscriptionCallback);
         }
 
         /// <summary>
@@ -197,15 +197,15 @@ namespace Nmqtt
         /// The identifier assigned to the subscription.
         /// </returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification="See method above for non generic implementation")]
-        public short Subscribe<TReceivedDataProcessor>(string topic, MqttQos qosLevel, Func<string, object, bool> subscriptionCallback)
-            where TReceivedDataProcessor : IReceivedDataProcessor
+        public short Subscribe<TPublishDataConverter>(string topic, MqttQos qosLevel, Func<string, object, bool> subscriptionCallback)
+            where TPublishDataConverter : IPublishDataConverter
         {
             if (connectionHandler.State != ConnectionState.Connected)
             {
                 throw new ConnectionException(connectionHandler.State);
             }
 
-            short messageIdentifier = subscriptionsManager.RegisterSubscription<TReceivedDataProcessor>(topic, qosLevel, subscriptionCallback);
+            short messageIdentifier = subscriptionsManager.RegisterSubscription<TPublishDataConverter>(topic, qosLevel, subscriptionCallback);
             return messageIdentifier;
         }
 
@@ -213,30 +213,60 @@ namespace Nmqtt
         /// Publishes a message to the message broker.
         /// </summary>
         /// <param name="topic">The topic to publish the message to.</param>
-        /// <param name="message">The message to publish.</param>
+        /// <param name="data">The message to publish.</param>
         /// <returns>The message identiier assigned to the message.</returns>
-        public short PublishMessage(string topic, byte[] message)
+        public short PublishMessage(string topic, object data)
         {
-            return PublishMessage(topic, MqttQos.AtMostOnce, message);
+            return PublishMessage<PassThroughPublishDataConverter>(topic, MqttQos.AtMostOnce, data);
         }
 
         /// <summary>
         /// Publishes a message to the message broker.
         /// </summary>
         /// <param name="topic">The topic to publish the message to.</param>
-        /// <param name="qualityOfService">The quality of service to attach to the message.</param>
-        /// <param name="message">The message to publish.</param>
+        /// <param name="data">The message to publish.</param>
+        /// <returns>The message identiier assigned to the message.</returns>
+        public short PublishMessage(string topic, MqttQos qos, object data)
+        {
+            return PublishMessage<PassThroughPublishDataConverter>(topic, qos, data);
+        }
+
+
+        /// <summary>
+        /// Publishes a message to the message broker.
+        /// </summary>
+        /// <typeparam name="TDataConverter">The type of the data convert.</typeparam>
+        /// <param name="topic">The topic to publish the message to.</param>
+        /// <param name="data">The message to publish.</param>
         /// <returns>
         /// The message identiier assigned to the message.
         /// </returns>
-        public short PublishMessage(string topic, MqttQos qualityOfService, byte[] message)
+        public short PublishMessage<TDataConverter>(string topic, object data)
+            where TDataConverter : IPublishDataConverter
+        {
+            return PublishMessage<TDataConverter>(topic, MqttQos.AtMostOnce, data);
+        }
+
+        /// <summary>
+        /// Publishes a message to the message broker.
+        /// </summary>
+        /// <typeparam name="TDataConverter">The type of the data converter to use for converting the data
+        /// from the object to wire bytes.</typeparam>
+        /// <param name="topic">The topic to publish the message to.</param>
+        /// <param name="qualityOfService">The quality of service to attach to the message.</param>
+        /// <param name="data">The message to publish.</param>
+        /// <returns>
+        /// The message identiier assigned to the message.
+        /// </returns>
+        public short PublishMessage<TDataConverter>(string topic, MqttQos qualityOfService, object data)
+            where TDataConverter : IPublishDataConverter
         {
             if (connectionHandler.State != ConnectionState.Connected)
             {
                 throw new ConnectionException(connectionHandler.State);
             }
 
-            return publishingManager.Publish(topic, qualityOfService, message);
+            return publishingManager.Publish<TDataConverter>(topic, qualityOfService, data);
         }
 
         #region IDisposable Members

@@ -50,6 +50,6 @@ namespace Nmqtt
         /// <summary>
         /// The class that can process received data and turn it into a specific type data.
         /// </summary>
-        public IReceivedDataProcessor DataProcessor { get; set; }
+        public IPublishDataConverter DataProcessor { get; set; }
     }
 }

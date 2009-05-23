@@ -17,11 +17,11 @@ using System.Text;
 namespace Nmqtt
 {
     /// <summary>
-    /// Processes inbound data as an ascii string.
+    /// Converts string data to and from the MQTT wire format
     /// </summary>
-    public class AsciiStringReceivedDataProcessor : IReceivedDataProcessor
+    public class AsciiStringPublishDataConverter : IPublishDataConverter
     {
-        #region IReceivedDataProcessor<string> Members
+        #region IPublishDataConverter Members
 
         /// <summary>
         /// Processes received data and returns it as a string.
@@ -30,9 +30,19 @@ namespace Nmqtt
         /// <returns>
         /// The data processed and turned into the specified type.
         /// </returns>
-        public object Process(byte[] messageData)
+        public object ConvertFromBytes(byte[] messageData)
         {
             return System.Text.Encoding.ASCII.GetString(messageData);
+        }
+
+        /// <summary>
+        /// Converts sent data from a string to a byte array.
+        /// </summary>
+        /// <param name="data">The string to convert to the byte array.</param>
+        /// <returns>A byte array representation of the string.</returns>
+        public byte[] ConvertToBytes(object data)
+        {
+            return System.Text.Encoding.ASCII.GetBytes((string)data);
         }
 
         #endregion

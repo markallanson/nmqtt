@@ -17,12 +17,11 @@ using System.Text;
 namespace Nmqtt
 {
     /// <summary>
-    /// Processes inbound data as a raw byte array. Acts as a passthrough for received data.,
-    ///
-    /// </summary>
-    public class ByteArrayReceivedDataProcessor : IReceivedDataProcessor
+    /// Acts as a passthrough for the raw data without doing any conversion.
+    /// </summary>s
+    public class PassThroughPublishDataConverter : IPublishDataConverter
     {
-        #region IReceivedDataProcessor<object> Members
+        #region IPublishDataConverter Members
 
         /// <summary>
         /// Processes received data and returns it as a byte array.
@@ -31,9 +30,19 @@ namespace Nmqtt
         /// <returns>
         /// The data processed and turned into a byte array.
         /// </returns>
-        public object Process(byte[] messageData)
+        public object ConvertFromBytes(byte[] messageData)
         {
             return messageData;
+        }
+
+        /// <summary>
+        /// Converts sent data from an object graph to a byte array.
+        /// </summary>
+        /// <param name="data">The data to convert to the byte array.</param>
+        /// <returns>A byte array representation of the data.</returns>
+        public byte[] ConvertToBytes(object data)
+        {
+            return (byte[])data;
         }
 
         #endregion

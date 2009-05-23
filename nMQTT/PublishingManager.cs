@@ -66,6 +66,11 @@ namespace Nmqtt
         private IMqttConnectionHandler connectionHandler;
 
         /// <summary>
+        /// Stores a cache of data converters used when publishing data to a broker.
+        /// </summary>
+        private Dictionary<Type, IPublishDataConverter> dataConverters = new Dictionary<Type, IPublishDataConverter>();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PublishingManager"/> class.
         /// </summary>
         /// <param name="connectionHandler">The connection handler.</param>
@@ -87,19 +92,40 @@ namespace Nmqtt
         /// <param name="topic">The topic to send the message to.</param>
         /// <param name="payload">The message to send.</param>
         /// <returns>The message identifier assigned to the message.</returns>
-        public short Publish(string topic, MqttQos qualityOfService, byte[] message)
+        public short Publish<TDataConverter>(string topic, MqttQos qualityOfService, object data)
+            where TDataConverter : IPublishDataConverter
         {
             short msgID = MessageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
+
+            IPublishDataConverter converter = GetPublishDataConverter<TDataConverter>();
 
             MqttPublishMessage msg = new MqttPublishMessage()
                 .ToTopic(topic)
                 .WithMessageIdentifier(msgID)
                 .WithQos(qualityOfService)
-                .PublishData(message);
+                .PublishData(converter.ConvertToBytes(data));
 
             connectionHandler.SendMessage(msg);
 
             return msgID;
+        }
+
+        /// <summary>
+        /// Gets an instance of the specified publish data converter.
+        /// </summary>
+        /// <typeparam name="TDataConverter">The type of the data converter.</typeparam>
+        /// <returns></returns>
+        private IPublishDataConverter GetPublishDataConverter<TDataConverter>()
+            where TDataConverter : IPublishDataConverter
+        {
+            IPublishDataConverter dataConverter;
+            if (dataConverters.TryGetValue(typeof(TDataConverter), out dataConverter))
+            {
+                dataConverter = Activator.CreateInstance<TDataConverter>();
+                dataConverters.Add(typeof(TDataConverter), dataConverter);
+            }
+
+            return dataConverter;
         }
 
         /// <summary>
