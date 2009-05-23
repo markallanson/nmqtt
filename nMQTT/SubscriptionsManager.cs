@@ -43,7 +43,8 @@ namespace Nmqtt
         /// <param name="topic"></param>
         /// <param name="qos"></param>
         /// <returns>The subscription message identifier.</returns>
-        internal short RegisterSubscription(string topic, MqttQos qos)
+        internal short RegisterSubscription<TReceivedDataProcessor>(string topic, MqttQos qos, Func<string, object, bool> subscriptionCallback)
+            where TReceivedDataProcessor : IReceivedDataProcessor
         {
             // check we don't have a pending subscription request for the topic.
             var pendingSubs = from ps in pendingSubscriptions.Values
@@ -67,8 +68,11 @@ namespace Nmqtt
                 Topic = topic,
                 Qos = qos,
                 MessageIdentifier = MessageIdentifierDispenser.GetNextMessageIdentifier("subscriptions"),
-                CreatedTime = DateTime.Now
+                CreatedTime = DateTime.Now,
+                DataProcessor = Activator.CreateInstance<TReceivedDataProcessor>(),
+                SubscriptionCallback = subscriptionCallback
             };
+
             pendingSubscriptions.Add(sub.MessageIdentifier, sub);
 
             // build a subscribe message for the caller.
@@ -117,7 +121,7 @@ namespace Nmqtt
             {
                 status = SubscriptionStatus.Active;
             }
-            
+
             // if its pending, return pending.
             if (pendingSubscriptions.Values.Count<Subscription>(subs => subs.Topic.Equals(topic, StringComparison.Ordinal)) >= 1)
             {

@@ -35,7 +35,13 @@ namespace NmqttConsole.Presenters
 
         void View_SubscribeRequested(object sender, EventArgs e)
         {
-            mqttClient.Subscribe(View.tbSubTopicName.Text, MqttQos.AtMostOnce);
+            mqttClient.Subscribe<AsciiStringReceivedDataProcessor>(View.tbSubTopicName.Text, MqttQos.AtMostOnce,
+                (pubTopic, pubData) => 
+                {
+                    View.AppendStatusLine((string)pubData);
+                    return true;
+                }
+                );
             View.lbSubscriptions.Items.Add(View.tbSubTopicName.Text);
         }
 
@@ -89,7 +95,6 @@ namespace NmqttConsole.Presenters
                 mqttClient = new MqttClient(server, port, "nMqttClient");
             }
 
-            mqttClient.PublishMessageReceived += mqttClient_PublishMessageReceived;
 //            mqttClient.InvalidMessageReceived += mqttClient_InvalidMessageReceived;
             mqttClient.Connect();
 
@@ -103,9 +108,5 @@ namespace NmqttConsole.Presenters
             View.AppendStatusLine(String.Format("Invalid Message Data Received: {0}", e.Exception));
         }
 
-        void mqttClient_PublishMessageReceived(object sender, PublishEventArgs e)
-        {
-            View.AppendStatusLine(e.GetAsAsciiString());
-        }
     }
 }

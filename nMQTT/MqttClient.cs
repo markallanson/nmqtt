@@ -178,36 +178,42 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Event fired when the connect to a remove server has been completed.
-        /// </summary>
-        //public event EventHandler<EventArgs> ConnectComplete;
-
-        /// <summary>
         /// Event fired when a publish message has been received by the client. 
         /// </summary>
         public event EventHandler<PublishEventArgs> PublishMessageReceived;
 
         /// <summary>
-        /// Event fired when a message received from the connect message broker could not be processed.
+        /// Subscribles the specified topic with a callback function that accepts the raw message data.
         /// </summary>
-//        public event EventHandler<InvalidMessageEventArgs> InvalidMessageReceived;
-
+        /// <param name="topic">The topic.</param>
+        /// <param name="qosLevel">The qos level.</param>
+        /// <param name="subscriptionCallback">The subscription callback.</param>
+        /// <returns></returns>
+        public short Subscribe(string topic, MqttQos qosLevel, Func<string, object, bool> subscriptionCallback)
+        {
+            return Subscribe<ByteArrayReceivedDataProcessor>(topic, qosLevel, subscriptionCallback);
+        }
 
         /// <summary>
-        /// Initiates a topic subscription request to the connected broker.
+        /// Initiates a topic subscription request to the connected broker with a strongly typed data processor callback.
         /// </summary>
+        /// <typeparam name="TReceivedDataProcessor">The type that implements TReceivedDataProcessor that can parse the data arriving on the subscription.</typeparam>
         /// <param name="topic">The topic to subscribe to.</param>
+        /// <param name="qosLevel">The qos level the message was published at.</param>
+        /// <param name="subscriptionCallback">The subscription callback.</param>
         /// <returns>
         /// The identifier assigned to the subscription.
         /// </returns>
-        public short Subscribe(string topic, MqttQos qosLevel)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification="See method above for non generic implementation")]
+        public short Subscribe<TReceivedDataProcessor>(string topic, MqttQos qosLevel, Func<string, object, bool> subscriptionCallback)
+            where TReceivedDataProcessor : IReceivedDataProcessor
         {
             if (connectionHandler.State != ConnectionState.Connected)
             {
                 throw new ConnectionException(connectionHandler.State);
             }
 
-            short messageIdentifier = subscriptionsManager.RegisterSubscription(topic, qosLevel);
+            short messageIdentifier = subscriptionsManager.RegisterSubscription<TReceivedDataProcessor>(topic, qosLevel, subscriptionCallback);
             return messageIdentifier;
         }
 
