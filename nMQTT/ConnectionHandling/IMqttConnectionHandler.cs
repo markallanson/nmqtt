@@ -54,5 +54,17 @@ namespace Nmqtt
         /// <param name="msgType">The message type the callback currently receives.</param>
         /// <param name="msgProcessorCallback">The callback to unregister.</param>
         void UnRegisterForMessage(MqttMessageType msgType, Func<MqttMessage, bool> msgProcessorCallback);
+
+        /// <summary>
+        /// Registers a callback to be executed whenever a message is sent by the connection handler.
+        /// </summary>
+        /// <param name="sentMsgCallback">The callback to execute when any message is sent.</param>
+        void RegisterForAllSentMessages(Func<MqttMessage, bool> sentMsgCallback);
+
+        /// <summary>
+        /// UnRegisters a callback that is registerd to be executed whenever a message is sent by the connection handler.
+        /// </summary>
+        /// <param name="sentMsgCallback">The callback to execute when any message is sent.</param>
+        void UnRegisterForAllSentMessages(Func<MqttMessage, bool> sentMsgCallback);
     }
 }

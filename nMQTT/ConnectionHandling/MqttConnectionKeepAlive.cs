@@ -29,7 +29,7 @@ namespace Nmqtt
     internal sealed class MqttConnectionKeepAlive : IDisposable
     {
         private readonly int keepAlivePeriod;
-        private MqttConnectionHandler connectionHandler;
+        private IMqttConnectionHandler connectionHandler;
 
         /// <summary>
         /// The threading timer that manages the ping callbacks.
@@ -51,7 +51,7 @@ namespace Nmqtt
         /// </summary>
         /// <param name="connection">The connection to keep alive.</param>
         /// <param name="keepAliveSeconds">The keep alive duration in seconds.</param>
-        public MqttConnectionKeepAlive(MqttConnectionHandler connectionHandler, int keepAliveSeconds)
+        public MqttConnectionKeepAlive(IMqttConnectionHandler connectionHandler, int keepAliveSeconds)
         {
             this.connectionHandler = connectionHandler;
             this.keepAlivePeriod = keepAliveSeconds * 1000;
@@ -158,7 +158,8 @@ namespace Nmqtt
             if (connectionHandler != null)
             {
                 connectionHandler.UnRegisterForMessage(MqttMessageType.PingRequest, PingRequestReceived);
-                connectionHandler.UnRegisterForMessage(MqttMessageType.PingRequest, PingResponseReceived);
+                connectionHandler.UnRegisterForMessage(MqttMessageType.PingResponse, PingResponseReceived);
+                connectionHandler.UnRegisterForAllSentMessages(MessageSent);
             }
 
             if (pingTimer != null)

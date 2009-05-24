@@ -159,6 +159,15 @@ namespace Nmqtt
         }
 
         /// <summary>
+        /// UnRegisters a callback that is called whenever a message is sent.
+        /// </summary>
+        /// <param name="sentMsgCallback">The sent MSG callback.</param>
+        public void UnRegisterForAllSentMessages(Func<MqttMessage, bool> sentMsgCallback)
+        {
+            sentMessageCallbacks.Remove(sentMsgCallback);
+        }
+
+        /// <summary>
         /// Handles the DataAvailable event of the connection control for handling non connection messages
         /// </summary>
         /// <param name="sender">The source of the event.</param>

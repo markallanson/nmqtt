@@ -23,16 +23,16 @@ namespace NmqttTests.SubscriptionsManager
 {
     public class SubscriptionsManagerTests
     {
-        [Fact]
-        public void Ctor()
-        {
-            var chMock = new Mock<IMqttConnectionHandler>();
-            chMock.Setup(x => x.RegisterForMessage(MqttMessageType.SubscribeAck, It.IsAny<Func<MqttMessage, bool>>()));
+[Fact]
+public void Ctor()
+{
+    var chMock = new Mock<IMqttConnectionHandler>();
+    chMock.Setup(x => x.RegisterForMessage(MqttMessageType.SubscribeAck, It.IsAny<Func<MqttMessage, bool>>()));
 
-            Nmqtt.SubscriptionsManager subs = new Nmqtt.SubscriptionsManager(chMock.Object);
+    Nmqtt.SubscriptionsManager subs = new Nmqtt.SubscriptionsManager(chMock.Object);
 
-            chMock.VerifyAll();
-        }
+    chMock.VerifyAll();
+}
 
         [Fact]
         public void SubscriptionRequestCreatesPendingSubscription()
@@ -201,6 +201,64 @@ namespace NmqttTests.SubscriptionsManager
 
             // execute the callback with a bogus message identifier.
             Assert.Throws<ArgumentException>(() => theCallback(new MqttSubscribeAckMessage().WithMessageIdentifier(999).AddQosGrant(MqttQos.AtMostOnce)));
+        }
+
+        [Fact]
+        public void GetSubscriptionWithValidTopicReturnsSubscription()
+        {
+            Func<MqttMessage, bool> theCallback = null;
+            var chMock = new Mock<IMqttConnectionHandler>();
+            chMock.Setup((x) => x.RegisterForMessage(MqttMessageType.SubscribeAck, It.IsAny<Func<MqttMessage, bool>>()))
+                .Callback((MqttMessageType msgtype, Func<MqttMessage, bool> cb) => theCallback = cb);
+
+            string topic = "testtopic";
+            MqttQos qos = MqttQos.AtMostOnce;
+
+            // run and verify the mocks were called.
+            Nmqtt.SubscriptionsManager subs = new Nmqtt.SubscriptionsManager(chMock.Object);
+            var subid = subs.RegisterSubscription<AsciiStringPublishDataConverter>(topic, qos, ((subTopic, subData) => { Console.WriteLine(subData.ToString()); return true; }));
+
+            // execute the callback that would normally be initiated by the connection handler when a sub ack message arrived.
+            theCallback(new MqttSubscribeAckMessage().WithMessageIdentifier(subid).AddQosGrant(MqttQos.AtMostOnce));
+
+            Assert.NotNull(subs.GetSubscription(topic));
+        }
+
+        [Fact]
+        public void GetSubscriptionWithInvalidTopicReturnsNull()
+        {
+            Func<MqttMessage, bool> theCallback = null;
+
+            var chMock = new Mock<IMqttConnectionHandler>();
+            chMock.Setup((x) => x.RegisterForMessage(MqttMessageType.SubscribeAck, It.IsAny<Func<MqttMessage, bool>>()))
+                .Callback((MqttMessageType msgtype, Func<MqttMessage, bool> cb) => theCallback = cb);
+
+            string topic = "testtopic";
+            MqttQos qos = MqttQos.AtMostOnce;
+
+            // run and verify the mocks were called.
+            Nmqtt.SubscriptionsManager subs = new Nmqtt.SubscriptionsManager(chMock.Object);
+            var subid = subs.RegisterSubscription<AsciiStringPublishDataConverter>(topic, qos, ((subTopic, subData) => { Console.WriteLine(subData.ToString()); return true; }));
+
+            // execute the callback that would normally be initiated by the connection handler when a sub ack message arrived.
+            theCallback(new MqttSubscribeAckMessage().WithMessageIdentifier(subid).AddQosGrant(MqttQos.AtMostOnce));
+
+            Assert.Null(subs.GetSubscription("abc_badTopic"));
+        }
+
+        [Fact]
+        public void GetSubscriptionForPendingSubscriptionReturnsNull()
+        {
+            var chMock = new Mock<IMqttConnectionHandler>();
+
+            string topic = "testtopic";
+            MqttQos qos = MqttQos.AtMostOnce;
+
+            // run and verify the mocks were called.
+            Nmqtt.SubscriptionsManager subs = new Nmqtt.SubscriptionsManager(chMock.Object);
+            var subid = subs.RegisterSubscription<AsciiStringPublishDataConverter>(topic, qos, ((subTopic, subData) => { Console.WriteLine(subData.ToString()); return true; }));
+
+            Assert.Null(subs.GetSubscription(topic));
         }
     }
 }
