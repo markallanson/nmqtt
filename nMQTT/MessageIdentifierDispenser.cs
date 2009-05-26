@@ -39,12 +39,18 @@ namespace Nmqtt
             {
                 if (!idStorage.ContainsKey(key))
                 {
-                    idStorage.Add(key, 1); // add a new key, start at 1, 0 is reserved for invalid msg.
+                    idStorage.Add(key, 1); // add a new key, start at 1, 0 is reserved for by MQTT spec for invalid msg.
                     return 1;
                 }
                 else
                 {
-                    return ++idStorage[key];
+                    short nextId = ++idStorage[key];
+                    if (nextId == short.MinValue)
+                    {
+                        // overflow, wrap back to 1.
+                        nextId = idStorage[key] = 1;
+                    }
+                    return nextId;
                 }
             }
         }

@@ -43,17 +43,14 @@ namespace Nmqtt
         /// </remarks>
         public MqttConnectMessage()
         {
-            this.Header = new MqttHeader()
-            {
-                MessageType = MqttMessageType.Connect
-            };
+            this.Header = new MqttHeader().AsType(MqttMessageType.Connect);
 
             this.VariableHeader = new MqttConnectVariableHeader()
             {
                 ConnectFlags = new MqttConnectFlags()
             };
 
-            this.Payload = new MqttConnectPayload();
+            this.Payload = new MqttConnectPayload(this.VariableHeader);
         }
 
         /// <summary>
@@ -84,7 +81,7 @@ namespace Nmqtt
         public override void ReadFrom(Stream messageStream)
         {
             this.VariableHeader = new MqttConnectVariableHeader(messageStream);
-            this.Payload = new MqttConnectPayload(messageStream, VariableHeader.ConnectFlags.WillFlag);
+            this.Payload = new MqttConnectPayload(this.VariableHeader, messageStream);
         }
 
         /// <summary>

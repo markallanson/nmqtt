@@ -39,7 +39,7 @@ namespace NmqttTests.Messages.Connect
             var sampleMessage = new[]
             {
                 (byte)0x10,
-                (byte)0x15,
+                (byte)0x1B,
                 (byte)0x0,
                 (byte)0x6,
                 (byte)'M',
@@ -49,7 +49,7 @@ namespace NmqttTests.Messages.Connect
                 (byte)'d',
                 (byte)'p',
                 (byte)0x3,
-                (byte)0x2,
+                (byte)0x2E,
                 (byte)0x0,
                 (byte)0x1E,
                 (byte)0x0,
@@ -60,7 +60,13 @@ namespace NmqttTests.Messages.Connect
                 (byte)'y',
                 (byte)'1',
                 (byte)'1',
-                (byte)'1'
+                (byte)'1',
+                (byte)0x00,
+                (byte)0x01,
+                (byte)'m',
+                (byte)0x00,
+                (byte)0x01,
+                (byte)'a'
             };
 
             MqttMessage baseMessage = MqttMessage.CreateFrom(sampleMessage);
@@ -76,12 +82,21 @@ namespace NmqttTests.Messages.Connect
             Assert.Equal<bool>(false, message.Header.Retain);
             Assert.Equal<MqttQos>(MqttQos.AtMostOnce, message.Header.Qos);
             Assert.Equal<MqttMessageType>(MqttMessageType.Connect, message.Header.MessageType);
-            Assert.Equal<int>(21, message.Header.MessageSize);
+            Assert.Equal<int>(27, message.Header.MessageSize);
 
             // validate the variable header
             Assert.Equal<string>("MQIsdp", message.VariableHeader.ProtocolName);
             Assert.Equal<int>(30, message.VariableHeader.KeepAlive);
             Assert.Equal<int>(3, message.VariableHeader.ProtocolVersion);
+            Assert.True(message.VariableHeader.ConnectFlags.CleanStart);
+            Assert.True(message.VariableHeader.ConnectFlags.WillFlag);
+            Assert.True(message.VariableHeader.ConnectFlags.WillRetain);
+            Assert.Equal<MqttQos>(MqttQos.AtLeastOnce, message.VariableHeader.ConnectFlags.WillQos);
+
+            // payload tests
+            Assert.Equal<string>("andy111", message.Payload.ClientIdentifier);
+            Assert.Equal<string>("m", message.Payload.WillTopic);
+            Assert.Equal<string>("a", message.Payload.WillMessage);
         }
 
         /// <summary>

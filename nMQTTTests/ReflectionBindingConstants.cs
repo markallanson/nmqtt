@@ -28,5 +28,7 @@ namespace NmqttTests
         public const BindingFlags NonPublicConstructor = BindingFlags.NonPublic | BindingFlags.CreateInstance;
         public const BindingFlags PublicConstructor = BindingFlags.Public | BindingFlags.CreateInstance;
         public const BindingFlags PublicMethod = BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod;
+        public const BindingFlags NonPublicField = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField;
+
     }
 }

@@ -15,14 +15,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Xunit;
 using Nmqtt;
 
-using Xunit;
-using Moq;
-
-namespace NmqttTests.PublishingManager
+namespace NmqttTests.EventArgs
 {
-    class PublishingManager
+    public class InvalidMessageEventArgsTests
     {
+        [Fact]
+        public void CtorDataAvailableViaProperty()
+        {
+            string sampleMsg = ("message was bad");
+            InvalidMessageEventArgs e = new InvalidMessageEventArgs(new InvalidMessageException(sampleMsg));
+            Assert.NotNull(e.Exception);
+            Assert.Equal<string>(sampleMsg, e.Exception.Message);
+        }
     }
 }

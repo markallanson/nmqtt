@@ -25,7 +25,7 @@ namespace Nmqtt
     /// <code>
     /// Sender --> Publish --> Receiver
     /// </code>
-    /// </para>
+    /// </para> 
     /// <para><b>QOS 1 - AtLeastOnce</b>
     /// <code>
     /// Sender --> Publish --> Receiver --> PublishAck --> Sender
@@ -82,7 +82,7 @@ namespace Nmqtt
             connectionHandler.RegisterForMessage(MqttMessageType.PublishAck, HandlePublishAcknowledgement);
             connectionHandler.RegisterForMessage(MqttMessageType.Publish, HandlePublish);
             connectionHandler.RegisterForMessage(MqttMessageType.PublishComplete, HandlePublishComplete);
-            connectionHandler.RegisterForMessage(MqttMessageType.PublishComplete, HandlePublishRelease);
+            connectionHandler.RegisterForMessage(MqttMessageType.PublishRelease, HandlePublishRelease);
             connectionHandler.RegisterForMessage(MqttMessageType.PublishReceived, HandlePublishReceived);
         }
 
@@ -105,6 +105,12 @@ namespace Nmqtt
                 .WithQos(qualityOfService)
                 .PublishData(converter.ConvertToBytes(data));
 
+            // QOS level 1 or 2 messages need to be saved so we can do the ack processes
+            if (qualityOfService == MqttQos.AtLeastOnce || qualityOfService == MqttQos.ExactlyOnce)
+            {
+                publishedMessages.Add(msgID, msg);
+            }
+
             connectionHandler.SendMessage(msg);
 
             return msgID;
@@ -119,7 +125,7 @@ namespace Nmqtt
             where TDataConverter : IPublishDataConverter
         {
             IPublishDataConverter dataConverter;
-            if (dataConverters.TryGetValue(typeof(TDataConverter), out dataConverter))
+            if (!dataConverters.TryGetValue(typeof(TDataConverter), out dataConverter))
             {
                 dataConverter = Activator.CreateInstance<TDataConverter>();
                 dataConverters.Add(typeof(TDataConverter), dataConverter);
@@ -206,14 +212,14 @@ namespace Nmqtt
         /// <returns>Boolean value indicating whether the message was successfull processed.</returns>
         private bool HandlePublishRelease(MqttMessage msg)
         {
-            MqttPublishCompleteMessage pubComp = (MqttPublishCompleteMessage)msg;
+            MqttPublishReleaseMessage pubRelMsg = (MqttPublishReleaseMessage)msg;
             bool publishSuccess = false;
 
             MqttPublishMessage pubMsg;
-            receivedMessages.TryGetValue(pubComp.VariableHeader.MessageIdentifier, out pubMsg);
+            receivedMessages.TryGetValue(pubRelMsg.VariableHeader.MessageIdentifier, out pubMsg);
             if (pubMsg != null)
             {
-                receivedMessages.Remove(pubComp.VariableHeader.MessageIdentifier);
+                receivedMessages.Remove(pubRelMsg.VariableHeader.MessageIdentifier);
 
                 // send the message for processing to whoever is waiting.
                 publishSuccess = publishMessageCallback(pubMsg);

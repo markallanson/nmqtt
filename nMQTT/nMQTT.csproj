@@ -84,8 +84,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="PublishEventArgs.cs" />
-    <None Include="MessageReceivedEventArgs.cs" />
     <Compile Include="InvalidMessageEventArgs.cs" />
     <Compile Include="InvalidMessageException.cs" />
     <Compile Include="DataAvailableEventArgs.cs" />

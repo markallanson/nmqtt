@@ -33,7 +33,7 @@ namespace NmqttTests.Messages.Unsubscribe
             // simple single topic unsubscribe message
             var expected = new[]
             {
-                (byte)0xA2,
+                (byte)0xAA,
                 (byte)0x08,
                 (byte)0x00,
                 (byte)0x03,
@@ -48,7 +48,8 @@ namespace NmqttTests.Messages.Unsubscribe
             MqttMessage msg = new MqttUnsubscribeMessage()
                 .FromTopic("fred")
                 .WithMessageIdentifier(3)
-                .ExpectAcknowledgement();
+                .ExpectAcknowledgement()
+                .IsDuplicate();
             Console.WriteLine(msg);
 
             byte[] actual = MessageSerializationHelper.GetMessageBytes(msg);

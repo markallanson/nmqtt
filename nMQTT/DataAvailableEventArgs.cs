@@ -24,19 +24,27 @@ namespace Nmqtt
     /// </summary>
     public class DataAvailableEventArgs : EventArgs
     {
+        private Collection<byte> messageData;
+
         /// <summary>
         /// Gets or sets the data stream that contains the data to read from.
         /// </summary>
         /// <value>The data stream.</value>
-        public IEnumerable<byte> MessageData { get; set; }
+        public Collection<byte> MessageData
+        {
+            get
+            {
+                return messageData;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataAvailableEventArgs"/> class.
         /// </summary>
         /// <param name="dataStream">The data stream containing the message available for processing.</param>
-        public DataAvailableEventArgs(IEnumerable<byte> messageData)
+        public DataAvailableEventArgs(Collection<byte> messageData)
         {
-            this.MessageData = messageData;
+            this.messageData = messageData;
         }
     }
 }

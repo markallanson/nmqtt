@@ -41,5 +41,30 @@ namespace NmqttTests.Messages.Connect
             // VH will = 12, Msg = 6
             Assert.Equal<byte>(18, mb[1]);
         }
+
+        [Fact]
+        public void WithWillSet()
+        {
+            MqttConnectMessage msg = new MqttConnectMessage()
+                .WithProtocolName("MQIsdp")
+                .WithProtocolVersion(3)
+                .WithClientIdentifier("mark")
+                .KeepAliveFor(30)
+                .StartClean()
+                .Will()
+                .WithWillQos(MqttQos.AtLeastOnce)
+                .WithWillRetain()
+                .WithWillTopic("willTopic")
+                .WithWillMessage("willMessage");
+
+            Console.WriteLine(msg);
+
+            byte[] mb = MessageSerializationHelper.GetMessageBytes(msg);
+
+            Assert.Equal<byte>(0x10, mb[0]);
+            // VH will = 12, Msg = 6
+            Assert.Equal<byte>(42, mb[1]);
+
+        }
     } 
 }

@@ -26,9 +26,8 @@ namespace Nmqtt
     /// </summary>
     public sealed class MqttConnectPayload : MqttPayload
     {
-        private bool willFlag;
-
         private string clientIdentifier;
+        private MqttConnectVariableHeader variableHeader;
 
         /// <summary>
         /// The identifier of the client that is/has sent the connet message.
@@ -56,8 +55,9 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectPayload"/> class.
         /// </summary>
-        public MqttConnectPayload()
+        public MqttConnectPayload(MqttConnectVariableHeader variableHeader)
         {
+            this.variableHeader = variableHeader;
         }
 
         /// <summary>
@@ -67,10 +67,10 @@ namespace Nmqtt
         /// <param name="willFlag">
         /// Set to true to indicate that the payload stream should be interrogated for the 
         /// Will Topic and Message</param>
-        public MqttConnectPayload(Stream payloadStream, bool willFlag)
-            : base(payloadStream)
+        public MqttConnectPayload(MqttConnectVariableHeader variableHeader, Stream payloadStream)
         {
-            this.willFlag = willFlag;
+            this.variableHeader = variableHeader;
+            ReadFrom(payloadStream);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Nmqtt
         public override void WriteTo(Stream payloadStream)
         {
             payloadStream.WriteMqttString(ClientIdentifier);
-            if (this.willFlag)
+            if (variableHeader.ConnectFlags.WillFlag)
             {
                 payloadStream.WriteMqttString(WillTopic);
                 payloadStream.WriteMqttString(WillMessage);
@@ -98,7 +98,7 @@ namespace Nmqtt
         {
             ClientIdentifier = payloadStream.ReadMqttString();
 
-            if (this.willFlag)
+            if (this.variableHeader.ConnectFlags.WillFlag)
             {
                 WillTopic = payloadStream.ReadMqttString();
                 WillMessage = payloadStream.ReadMqttString();
@@ -112,7 +112,7 @@ namespace Nmqtt
             
             length += enc.GetByteCount(ClientIdentifier);
 
-            if (this.willFlag)
+            if (this.variableHeader.ConnectFlags.WillFlag)
             {
                 length += enc.GetByteCount(WillTopic);
                 length += enc.GetByteCount(WillMessage);

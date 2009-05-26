@@ -23,16 +23,16 @@ namespace NmqttTests.SubscriptionsManager
 {
     public class SubscriptionsManagerTests
     {
-[Fact]
-public void Ctor()
-{
-    var chMock = new Mock<IMqttConnectionHandler>();
-    chMock.Setup(x => x.RegisterForMessage(MqttMessageType.SubscribeAck, It.IsAny<Func<MqttMessage, bool>>()));
+        [Fact]
+        public void Ctor()
+        {
+            var chMock = new Mock<IMqttConnectionHandler>();
+            chMock.Setup(x => x.RegisterForMessage(MqttMessageType.SubscribeAck, It.IsAny<Func<MqttMessage, bool>>()));
 
-    Nmqtt.SubscriptionsManager subs = new Nmqtt.SubscriptionsManager(chMock.Object);
+            Nmqtt.SubscriptionsManager subs = new Nmqtt.SubscriptionsManager(chMock.Object);
 
-    chMock.VerifyAll();
-}
+            chMock.VerifyAll();
+        }
 
         [Fact]
         public void SubscriptionRequestCreatesPendingSubscription()

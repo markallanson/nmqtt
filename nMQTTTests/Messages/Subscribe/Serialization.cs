@@ -33,7 +33,7 @@ namespace NmqttTests.Messages.Subscribe
             // simple single topic Subscribe message
             var expected = new[]
             {
-                (byte)0x82,
+                (byte)0x8A,
                 (byte)0x09,
                 (byte)0x00,
                 (byte)0x02,
@@ -50,7 +50,8 @@ namespace NmqttTests.Messages.Subscribe
                 .ToTopic("fred")
                 .AtQos(MqttQos.AtLeastOnce)
                 .WithMessageIdentifier(2)
-                .ExpectAcknowledgement();
+                .ExpectAcknowledgement()
+                .IsDuplicate();
             Console.WriteLine(msg);
 
             byte[] actual = MessageSerializationHelper.GetMessageBytes(msg);

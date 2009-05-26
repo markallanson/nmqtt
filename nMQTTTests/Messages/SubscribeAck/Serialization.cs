@@ -144,5 +144,20 @@ namespace NmqttTests.Messages.SubscribeAck
             Assert.Equal<byte>(expected[5], actual[5]); // QOS 1 (Least)
             Assert.Equal<byte>(expected[6], actual[6]); // QOS 1 (Exactly)
         }
+
+        [Fact]
+        public void ClearGrantsClearsGrants()
+        {
+            MqttSubscribeAckMessage msg = new MqttSubscribeAckMessage()
+                .WithMessageIdentifier(2)
+                .AddQosGrant(MqttQos.AtMostOnce)
+                .AddQosGrant(MqttQos.AtLeastOnce)
+                .AddQosGrant(MqttQos.ExactlyOnce);
+
+            Assert.Equal<int>(3, msg.Payload.QosGrants.Count);
+            msg.Payload.ClearGrants();
+            Assert.Equal<int>(0, msg.Payload.QosGrants.Count);
+        }
+
     } 
 }
