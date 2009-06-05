@@ -24,6 +24,7 @@ namespace Nmqtt
     internal sealed class SynchronousMqttConnectionHandler : MqttConnectionHandler
     {
         private AutoResetEvent connectionResetEvent = new AutoResetEvent(false);
+        private const int MaxConnectionAttempts = 5;
 
         /// <summary>
         /// Synchronously connect to the specific Mqtt Connection.
@@ -31,18 +32,41 @@ namespace Nmqtt
         /// <param name="connection"></param>
         protected override ConnectionState InternalConnect(string server, int port, MqttConnectMessage connectMessage)
         {
-            // Initiate the connection
-            connectionState = ConnectionState.Connecting;
-            connection = MqttConnection.Connect(server, port);
-            this.RegisterForMessage(MqttMessageType.ConnectAck, ConnectAckProcessor);
-            connection.DataAvailable += connection_MessageDataAvailable;
+            int connectionAttempts = 0;
 
-            // transmit the required connection message to the broker.
-            SendMessage(connectMessage);
+            do
+            {
+                // Initiate the connection
+                connectionState = ConnectionState.Connecting;
 
-            // we're the sync connection handler so we need to wait for the brokers acknowlegement of the connections
-            // TODO: Figure out how we are going to deal with sync connection timeouts, when the server doesn't respond with a ConnectAck.
-            connectionResetEvent.WaitOne();
+                connection = MqttConnection.Connect(server, port);
+                this.RegisterForMessage(MqttMessageType.ConnectAck, ConnectAckProcessor);
+                connection.DataAvailable += connection_MessageDataAvailable;
+
+                // transmit the required connection message to the broker.
+                SendMessage(connectMessage);
+
+                // we're the sync connection handler so we need to wait for the brokers acknowlegement of the connections
+                if (!connectionResetEvent.WaitOne(5000, false))
+                {
+                    // if we don't get a response in 5 seconds, dispose the connection and rebuild it.
+                    connectionState = ConnectionState.Disconnecting;
+                    connection.Dispose();
+                    connectionState = ConnectionState.Disconnected;
+                }
+
+            } while (connectionState != ConnectionState.Connected && ++connectionAttempts < MaxConnectionAttempts);
+
+            // if we've failed to handshake with the broker, throw an exception.
+            if (connectionState != ConnectionState.Connected)
+            {
+                throw new ConnectionException(
+                    String.Format("The maximum allowed connection attempts ({0}) were exceeded. The broker " +
+                        "is not responding to the connection request message (Missing Connection Acknowledgement)", 
+                        MaxConnectionAttempts),
+                    connectionState);
+            }
+
             return connectionState;
         }
 

@@ -26,6 +26,6 @@ namespace Nmqtt
         Disconnected,
         Connecting,
         Connected,
-        Idle
+        Faulted
     }
 }

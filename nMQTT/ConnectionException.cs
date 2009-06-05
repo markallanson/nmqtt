@@ -79,7 +79,7 @@ namespace Nmqtt
         /// </summary>
         /// <param name="message">The message.</param>
         public ConnectionException(string message, ConnectionState connectionState)
-            : base(message)
+            : this(message)
         {
             ConnectionState = connectionState;
         }
@@ -90,7 +90,7 @@ namespace Nmqtt
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
         public ConnectionException(string message, ConnectionState connectionState, Exception innerException)
-            : base(message, innerException)
+            : this(message, innerException)
         {
             ConnectionState = connectionState;
         }

@@ -19,7 +19,7 @@ namespace Nmqtt
     /// <summary>
     /// Converts string data to and from the MQTT wire format
     /// </summary>
-    public class AsciiStringPublishDataConverter : IPublishDataConverter
+    public class AsciiPublishDataConverter : IPublishDataConverter
     {
         #region IPublishDataConverter Members
 

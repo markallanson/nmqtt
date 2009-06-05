@@ -41,8 +41,18 @@ namespace Nmqtt
         /// <param name="port">The port.</param>
         private MqttConnection(string server, int port)
         {
-            // connect and save off the stream.
-            tcpClient = new TcpClient(server, port);
+            try
+            {
+                // connect and save off the stream.
+                tcpClient = new TcpClient(server, port);
+            }
+            catch (SocketException ex)
+            {
+                throw new ConnectionException(
+                    String.Format("The connection to the message broker {0}:{1} could not be made.", server, port), 
+                    ConnectionState.Faulted, ex);
+            }
+
             networkStream = tcpClient.GetStream();
 
             // initiate a read for the next byte which will be the header bytes

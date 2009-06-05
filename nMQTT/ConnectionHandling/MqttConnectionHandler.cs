@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Net.Sockets;
 
 namespace Nmqtt
 {
@@ -24,18 +25,29 @@ namespace Nmqtt
     internal abstract class MqttConnectionHandler : IMqttConnectionHandler
     {
         protected MqttConnection connection;
-        
+
         /// <summary>
         /// Registry of message processors
         /// </summary>
         private Dictionary<MqttMessageType, List<Func<MqttMessage, bool>>> messageProcessorRegistry = new Dictionary<MqttMessageType, List<Func<MqttMessage, bool>>>();
-        
+
         /// <summary>
         /// Registry of sent message callbacks
         /// </summary>
-        private List<Func<MqttMessage, bool>> sentMessageCallbacks = new List<Func<MqttMessage,bool>>();
+        private List<Func<MqttMessage, bool>> sentMessageCallbacks = new List<Func<MqttMessage, bool>>();
 
         protected ConnectionState connectionState = ConnectionState.Disconnected;
+
+        /// <summary>
+        /// Gets the current state of the connection handler.
+        /// </summary>
+        public ConnectionState ConnectionState
+        {
+            get
+            {
+                return connectionState;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectionHandler"/> class.
@@ -45,7 +57,7 @@ namespace Nmqtt
             // pre-prepare the message processor registry
             foreach (MqttMessageType type in Enum.GetValues(typeof(MqttMessageType)))
             {
-                messageProcessorRegistry.Add(type, new List<Func<MqttMessage,bool>>());
+                messageProcessorRegistry.Add(type, new List<Func<MqttMessage, bool>>());
             }
         }
 
@@ -68,15 +80,23 @@ namespace Nmqtt
         /// <param name="message">The connect message to use as part of the connection process.</param>
         public ConnectionState Connect(string server, int port, MqttConnectMessage message)
         {
-            ConnectionState state = InternalConnect(server, port, message);
+            try
+            {
+                connectionState = InternalConnect(server, port, message);
+            }
+            catch (ConnectionException)
+            {
+                connectionState = ConnectionState.Faulted;
+                throw;
+            }
 
             // if we managed to connection, ensure we catch any unexpected disconnects
-            if (state == ConnectionState.Connected)
+            if (connectionState == ConnectionState.Connected)
             {
                 this.connection.ConnectionDropped += (sender, e) => { this.connectionState = ConnectionState.Disconnected; };
             }
 
-            return state;
+            return connectionState;
         }
 
         /// <summary>
@@ -202,7 +222,11 @@ namespace Nmqtt
             if (connection != null)
             {
                 this.Close();
-                connection.Dispose();
+
+                if (connection != null)
+                {
+                    connection.Dispose();
+                }
             }
 
             GC.SuppressFinalize(this);
