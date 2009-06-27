@@ -56,7 +56,7 @@ namespace Nmqtt
             networkStream = tcpClient.GetStream();
 
             // initiate a read for the next byte which will be the header bytes
-            networkStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), networkStream);
+            networkStream.BeginRead(headerByte, 0, 1, ReadComplete, networkStream);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Nmqtt
                 }
 
                 // initiate a read for the next byte which will be the header bytes
-                dataStream.BeginRead(headerByte, 0, 1, new AsyncCallback(ReadComplete), dataStream);
+                dataStream.BeginRead(headerByte, 0, 1, ReadComplete, dataStream);
             }
             catch (IOException ex)
             {

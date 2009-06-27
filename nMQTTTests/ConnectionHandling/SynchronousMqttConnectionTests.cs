@@ -77,5 +77,21 @@ namespace NmqttTests.ConnectionHandling
             Console.WriteLine("Exception Message Received {0}", ex.ToString());
             Assert.Equal<ConnectionState>(ConnectionState.Disconnected, ch.ConnectionState);
         }
+
+        [Fact]
+        public void SuccessfullResponseCausesConnectionStateConnected()
+        {
+            // register a method to process the Connect message and respond with a ConnectAck message
+            broker.SetMessageHandler((messageArrived) =>
+                {
+                    MqttConnectMessage connect = (MqttConnectMessage)MqttMessage.CreateFrom(messageArrived);
+                    MqttConnectAckMessage ack = new MqttConnectAckMessage().WithReturnCode(MqttConnectReturnCode.ConnectionAccepted);
+                    broker.SendMessage(ack);
+                });
+
+            var ch = new SynchronousMqttConnectionHandler();
+            Assert.Equal<ConnectionState>(ConnectionState.Connected, 
+                ch.Connect(mockBrokerAddress, mockBrokerPort, new MqttConnectMessage().WithClientIdentifier(testClientId)));
+        }
     }
 }
