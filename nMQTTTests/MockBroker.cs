@@ -51,7 +51,7 @@ namespace NmqttTests
 
             Collection<byte> lengthBytes = MqttHeader.ReadLengthBytes(networkStream);
             int length = MqttHeader.CalculateLength(lengthBytes);
-            messageBytes.AddRange(lengthBytes);
+            messageBytes.AddRange<byte>(lengthBytes);
 
             // we've got the bytes that make up the header, inc the size, read the .
             var remainingMessage = new byte[length];
@@ -60,7 +60,7 @@ namespace NmqttTests
             {
                 // we haven't got all the message, need to figure oput what to do.
             }
-            messageBytes.AddRange(remainingMessage);
+            messageBytes.AddRange<byte>(remainingMessage);
 
             networkStream.BeginRead(headerBytes, 0, 1, DataArrivedOnConnection, null);
 

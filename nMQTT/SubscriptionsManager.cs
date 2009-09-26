@@ -122,11 +122,14 @@ namespace Nmqtt
                 status = SubscriptionStatus.Active;
             }
 
+			
+			pendingSubscriptions.SingleOrDefault<KeyValuePair<int, Subscription>>(pair => pair.Value.Topic.Equals(topic, StringComparison.Ordinal));
+				
             // if its pending, return pending.
-            if (pendingSubscriptions.Values.Count<Subscription>(subs => subs.Topic.Equals(topic, StringComparison.Ordinal)) >= 1)
-            {
-                status = SubscriptionStatus.Pending;
-            }
+            //if (pendingSubscriptions.SingleOrDefault<KeyValuePair<int, Subscription>>(pair => pair.Value.Topic.Equals(topic, StringComparison.Ordinal)) != null)
+            //{
+            //    status = SubscriptionStatus.Pending;
+           // }
 
             return status;
         }

@@ -23,13 +23,13 @@ namespace Nmqtt.ExtensionMethods
     /// <summary>
     /// Helper methods to provide functionality on Collection[T].
     /// </summary>
-    internal static class CollectionExtensions
+    public static class CollectionExtensions
     {
         /// <summary>
         /// Provides AddRange functionality to Collection[T]
         /// </summary>
-        /// <param name="stream">The collection to add a range of values to.</param>
-        /// <param name="value">The range of valus to add to the collection.</param>
+        /// <param name="collection">The collection to add a range of values to.</param>
+        /// <param name="range">The range of valus to add to the collection.</param>
         public static void AddRange(this Collection<byte> collection, IEnumerable<byte> range)
         {
             foreach (byte b in range)
@@ -37,5 +37,18 @@ namespace Nmqtt.ExtensionMethods
                 collection.Add(b);
             }
         }
+		
+        /// <summary>
+        /// Provides AddRange functionality to Collection[T]
+        /// </summary>
+        /// <param name="collection">The collection to add a range of values to.</param>
+        /// <param name="range">The range of valus to add to the collection.</param>
+   		public static void AddRange<T>(this Collection<T> collection, IEnumerable<T> range)
+		{
+            foreach (T item in range)
+            {
+                collection.Add(item);
+            }			
+		}
     }
 }
