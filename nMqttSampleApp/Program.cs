@@ -24,7 +24,7 @@ namespace nMqttSampleApp
 		public static void Main (string[] args)
 		{
 			Application.EnableVisualStyles();
-			Application.Run(new Shell(new ShellViewModel()));
+			Application.Run(new ShellForm(new ShellViewModel()));
 		}
 	}
 }

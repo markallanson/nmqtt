@@ -6,7 +6,7 @@
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6D493F92-7785-4F07-BA36-E25E18028602}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>nMqtt.SampleApp</RootNamespace>
     <StartupObject>nMqttSampleApp.Program</StartupObject>
     <AssemblyName>nMqttSampleApp</AssemblyName>
@@ -31,15 +31,56 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Views\Shell.cs">
+    <Compile Include="ViewsModels\ShellViewModel.cs" />
+    <Compile Include="Views\ConnectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ConnectionView.Designer.cs">
+      <DependentUpon>ConnectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PublishMessageView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PublishMessageView.Designer.cs">
+      <DependentUpon>PublishMessageView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShellForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ViewsModels\ShellViewModel.cs" />
+    <Compile Include="Views\ShellForm.Designer.cs">
+      <DependentUpon>ShellForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SubscriptionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SubscriptionView.Designer.cs">
+      <DependentUpon>SubscriptionView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\ConnectionView.resx">
+      <DependentUpon>ConnectionView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PublishMessageView.resx">
+      <DependentUpon>PublishMessageView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ShellForm.resx">
+      <DependentUpon>ShellForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SubscriptionView.resx">
+      <DependentUpon>SubscriptionView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
