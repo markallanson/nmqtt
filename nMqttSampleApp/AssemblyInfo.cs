@@ -9,18 +9,19 @@
  *
  *     http://www.opensource.org/licenses/mit-license.php
 */
+
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("nMqttSampleApp")]
+[assembly: AssemblyTitle("nMqtt Library Sample Application")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("nMqtt")]
+[assembly: AssemblyProduct("nMqtt")]
+[assembly: AssemblyCopyright("Copyright © nMQTT Project 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

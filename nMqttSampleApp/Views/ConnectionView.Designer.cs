@@ -42,9 +42,9 @@ namespace nMqtt.SampleApp.Views
         {
             this.connectionGroupBox = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.addressCombo = new System.Windows.Forms.ComboBox();
+            this.serverCombo = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.portCombo = new System.Windows.Forms.ComboBox();
             this.connectButton = new System.Windows.Forms.Button();
             this.disconnectButton = new System.Windows.Forms.Button();
             this.historyButton = new System.Windows.Forms.Button();
@@ -56,9 +56,9 @@ namespace nMqtt.SampleApp.Views
             this.connectionGroupBox.Controls.Add(this.historyButton);
             this.connectionGroupBox.Controls.Add(this.disconnectButton);
             this.connectionGroupBox.Controls.Add(this.connectButton);
-            this.connectionGroupBox.Controls.Add(this.comboBox1);
+            this.connectionGroupBox.Controls.Add(this.portCombo);
             this.connectionGroupBox.Controls.Add(this.label2);
-            this.connectionGroupBox.Controls.Add(this.addressCombo);
+            this.connectionGroupBox.Controls.Add(this.serverCombo);
             this.connectionGroupBox.Controls.Add(this.label1);
             this.connectionGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.connectionGroupBox.Location = new System.Drawing.Point(0, 0);
@@ -79,13 +79,13 @@ namespace nMqtt.SampleApp.Views
             // 
             // addressCombo
             // 
-            this.addressCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.serverCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.addressCombo.FormattingEnabled = true;
-            this.addressCombo.Location = new System.Drawing.Point(94, 17);
-            this.addressCombo.Name = "addressCombo";
-            this.addressCombo.Size = new System.Drawing.Size(272, 21);
-            this.addressCombo.TabIndex = 1;
+            this.serverCombo.FormattingEnabled = true;
+            this.serverCombo.Location = new System.Drawing.Point(94, 17);
+            this.serverCombo.Name = "addressCombo";
+            this.serverCombo.Size = new System.Drawing.Size(272, 21);
+            this.serverCombo.TabIndex = 1;
             // 
             // label2
             // 
@@ -98,11 +98,11 @@ namespace nMqtt.SampleApp.Views
             // 
             // comboBox1
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(94, 44);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(76, 21);
-            this.comboBox1.TabIndex = 3;
+            this.portCombo.FormattingEnabled = true;
+            this.portCombo.Location = new System.Drawing.Point(94, 44);
+            this.portCombo.Name = "comboBox1";
+            this.portCombo.Size = new System.Drawing.Size(76, 21);
+            this.portCombo.TabIndex = 3;
             // 
             // connectButton
             // 
@@ -148,9 +148,9 @@ namespace nMqtt.SampleApp.Views
 
         private System.Windows.Forms.GroupBox connectionGroupBox;
         private System.Windows.Forms.Button connectButton;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox portCombo;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox addressCombo;
+        private System.Windows.Forms.ComboBox serverCombo;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button historyButton;
         private System.Windows.Forms.Button disconnectButton;

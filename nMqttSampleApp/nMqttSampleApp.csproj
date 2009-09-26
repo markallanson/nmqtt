@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,6 +38,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -73,6 +76,12 @@
     <Compile Include="Views\SubscriptionView.Designer.cs">
       <DependentUpon>SubscriptionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewsModels\ConnectionViewModel.cs" />
+    <Compile Include="ViewsModels\ViewModel.cs" />
+    <Compile Include="Views\View.cs" />
+    <Compile Include="Models\IConnectionModel.cs" />
+    <Compile Include="Models\ConnectionModel.cs" />
+    <Compile Include="Models\Model.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ConnectionView.resx">
@@ -97,4 +106,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
 </Project>

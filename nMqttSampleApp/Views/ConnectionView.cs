@@ -18,13 +18,30 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
+using nMqtt.SampleApp.ViewModels;
+
 namespace nMqtt.SampleApp.Views
 {
-    public partial class ConnectionView : UserControl
+    public partial class ConnectionView : View<ConnectionViewModel>
     {
-        public ConnectionView()
-        {
-            InitializeComponent();
+		public ConnectionView ()
+		{
+			InitializeComponent();		
         }
+		
+		protected override void InitializeDataBinding()
+		{
+			this.serverCombo.DataSource = ViewModel.Servers;
+			this.serverCombo.DataBindings.Add ("Text", ViewModel, "Server");
+
+			this.portCombo.DataSource = ViewModel.Ports;
+			this.portCombo.DataBindings.Add ("Text", ViewModel, "Port");
+		}
+		
+		protected override void InitializeEventHandlers()
+		{
+			this.connectButton.Click += (sender, e) => ViewModel.Connect();
+			this.disconnectButton.Click += (sender, e) => ViewModel.Disconnect();	
+		}
     }
 }
