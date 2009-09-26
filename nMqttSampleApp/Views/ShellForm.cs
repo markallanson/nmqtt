@@ -30,6 +30,13 @@ namespace nMqtt.SampleApp.Views
             this.viewModel = viewModel;
 
             InitializeComponent();
+			
+			InitializeDataBindings();
         }
+		
+		private void InitializeDataBindings()
+		{
+			this.DataBindings.Add("Text", viewModel, "WindowTitle");
+		}
     }
 }
