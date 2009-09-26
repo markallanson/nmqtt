@@ -43,11 +43,17 @@ namespace nMqtt.SampleApp.Views
             this.tabControl = new System.Windows.Forms.TabControl();
             this.nmqttTabPage = new System.Windows.Forms.TabPage();
             this.optionsTabPage = new System.Windows.Forms.TabPage();
-            this.publishMessageView1 = new nMqtt.SampleApp.Views.PublishMessageView();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.subscriptionView1 = new nMqtt.SampleApp.Views.SubscriptionView();
+            this.publishMessageView1 = new nMqtt.SampleApp.Views.PublishMessageView();
             this.connectionView1 = new nMqtt.SampleApp.Views.ConnectionView();
+            this.optionsView1 = new nMqtt.SampleApp.Views.OptionsView();
             this.tabControl.SuspendLayout();
             this.nmqttTabPage.SuspendLayout();
+            this.optionsTabPage.SuspendLayout();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -64,8 +70,7 @@ namespace nMqtt.SampleApp.Views
             // 
             // nmqttTabPage
             // 
-            this.nmqttTabPage.Controls.Add(this.publishMessageView1);
-            this.nmqttTabPage.Controls.Add(this.subscriptionView1);
+            this.nmqttTabPage.Controls.Add(this.splitContainer1);
             this.nmqttTabPage.Controls.Add(this.connectionView1);
             this.nmqttTabPage.Location = new System.Drawing.Point(4, 22);
             this.nmqttTabPage.Name = "nmqttTabPage";
@@ -77,6 +82,7 @@ namespace nMqtt.SampleApp.Views
             // 
             // optionsTabPage
             // 
+            this.optionsTabPage.Controls.Add(this.optionsView1);
             this.optionsTabPage.Location = new System.Drawing.Point(4, 22);
             this.optionsTabPage.Name = "optionsTabPage";
             this.optionsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -85,22 +91,39 @@ namespace nMqtt.SampleApp.Views
             this.optionsTabPage.Text = "Options";
             this.optionsTabPage.UseVisualStyleBackColor = true;
             // 
-            // publishMessageView1
+            // splitContainer1
             // 
-            this.publishMessageView1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.publishMessageView1.Location = new System.Drawing.Point(3, 310);
-            this.publishMessageView1.Name = "publishMessageView1";
-            this.publishMessageView1.Size = new System.Drawing.Size(463, 203);
-            this.publishMessageView1.TabIndex = 2;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 79);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.subscriptionView1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.publishMessageView1);
+            this.splitContainer1.Size = new System.Drawing.Size(463, 434);
+            this.splitContainer1.SplitterDistance = 216;
+            this.splitContainer1.TabIndex = 1;
             // 
             // subscriptionView1
             // 
-            this.subscriptionView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.subscriptionView1.Location = new System.Drawing.Point(3, 85);
+            this.subscriptionView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subscriptionView1.Location = new System.Drawing.Point(0, 0);
             this.subscriptionView1.Name = "subscriptionView1";
-            this.subscriptionView1.Size = new System.Drawing.Size(463, 219);
-            this.subscriptionView1.TabIndex = 1;
+            this.subscriptionView1.Size = new System.Drawing.Size(463, 216);
+            this.subscriptionView1.TabIndex = 0;
+            // 
+            // publishMessageView1
+            // 
+            this.publishMessageView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.publishMessageView1.Location = new System.Drawing.Point(0, 0);
+            this.publishMessageView1.Name = "publishMessageView1";
+            this.publishMessageView1.Size = new System.Drawing.Size(463, 214);
+            this.publishMessageView1.TabIndex = 0;
             // 
             // connectionView1
             // 
@@ -109,6 +132,14 @@ namespace nMqtt.SampleApp.Views
             this.connectionView1.Name = "connectionView1";
             this.connectionView1.Size = new System.Drawing.Size(463, 76);
             this.connectionView1.TabIndex = 0;
+            // 
+            // optionsView1
+            // 
+            this.optionsView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsView1.Location = new System.Drawing.Point(3, 3);
+            this.optionsView1.Name = "optionsView1";
+            this.optionsView1.Size = new System.Drawing.Size(463, 510);
+            this.optionsView1.TabIndex = 0;
             // 
             // ShellForm
             // 
@@ -120,6 +151,10 @@ namespace nMqtt.SampleApp.Views
             this.Text = "nMqtt Utility";
             this.tabControl.ResumeLayout(false);
             this.nmqttTabPage.ResumeLayout(false);
+            this.optionsTabPage.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -130,7 +165,9 @@ namespace nMqtt.SampleApp.Views
         private System.Windows.Forms.TabPage nmqttTabPage;
         private System.Windows.Forms.TabPage optionsTabPage;
         private ConnectionView connectionView1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
         private SubscriptionView subscriptionView1;
         private PublishMessageView publishMessageView1;
+        private OptionsView optionsView1;
     }
 }

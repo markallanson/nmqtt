@@ -45,7 +45,6 @@ namespace nMqtt.SampleApp.Views
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.listView1 = new System.Windows.Forms.ListView();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -55,17 +54,18 @@ namespace nMqtt.SampleApp.Views
             this.label2 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
             this.subscriptionsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // subscriptionsGroupBox
             // 
+            this.subscriptionsGroupBox.Controls.Add(this.textBox3);
             this.subscriptionsGroupBox.Controls.Add(this.button4);
             this.subscriptionsGroupBox.Controls.Add(this.button3);
             this.subscriptionsGroupBox.Controls.Add(this.button2);
             this.subscriptionsGroupBox.Controls.Add(this.button1);
-            this.subscriptionsGroupBox.Controls.Add(this.listView1);
             this.subscriptionsGroupBox.Controls.Add(this.checkBox1);
             this.subscriptionsGroupBox.Controls.Add(this.textBox2);
             this.subscriptionsGroupBox.Controls.Add(this.label4);
@@ -122,17 +122,6 @@ namespace nMqtt.SampleApp.Views
             this.button1.TabIndex = 10;
             this.button1.Text = "Subscribe";
             this.button1.UseVisualStyleBackColor = true;
-            // 
-            // listView1
-            // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.listView1.Location = new System.Drawing.Point(10, 71);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(377, 201);
-            this.listView1.TabIndex = 9;
-            this.listView1.UseCompatibleStateImageBehavior = false;
             // 
             // checkBox1
             // 
@@ -218,6 +207,17 @@ namespace nMqtt.SampleApp.Views
             this.label1.TabIndex = 0;
             this.label1.Text = "Subscribe Topic:";
             // 
+            // textBox3
+            // 
+            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox3.Location = new System.Drawing.Point(10, 71);
+            this.textBox3.Multiline = true;
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(377, 205);
+            this.textBox3.TabIndex = 14;
+            // 
             // SubscriptionView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -248,6 +248,6 @@ namespace nMqtt.SampleApp.Views
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.TextBox textBox3;
     }
 }
