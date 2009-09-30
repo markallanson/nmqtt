@@ -42,6 +42,7 @@ namespace nMqtt.SampleApp.Views
 		private void InitializeChildViews()
 		{
 			this.connectionView1.ViewModel = new ConnectionViewModel();
+			this.optionsView1.ViewModel = new OptionsViewModel();
 		}
     }
 }

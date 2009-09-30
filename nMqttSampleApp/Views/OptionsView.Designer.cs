@@ -38,56 +38,56 @@ namespace nMqtt.SampleApp.Views
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.label1.Location = new System.Drawing.Point(36, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 26);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Client Identifier:";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(123, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(181, 20);
-            this.textBox1.TabIndex = 1;
+		private void InitializeComponent ()
+		{
+			this.label1 = new System.Windows.Forms.Label ();
+			this.clientIdentifierTextBox = new System.Windows.Forms.TextBox ();
+			this.checkBox1 = new System.Windows.Forms.CheckBox ();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel ();
+			this.label2 = new System.Windows.Forms.Label ();
+			this.label3 = new System.Windows.Forms.Label ();
+			this.checkBox2 = new System.Windows.Forms.CheckBox ();
+			this.label4 = new System.Windows.Forms.Label ();
+			this.textBox2 = new System.Windows.Forms.TextBox ();
+			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown ();
+			this.numericUpDown2 = new System.Windows.Forms.NumericUpDown ();
+			this.groupBox1 = new System.Windows.Forms.GroupBox ();
+			this.groupBox2 = new System.Windows.Forms.GroupBox ();
+			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel ();
+			this.groupBox3 = new System.Windows.Forms.GroupBox ();
+			this.label5 = new System.Windows.Forms.Label ();
+			this.comboBox1 = new System.Windows.Forms.ComboBox ();
+			this.numericUpDown3 = new System.Windows.Forms.NumericUpDown ();
+			this.label6 = new System.Windows.Forms.Label ();
+			this.checkBox3 = new System.Windows.Forms.CheckBox ();
+			this.textBox3 = new System.Windows.Forms.TextBox ();
+			this.button1 = new System.Windows.Forms.Button ();
+			this.tableLayoutPanel1.SuspendLayout ();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit ();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit ();
+			this.groupBox1.SuspendLayout ();
+			this.groupBox2.SuspendLayout ();
+			this.tableLayoutPanel2.SuspendLayout ();
+			this.groupBox3.SuspendLayout ();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit ();
+			this.SuspendLayout ();
+			// 
+			// label1
+			// 
+			this.label1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.label1.Location = new System.Drawing.Point (36, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size (81, 26);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Client Identifier:";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// textBox1
+			// 
+			this.clientIdentifierTextBox.Location = new System.Drawing.Point (123, 3);
+			this.clientIdentifierTextBox.Name = "clientIdentifierTextBox";
+			this.clientIdentifierTextBox.Size = new System.Drawing.Size (181, 20);
+            this.clientIdentifierTextBox.TabIndex = 1;
             // 
             // checkBox1
             // 
@@ -106,7 +106,7 @@ namespace nMqtt.SampleApp.Views
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.checkBox1, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.textBox1, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.clientIdentifierTextBox, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.numericUpDown1, 1, 3);
@@ -271,7 +271,6 @@ namespace nMqtt.SampleApp.Views
             this.numericUpDown3.Name = "numericUpDown3";
             this.numericUpDown3.Size = new System.Drawing.Size(31, 20);
             this.numericUpDown3.TabIndex = 5;
-            this.numericUpDown3.ValueChanged += new System.EventHandler(this.numericUpDown3_ValueChanged);
             // 
             // label6
             // 
@@ -282,7 +281,6 @@ namespace nMqtt.SampleApp.Views
             this.label6.Size = new System.Drawing.Size(42, 13);
             this.label6.TabIndex = 4;
             this.label6.Text = "At Qos:";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // checkBox3
             // 
@@ -343,7 +341,7 @@ namespace nMqtt.SampleApp.Views
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox clientIdentifierTextBox;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label2;

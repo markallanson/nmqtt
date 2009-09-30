@@ -21,21 +21,21 @@ using System.Windows.Forms;
 
 namespace nMqtt.SampleApp.Views
 {
-    public partial class OptionsView : UserControl
+    public partial class OptionsView : View<OptionsViewModel>
     {
         public OptionsView()
         {
             InitializeComponent();
         }
-
-        private void label6_Click(object sender, EventArgs e)
+        
+        protected override void InitializeDataBinding()
         {
-
+        		this.clientIdentifierTextBox.DataBindings.Add("Text", ViewModel, "ClientIdentifier");
+        }
+        
+        protected override void InitializeEventHandlers ()
+        {
         }
 
-        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

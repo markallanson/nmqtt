@@ -82,6 +82,11 @@
     <Compile Include="Models\IConnectionModel.cs" />
     <Compile Include="Models\ConnectionModel.cs" />
     <Compile Include="Models\Model.cs" />
+    <Compile Include="MqttHandler.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="ViewsModels\OptionsViewModel.cs" />
+    <Compile Include="Models\OptionsModel.cs" />
+    <Compile Include="Models\IOptionsModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ConnectionView.resx">
@@ -108,5 +113,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nMQTT\nMQTT.csproj">
+      <Project>{6506A020-988F-48A1-BC7C-FCDB13E3A4CC}</Project>
+      <Name>nMQTT</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
