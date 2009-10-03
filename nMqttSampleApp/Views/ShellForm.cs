@@ -43,6 +43,7 @@ namespace nMqtt.SampleApp.Views
 		{
 			this.connectionView1.ViewModel = new ConnectionViewModel();
 			this.optionsView1.ViewModel = new OptionsViewModel();
+			this.subscriptionView1.ViewModel = new SubscriptionViewModel();
 		}
     }
 }

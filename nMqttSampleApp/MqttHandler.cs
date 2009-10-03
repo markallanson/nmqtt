@@ -49,5 +49,10 @@ namespace nMqtt.SampleApp
 		{
 			client.Dispose();
 		}
+		
+		public void Subscribe(string topic, byte qos)
+		{
+			client.Subscribe(topic, (MqttQos)qos, (subTopic, data) => true);
+		}
 	}
 }

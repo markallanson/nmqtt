@@ -12,3 +12,4 @@ _ReSharper.*
 *.usertasks
 *.userprefs
 *.pidb
+.*~.cs

@@ -20,11 +20,26 @@ using System.Windows.Forms;
 
 namespace nMqtt.SampleApp.Views
 {
-    public partial class SubscriptionView : UserControl
+    public partial class SubscriptionView : View<SubscriptionViewModel>
     {
         public SubscriptionView()
         {
             InitializeComponent();
         }
+        
+		protected override void InitializeDataBinding ()
+		{
+			topicsComboBox.DataSource = ViewModel.Topics;
+			topicsComboBox.DataBindings.Add ("Text", ViewModel, "Topic");
+
+			qosNumeric.DataBindings.Add("Maximum", ViewModel, "QosMaximum");
+        		qosNumeric.DataBindings.Add("Minimum", ViewModel, "QosMinimum");
+        		qosNumeric.DataBindings.Add("Value", ViewModel, "Qos");
+        }
+
+		protected override void InitializeEventHandlers()
+		{
+			subscribeButton.Click += (sender, e) => ViewModel.Subscribe();
+		}
     }
 }

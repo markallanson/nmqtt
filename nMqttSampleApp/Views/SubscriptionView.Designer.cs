@@ -44,19 +44,19 @@ namespace nMqtt.SampleApp.Views
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.subscribeButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.qosNumeric = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.topicsComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.subscriptionsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.qosNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // subscriptionsGroupBox
@@ -65,15 +65,15 @@ namespace nMqtt.SampleApp.Views
             this.subscriptionsGroupBox.Controls.Add(this.button4);
             this.subscriptionsGroupBox.Controls.Add(this.button3);
             this.subscriptionsGroupBox.Controls.Add(this.button2);
-            this.subscriptionsGroupBox.Controls.Add(this.button1);
+            this.subscriptionsGroupBox.Controls.Add(this.subscribeButton);
             this.subscriptionsGroupBox.Controls.Add(this.checkBox1);
             this.subscriptionsGroupBox.Controls.Add(this.textBox2);
             this.subscriptionsGroupBox.Controls.Add(this.label4);
             this.subscriptionsGroupBox.Controls.Add(this.textBox1);
             this.subscriptionsGroupBox.Controls.Add(this.label3);
-            this.subscriptionsGroupBox.Controls.Add(this.numericUpDown1);
+            this.subscriptionsGroupBox.Controls.Add(this.qosNumeric);
             this.subscriptionsGroupBox.Controls.Add(this.label2);
-            this.subscriptionsGroupBox.Controls.Add(this.comboBox1);
+            this.subscriptionsGroupBox.Controls.Add(this.topicsComboBox);
             this.subscriptionsGroupBox.Controls.Add(this.label1);
             this.subscriptionsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.subscriptionsGroupBox.Location = new System.Drawing.Point(0, 0);
@@ -113,15 +113,15 @@ namespace nMqtt.SampleApp.Views
             this.button2.Text = "Unsubscribe";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // subscribeButton
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(393, 71);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "Subscribe";
-            this.button1.UseVisualStyleBackColor = true;
+            this.subscribeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.subscribeButton.Location = new System.Drawing.Point(393, 71);
+            this.subscribeButton.Name = "subscribeButton";
+            this.subscribeButton.Size = new System.Drawing.Size(75, 23);
+            this.subscribeButton.TabIndex = 10;
+            this.subscribeButton.Text = "Subscribe";
+            this.subscribeButton.UseVisualStyleBackColor = true;
             // 
             // checkBox1
             // 
@@ -170,13 +170,13 @@ namespace nMqtt.SampleApp.Views
             this.label3.TabIndex = 4;
             this.label3.Text = "Received Topic:";
             // 
-            // numericUpDown1
+            // qosNumeric
             // 
-            this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDown1.Location = new System.Drawing.Point(437, 18);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(31, 20);
-            this.numericUpDown1.TabIndex = 3;
+            this.qosNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.qosNumeric.Location = new System.Drawing.Point(437, 18);
+            this.qosNumeric.Name = "qosNumeric";
+            this.qosNumeric.Size = new System.Drawing.Size(31, 20);
+            this.qosNumeric.TabIndex = 3;
             // 
             // label2
             // 
@@ -188,15 +188,15 @@ namespace nMqtt.SampleApp.Views
             this.label2.TabIndex = 2;
             this.label2.Text = "At Qos:";
             // 
-            // comboBox1
+            // topicsComboBox
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.topicsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(100, 17);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(287, 21);
-            this.comboBox1.TabIndex = 1;
+            this.topicsComboBox.FormattingEnabled = true;
+            this.topicsComboBox.Location = new System.Drawing.Point(100, 17);
+            this.topicsComboBox.Name = "topicsComboBox";
+            this.topicsComboBox.Size = new System.Drawing.Size(287, 21);
+            this.topicsComboBox.TabIndex = 1;
             // 
             // label1
             // 
@@ -227,7 +227,7 @@ namespace nMqtt.SampleApp.Views
             this.Size = new System.Drawing.Size(478, 282);
             this.subscriptionsGroupBox.ResumeLayout(false);
             this.subscriptionsGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.qosNumeric)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -235,9 +235,9 @@ namespace nMqtt.SampleApp.Views
         #endregion
 
         private System.Windows.Forms.GroupBox subscriptionsGroupBox;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown qosNumeric;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox topicsComboBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox textBox2;
@@ -247,7 +247,7 @@ namespace nMqtt.SampleApp.Views
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button subscribeButton;
         private System.Windows.Forms.TextBox textBox3;
     }
 }
