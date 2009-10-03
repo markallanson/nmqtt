@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -78,7 +78,9 @@
     </Compile>
     <Compile Include="ViewsModels\ConnectionViewModel.cs" />
     <Compile Include="ViewsModels\ViewModel.cs" />
-    <Compile Include="Views\View.cs" />
+    <Compile Include="Views\View.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Models\IConnectionModel.cs" />
     <Compile Include="Models\ConnectionModel.cs" />
     <Compile Include="Models\Model.cs" />
@@ -111,9 +113,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nMQTT\nMQTT.csproj">
       <Project>{6506A020-988F-48A1-BC7C-FCDB13E3A4CC}</Project>
