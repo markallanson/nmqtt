@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>nMQTT.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>nMqttDevOnly.snk</AssemblyOriginatorKeyFile>
     <SccProjectName>Svn</SccProjectName>
     <SccLocalPath>Svn</SccLocalPath>
     <SccAuxPath>Svn</SccAuxPath>
@@ -33,7 +33,7 @@
     <DocumentationFile>
     </DocumentationFile>
     <SignAssembly>true</SignAssembly>
-    <AssemblyKeyFile>/Users/mark/Src/dotnet/mqtt/nmqtt/nMQTT/nMQTT.snk</AssemblyKeyFile>
+    <AssemblyKeyFile>nMQTTDevOnly.snk</AssemblyKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -155,7 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="nMQTT.snk" />
+    <None Include="nMqttDevOnly.snk" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
     </None>
