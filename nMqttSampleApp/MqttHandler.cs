@@ -33,9 +33,14 @@ namespace nMqtt.SampleApp
 			get { return instance; }
 		}
 
+        /// <summary>
+        /// Connects to the specified mqtt server.
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
 		public ConnectionState Connect(string server, short port)
 		{
-			System.Windows.Forms.MessageBox.Show("About to connect");
 			client = new MqttClient(server, port, Options.ClientIdentifier);
 			return client.Connect();
 		}

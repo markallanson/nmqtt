@@ -40,12 +40,13 @@ namespace nMqtt.SampleApp.Models
 		{
 			if (!Servers.Contains (Server)) Servers.Add (Server);
 			if (!Ports.Contains (Port)) Ports.Add(Port);
-			
-			
+
+            MqttHandler.Instance.Connect(Server, Port);
 		}
 		
 		public void Disconnect()
 		{
+            MqttHandler.Instance.Disconnect();
 		}
 	}
 }
