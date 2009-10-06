@@ -42,7 +42,13 @@ namespace nMqtt.SampleApp
 		public ConnectionState Connect(string server, short port)
 		{
 			client = new MqttClient(server, port, Options.ClientIdentifier);
+			client.MessageAvailable += ClientMessageAvailable;
 			return client.Connect();
+		}
+
+		void ClientMessageAvailable (object sender, MqttMessageEventArgs e)
+		{
+			
 		}
 		
 		public void Disconnect()
@@ -52,7 +58,7 @@ namespace nMqtt.SampleApp
 		
 		public void Subscribe(string topic, byte qos)
 		{
-			client.Subscribe(topic, (MqttQos)qos, (subTopic, data) => true);
+			client.Subscribe(topic, (MqttQos)qos);
 		}
 	}
 }

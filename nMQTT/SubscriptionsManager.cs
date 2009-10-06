@@ -43,7 +43,7 @@ namespace Nmqtt
         /// <param name="topic"></param>
         /// <param name="qos"></param>
         /// <returns>The subscription message identifier.</returns>
-        internal short RegisterSubscription<TPublishDataConverter>(string topic, MqttQos qos, Func<string, object, bool> subscriptionCallback)
+        internal short RegisterSubscription<TPublishDataConverter>(string topic, MqttQos qos)
             where TPublishDataConverter : IPublishDataConverter
         {
             // check we don't have a pending subscription request for the topic.
@@ -69,8 +69,7 @@ namespace Nmqtt
                 Qos = qos,
                 MessageIdentifier = MessageIdentifierDispenser.GetNextMessageIdentifier("subscriptions"),
                 CreatedTime = DateTime.Now,
-                DataProcessor = Activator.CreateInstance<TPublishDataConverter>(),
-                SubscriptionCallback = subscriptionCallback
+                DataProcessor = Activator.CreateInstance<TPublishDataConverter>()
             };
 
             pendingSubscriptions.Add(sub.MessageIdentifier, sub);

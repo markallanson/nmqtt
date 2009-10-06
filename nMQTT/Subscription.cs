@@ -43,11 +43,6 @@ namespace Nmqtt
         public MqttQos Qos { get; set; }
 
         /// <summary>
-        /// The callback that should be called when messages arrive for the subscription.
-        /// </summary>
-        public Func<string, object, bool> SubscriptionCallback { get; set; }
-
-        /// <summary>
         /// The class that can process received data and turn it into a specific type data.
         /// </summary>
         public IPublishDataConverter DataProcessor { get; set; }

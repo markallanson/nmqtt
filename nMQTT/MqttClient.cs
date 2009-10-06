@@ -85,7 +85,7 @@ namespace Nmqtt
         private MqttConnectionHandler connectionHandler;
 
         /// <summary>
-        /// 
+        /// The subscriptions manager responsible for tracking subscriptions.
         /// </summary>
         private SubscriptionsManager subscriptionsManager;
 
@@ -154,7 +154,6 @@ namespace Nmqtt
                 .WithClientIdentifier(clientIdentifier)
                 .KeepAliveFor(30)
                 .StartClean();
-
         }
 
         /// <summary>
@@ -169,9 +168,10 @@ namespace Nmqtt
             {
                 return false;
             }
-
-            // run the registered data processor over the subscription
-            return subs.SubscriptionCallback(pubMsg.VariableHeader.TopicName, subs.DataProcessor.ConvertFromBytes(pubMsg.Payload.Message.ToArray()));
+            
+            // pass it on to the event subscribers.
+            OnMessageAvailable(pubMsg.VariableHeader.TopicName, subs.DataProcessor.ConvertFromBytes(pubMsg.Payload.Message.ToArray()));
+            return true;
         }
 
         /// <summary>
@@ -181,9 +181,9 @@ namespace Nmqtt
         /// <param name="qosLevel">The qos level.</param>
         /// <param name="subscriptionCallback">The subscription callback.</param>
         /// <returns></returns>
-        public short Subscribe(string topic, MqttQos qosLevel, Func<string, object, bool> subscriptionCallback)
+        public short Subscribe(string topic, MqttQos qosLevel)
         {
-            return Subscribe<PassThroughPublishDataConverter>(topic, qosLevel, subscriptionCallback);
+            return Subscribe<PassThroughPublishDataConverter>(topic, qosLevel);
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace Nmqtt
         /// The identifier assigned to the subscription.
         /// </returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification="See method above for non generic implementation")]
-        public short Subscribe<TPublishDataConverter>(string topic, MqttQos qosLevel, Func<string, object, bool> subscriptionCallback)
+        public short Subscribe<TPublishDataConverter>(string topic, MqttQos qosLevel)
             where TPublishDataConverter : IPublishDataConverter
         {
             if (connectionHandler.State != ConnectionState.Connected)
@@ -205,7 +205,7 @@ namespace Nmqtt
                 throw new ConnectionException(connectionHandler.State);
             }
 
-            short messageIdentifier = subscriptionsManager.RegisterSubscription<TPublishDataConverter>(topic, qosLevel, subscriptionCallback);
+            short messageIdentifier = subscriptionsManager.RegisterSubscription<TPublishDataConverter>(topic, qosLevel);
             return messageIdentifier;
         }
 
@@ -268,6 +268,17 @@ namespace Nmqtt
 
             return publishingManager.Publish<TDataConverter>(topic, qualityOfService, data);
         }
+
+
+		public event EventHandler<MqttMessageEventArgs> MessageAvailable;
+		
+		private void OnMessageAvailable(string topic, object message)
+		{
+			if (MessageAvailable != null)
+			{
+				MessageAvailable(this, new MqttMessageEventArgs(topic, message));
+			}
+		}
 
         #region IDisposable Members
 

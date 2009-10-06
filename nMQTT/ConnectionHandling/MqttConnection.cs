@@ -164,7 +164,10 @@ namespace Nmqtt
 
         private void FireDataAvailableEvent(Collection<byte> messageBytes)
         {
-            DataAvailable(this, new DataAvailableEventArgs(messageBytes));
+        		if (DataAvailable != null)
+        		{
+            		DataAvailable(this, new DataAvailableEventArgs(messageBytes));
+        		}
         }
 
         /// <summary>
