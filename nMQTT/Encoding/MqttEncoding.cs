@@ -49,7 +49,7 @@ namespace Nmqtt.Encoding
             List<byte> stringBytes = new List<byte>();
             stringBytes.Add((byte)(s.Length >> 8));
             stringBytes.Add((byte)(s.Length & 0xFF));
-            stringBytes.AddRange(base.GetBytes(s));
+            stringBytes.AddRange(System.Text.Encoding.ASCII.GetBytes(s));
 
             return stringBytes.ToArray();
         }
@@ -69,9 +69,9 @@ namespace Nmqtt.Encoding
         /// -and-
         /// <see cref="P:System.Text.Encoding.DecoderFallback"/> is set to <see cref="T:System.Text.DecoderExceptionFallback"/>.
         /// </exception>
-        public override string GetString(byte[] bytes)
-        {
-            return base.GetString(bytes);
+		public override string GetString (byte[] bytes)
+		{
+            return System.Text.Encoding.ASCII.GetString(bytes);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Nmqtt.Encoding
         public override int GetByteCount(string chars)
         {
             ValidateString(chars);
-            return base.GetByteCount(chars) + 2;
+            return System.Text.Encoding.ASCII.GetByteCount(chars) + 2;
         }
 
         /// <summary>
