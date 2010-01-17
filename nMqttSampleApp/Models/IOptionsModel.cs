@@ -14,7 +14,7 @@ using System;
 
 namespace nMqtt.SampleApp
 {
-	public interface IOptionsModel
+	public interface IOptionsModel : IModel
 	{
 		string ClientIdentifier
 		{

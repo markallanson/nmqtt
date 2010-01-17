@@ -15,6 +15,7 @@ using System.Windows.Forms;
 
 using nMqtt.SampleApp.Views;
 using nMqtt.SampleApp.ViewModels;
+using System.Diagnostics;
 
 namespace nMqttSampleApp
 {
@@ -23,6 +24,7 @@ namespace nMqttSampleApp
 		[STAThread]
 		public static void Main (string[] args)
 		{
+			Trace.WriteLine("Starting...");
 			Application.EnableVisualStyles();
 			Application.Run(new ShellForm(new ShellViewModel()));
 		}

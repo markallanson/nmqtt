@@ -12,6 +12,7 @@
 
 using System;
 using Nmqtt;
+using System.Diagnostics;
 
 namespace nMqtt.SampleApp
 {
@@ -38,17 +39,20 @@ namespace nMqtt.SampleApp
         /// </summary>
         /// <param name="server"></param>
         /// <param name="port"></param>
-        /// <returns></returns>
-		public ConnectionState Connect(string server, short port)
+        /// <returns>The state of the connection.</returns>
+		public ConnectionState Connect (string server, short port)
 		{
-			client = new MqttClient(server, port, Options.ClientIdentifier);
+			client = new MqttClient (server, port, Options.ClientIdentifier);
 			client.MessageAvailable += ClientMessageAvailable;
+			
+			Trace.WriteLine ("Connecting to " + server + ":" + port.ToString ());
+			
 			return client.Connect();
 		}
 
-		void ClientMessageAvailable (object sender, MqttMessageEventArgs e)
+		private void ClientMessageAvailable (object sender, MqttMessageEventArgs e)
 		{
-			
+			OnClientMessageArrived(e);
 		}
 		
 		public void Disconnect()
@@ -59,6 +63,19 @@ namespace nMqtt.SampleApp
 		public void Subscribe(string topic, byte qos)
 		{
 			client.Subscribe(topic, (MqttQos)qos);
+		}
+		
+		/// <summary>
+		/// Event fired when a message arrives from the remote server.
+		/// </summary>
+		public event EventHandler<MqttMessageEventArgs> ClientMessageArrived;
+		private void OnClientMessageArrived (MqttMessageEventArgs e)
+		{
+			Trace.WriteLine (String.Format ("Message Arrived on Topic '{0}'.", e.Topic));
+			if (ClientMessageArrived != null)
+			{
+				this.ClientMessageArrived(instance, e);
+			}
 		}
 	}
 }

@@ -21,6 +21,9 @@ using System.Diagnostics;
 
 namespace nMqttTests.Encoding
 {
+	/// <summary>
+	/// Tests the MQTTEncoding class. 
+	/// </summary>
     public class MqttEncoding
     {
         /// <summary>

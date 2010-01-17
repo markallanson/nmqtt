@@ -20,6 +20,7 @@ namespace nMqtt.SampleApp
 	}
 
 	public abstract class ViewModel<TModel> : ViewModel, INotifyPropertyChanged
+		where TModel : IModel
 	{
 		private TModel model;
 	
@@ -32,9 +33,11 @@ namespace nMqtt.SampleApp
 			set
 			{
 				model = value;
+				
+				model.PropertyChanged += (sender, e) => OnPropertyChanged(e.PropertyName);
 			}
-		}
-	
+		}		
+		
 		public event PropertyChangedEventHandler PropertyChanged;
 		
 		protected void OnPropertyChanged(string propertyName)

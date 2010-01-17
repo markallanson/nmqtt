@@ -15,7 +15,7 @@ using System.ComponentModel;
 
 namespace nMqtt.SampleApp
 {
-	public interface ISubscriptionModel
+	public interface ISubscriptionModel : IModel
 	{
 		BindingList<string> Topics
 		{
@@ -30,6 +30,12 @@ namespace nMqtt.SampleApp
 		}
 		
 		byte Qos
+		{
+			get;
+			set;
+		}
+		
+		string MessageHistory
 		{
 			get;
 			set;

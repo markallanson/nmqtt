@@ -92,6 +92,7 @@
     <Compile Include="ViewsModels\SubscriptionViewModel.cs" />
     <Compile Include="Models\SubscriptionModel.cs" />
     <Compile Include="Models\ISubscriptionModel.cs" />
+    <Compile Include="Models\IModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ConnectionView.resx">

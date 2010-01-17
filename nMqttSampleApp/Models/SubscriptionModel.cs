@@ -17,6 +17,8 @@ namespace nMqtt.SampleApp
 {
 	public class SubscriptionModel : Model, ISubscriptionModel
 	{
+		private bool subscribedToEvent = false;
+	
 		public BindingList<string> Topics  
 		{
 			get;
@@ -35,16 +37,41 @@ namespace nMqtt.SampleApp
 			set;
 		}
 		
+		string messageHistory;
+		public string MessageHistory
+		{
+			get { return messageHistory; }
+			set 
+			{ 
+				messageHistory = value; 
+				OnPropertyChanged("MessageHistory");
+			}
+		}
+		
 		public SubscriptionModel()
 		{
 			Topics = new BindingList<string>();
 		}
 		
-		public void Subscribe()
+		public void Subscribe ()
 		{
-			if (!Topics.Contains(Topic)) Topics.Add(Topic);
+			if (!Topics.Contains (Topic))
+				Topics.Add (Topic);
+			if (!subscribedToEvent)
+			{
+				subscribedToEvent = true;
+				MqttHandler.Instance.ClientMessageArrived += HandleMqttHandlerInstanceClientMessageArrived;
+			}
 			
-			MqttHandler.Instance.Subscribe(Topic, Qos);
+			MqttHandler.Instance.Subscribe (Topic, Qos);
+			MessageHistory += Environment.NewLine + "Subscribed to: " + Topic;
+			
+		}
+
+		void HandleMqttHandlerInstanceClientMessageArrived (object sender, Nmqtt.MqttMessageEventArgs e)
+		{
+			MessageHistory += Environment.NewLine + e.Topic +
+							  Environment.NewLine + e.Message.ToString ();	
 		}
 	}
 }

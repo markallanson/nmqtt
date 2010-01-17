@@ -34,7 +34,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = nMQTT\nMQTT.csproj
+		StartupItem = nMqttSampleApp\nMqttSampleApp.csproj
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True

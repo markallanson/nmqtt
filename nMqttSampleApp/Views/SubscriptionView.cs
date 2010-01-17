@@ -35,6 +35,8 @@ namespace nMqtt.SampleApp.Views
 			qosNumeric.DataBindings.Add("Maximum", ViewModel, "QosMaximum");
         		qosNumeric.DataBindings.Add("Minimum", ViewModel, "QosMinimum");
         		qosNumeric.DataBindings.Add("Value", ViewModel, "Qos");
+        		
+        		messageHistory.DataBindings.Add("Text", ViewModel, "MessageHistory");
         }
 
 		protected override void InitializeEventHandlers()

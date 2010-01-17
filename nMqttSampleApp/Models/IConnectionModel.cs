@@ -15,7 +15,7 @@ using System.ComponentModel;
 
 namespace nMqtt.SampleApp.Models
 {
-	public interface IConnectionModel
+	public interface IConnectionModel : IModel
 	{
 		BindingList<short> Ports { get; set; }
 		

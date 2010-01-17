@@ -54,14 +54,14 @@ namespace nMqtt.SampleApp.Views
             this.label2 = new System.Windows.Forms.Label();
             this.topicsComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.messageHistory = new System.Windows.Forms.TextBox();
             this.subscriptionsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.qosNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // subscriptionsGroupBox
             // 
-            this.subscriptionsGroupBox.Controls.Add(this.textBox3);
+            this.subscriptionsGroupBox.Controls.Add(this.messageHistory);
             this.subscriptionsGroupBox.Controls.Add(this.button4);
             this.subscriptionsGroupBox.Controls.Add(this.button3);
             this.subscriptionsGroupBox.Controls.Add(this.button2);
@@ -209,14 +209,14 @@ namespace nMqtt.SampleApp.Views
             // 
             // textBox3
             // 
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.messageHistory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.Location = new System.Drawing.Point(10, 71);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(377, 205);
-            this.textBox3.TabIndex = 14;
+            this.messageHistory.Location = new System.Drawing.Point(10, 71);
+            this.messageHistory.Multiline = true;
+            this.messageHistory.Name = "textBox3";
+            this.messageHistory.Size = new System.Drawing.Size(377, 205);
+            this.messageHistory.TabIndex = 14;
             // 
             // SubscriptionView
             // 
@@ -248,6 +248,6 @@ namespace nMqtt.SampleApp.Views
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button subscribeButton;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox messageHistory;
     }
 }
