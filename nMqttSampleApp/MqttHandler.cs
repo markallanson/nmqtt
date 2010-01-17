@@ -13,6 +13,7 @@
 using System;
 using Nmqtt;
 using System.Diagnostics;
+using System.Threading;
 
 namespace nMqtt.SampleApp
 {
@@ -23,12 +24,23 @@ namespace nMqtt.SampleApp
 	{
 		private static MqttHandler instance = new MqttHandler ();
 
+        /// <summary>
+        /// The instance of the underlying MqttClient that is connected to the server.
+        /// </summary>
 		private MqttClient client;
+
+        /// <summary>
+        /// Synchronization context that the mqtthandler uses to invoke the message arrived events on the same thread that connected.
+        /// </summary>
+        private SynchronizationContext syncContext;
 
 		private MqttHandler ()
 		{
 		}
 
+        /// <summary>
+        /// The instance of the MqttHandler that manages to the Mqtt connection.
+        /// </summary>
 		public static MqttHandler Instance 
 		{
 			get { return instance; }
@@ -44,7 +56,8 @@ namespace nMqtt.SampleApp
 		{
 			client = new MqttClient (server, port, Options.ClientIdentifier);
 			client.MessageAvailable += ClientMessageAvailable;
-			
+            syncContext = SynchronizationContext.Current;
+
 			Trace.WriteLine ("Connecting to " + server + ":" + port.ToString ());
 			
 			return client.Connect();
@@ -54,14 +67,24 @@ namespace nMqtt.SampleApp
 		{
 			OnClientMessageArrived(e);
 		}
-		
+
+        /// <summary>
+        /// Disconnects from the Mqtt server.
+        /// </summary>
 		public void Disconnect()
 		{
 			client.Dispose();
 		}
-		
+
+        /// <summary>
+        /// Subscribes to the specified topic.
+        /// </summary>
+        /// <param name="topic">The topic.</param>
+        /// <param name="qos">The qos.</param>
 		public void Subscribe(string topic, byte qos)
 		{
+            if (client == null) throw new InvalidOperationException("You must connect before you can subscribe to a topic.");
+
 			client.Subscribe(topic, (MqttQos)qos);
 		}
 		
@@ -74,7 +97,7 @@ namespace nMqtt.SampleApp
 			Trace.WriteLine (String.Format ("Message Arrived on Topic '{0}'.", e.Topic));
 			if (ClientMessageArrived != null)
 			{
-				this.ClientMessageArrived(instance, e);
+                syncContext.Post((data) => this.ClientMessageArrived(instance, e), null);
 			}
 		}
 	}

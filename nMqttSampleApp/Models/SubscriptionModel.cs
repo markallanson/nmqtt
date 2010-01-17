@@ -2,7 +2,7 @@
  * nMQTT, a .Net MQTT v3 client implementation.
  * http://wiki.github.com/markallanson/nmqtt
  * 
- * Copyright (c) 2009 Mark Allanson (mark@markallanson.net)
+ * Copyright (c) 2009-2010 Mark Allanson (mark@markallanson.net)
  *
  * Licensed under the MIT License. You may not use this file except 
  * in compliance with the License. You may obtain a copy of the License at
@@ -12,6 +12,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Text;
 
 namespace nMqtt.SampleApp
 {
@@ -70,8 +71,10 @@ namespace nMqtt.SampleApp
 
 		void HandleMqttHandlerInstanceClientMessageArrived (object sender, Nmqtt.MqttMessageEventArgs e)
 		{
-			MessageHistory += Environment.NewLine + e.Topic +
-							  Environment.NewLine + e.Message.ToString ();	
+            // Assume the arrived message is a byte array that contains a simple ASCII string.
+            string messagePublished = Encoding.ASCII.GetString((byte[])e.Message);
+
+			MessageHistory += String.Format("{0}: {1}{2}", e.Topic, messagePublished, Environment.NewLine);	
 		}
 	}
 }
