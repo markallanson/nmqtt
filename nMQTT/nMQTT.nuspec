@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>nMQTT, an MQTT v3 Implementation</title>
+    <authors>Mark Allanson</authors>
+    <owners>Mark Allanson</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>https://github.com/markallanson/nmqtt</projectUrl>
+    <iconUrl>https://raw.github.com/markallanson/nmqtt/master/nmqttlogo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A .Net implementation of the MQTT v3 protocol compatible with .Net FX 3.5 and higher.</description>
+    <releaseNotes>Includes MQTT v3.0 support at QOS Levels 0 and 1.</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>mqtt nmqtt messaging</tags>
+  </metadata>
+</package>

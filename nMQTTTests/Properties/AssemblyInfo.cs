@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("nMqtt")]
 [assembly: AssemblyProduct("nMqtt")]
-[assembly: AssemblyCopyright("Copyright © nMQTT Project 2009")]
+[assembly: AssemblyCopyright("Copyright © nMQTT Project 2009-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

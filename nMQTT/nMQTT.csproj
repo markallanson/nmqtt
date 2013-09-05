@@ -71,6 +71,9 @@
     <AssemblyOriginatorKeyFile>nMqttDevOnly.snk</AssemblyOriginatorKeyFile>
     <CodeAnalysisRuleSet>Migrated rules for nMQTT (2).ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>nMQTTRelease.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -177,8 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Migrated rules for nMQTT %282%29.ruleset" />
+    <None Include="nMQTT.nuspec" />
     <None Include="nMqttDevOnly.snk" />
+    <None Include="nMQTTRelease.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

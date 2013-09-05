@@ -24,7 +24,7 @@ using System;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("nMqtt")]
 [assembly: AssemblyProduct("nMqtt")]
-[assembly: AssemblyCopyright("Copyright © nMQTT Project 2009")]
+[assembly: AssemblyCopyright("Copyright © nMQTT Project 2009-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -48,8 +48,8 @@ using System;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.1.1.0")]
+[assembly: AssemblyFileVersion("0.1.1.0")]
 
 // Let the unit test assembly see our internal bits
 [assembly: InternalsVisibleTo("NmqttTests, PublicKey=002400000480000094000000060200000024000052534131000400000100010085148ff4e2ccb76efc8a2712a23781825f7bc93a82e531ad190cbaa56ba7ad95fdeaadb2f756fe42f4cec6e8129ad5b67880ff73bca7cb21ff7dc622b01221f11e7f993fb3891983a3b78d856ee566d7712876f6a695f3adf4f05624a9435006d0066c2ccc2bf6933b9c6c5c4c328d23a67dce8a652edeffcf40ea61202ace9d")]
