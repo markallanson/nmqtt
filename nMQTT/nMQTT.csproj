@@ -72,7 +72,7 @@
     <CodeAnalysisRuleSet>Migrated rules for nMQTT (2).ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>nMQTTRelease.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>nMqttDevOnly.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
