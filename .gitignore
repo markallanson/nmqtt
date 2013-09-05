@@ -13,3 +13,4 @@ _ReSharper.*
 *.userprefs
 *.pidb
 .*~.cs
+*.DotSettings.user
