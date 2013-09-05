@@ -121,7 +121,7 @@ namespace Nmqtt
 
             try
             {
-                if (dataStream.DataAvailable)
+                if (tcpClient.Connected && dataStream.CanRead && dataStream.DataAvailable)
                 {
                     bytesRead = dataStream.EndRead(asyncResult);
 
@@ -147,8 +147,12 @@ namespace Nmqtt
                     }
                 }
 
-                // initiate a read for the next byte which will be the header bytes
-                dataStream.BeginRead(headerByte, 0, 1, ReadComplete, dataStream);
+                // initiate a read for the next byte which will be the header bytes so long as
+                // we're still connected to the underlying client
+                if (tcpClient.Connected && networkStream.CanRead)
+                {
+                    dataStream.BeginRead(headerByte, 0, 1, ReadComplete, dataStream);
+                }
             }
             catch (IOException ex)
             {
