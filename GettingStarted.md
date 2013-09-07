@@ -42,9 +42,7 @@ the Mqtt payload. The sample below converts the raw mqtt data to and from ASCII 
     short subscriptionId = client.Subscribe<AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
 
 Two implementations are provided out of the box, The ascii converter above, and a passthrough converter which
-is used in the first subscription example above.
-
-You can unsubscribe by simply passing in the ID returned from a subscription to the client's unsubscribe method.
+is the default if no converter is explicitly supplied. The passthrough converter just passed through byte arrays.
 
 ## Receiving Messages
 The `MqttClient` raises the MessageReceived event every time a message arrives. The `MessageReceivedEventArgs`
