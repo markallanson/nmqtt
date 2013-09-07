@@ -1,6 +1,6 @@
 # nMQTT, an MQTT v3 Implementation
 
-Welcome to the nMQTT .Net MQTT Library. You can find a [quickstart here](./quickstart.md) 
+Welcome to the nMQTT .Net MQTT Library. You can find a [quickstart here](./getting-started.md) 
 
 ## Getting Source
 The source for nMQTT is on [github](https://github.com/markallanson/nmqtt).
