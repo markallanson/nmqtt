@@ -1,9 +1,8 @@
-nMQTT, an MQTT v3 Implementation
-================================
-Welcome to the nMQTT .Net MQTT Library.
+# nMQTT, an MQTT v3 Implementation
 
-Getting Source
---------------
+Welcome to the nMQTT .Net MQTT Library. You can find a [quickstart here](./quickstart.md) 
+
+## Getting Source
 The source for nMQTT is on [github](https://github.com/markallanson/nmqtt).
 
 If you don't have Git on your machine, visit [git](http://git-scm.com) and grab a copy for your platform, 
@@ -17,9 +16,8 @@ You can get a local copy by issuing the following command from your terminal.
 This command will clone a copy of the source to a new directory, "nmqtt" under your current working 
 directory. 
 
-Build Source
-------------
-###On Windows
+## Build Source
+### On Windows
 
 Install the .Net SDK and run msbuild against your chosen sln file.
 or
@@ -31,15 +29,15 @@ Run Visual Studio, load your chosen sln file.
 2. Load your chosen sln file into Xamarin Studio and build.
 
 
-Running Unit Tests
----------------------
+## Running Unit Tests
+
 The unit tests for nMqtt are written using the [xUnit framework](http://www.codeplex.com/xunit). 
 
 The xUnit framework test runners run on both the .Net Framework and Mono platform (To run on mono 
 prefix the xunit runner executables with `mono`, then issue your command line as normal (ie. the
 path to the nMQTTTests.dll assembly)
 
-Pull Requests
--------------
+## Pull Requests
+
 Please issue pull requests if you have additions or changes or bug fixes you would like to see
 in the main branch.

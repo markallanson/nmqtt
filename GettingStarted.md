@@ -2,12 +2,12 @@
 Code snippets to help you getting started with nMQTT.
 
 ## Connection
-Connect to an MQTT server running on the local machine using the default mqtt port
+Connect to an MQTT server running on the local machine using the default MQTT port.
 
     var client = new Nmqtt.MqttClient("localhost", "Nmqtt_quickstart");
     ConnectionState connectionState = client.Connect();
 
-Create a client using a custom MQTT Port
+Create a client using a custom MQTT port.
 
     MqttClient client = new Nmqtt.MqttClient("localhost", 25000, "Nmqtt_quickstart");
 
@@ -42,10 +42,10 @@ the Mqtt payload. The sample below converts the raw mqtt data to and from ASCII 
     short subscriptionId = client.Subscribe<AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
 
 Two implementations are provided out of the box, The ascii converter above, and a passthrough converter which
-is the default if no converter is explicitly supplied. The passthrough converter just passed through byte arrays.
+is the default if no converter is explicitly supplied. The passthrough converter just passes through byte arrays.
 
 ## Receiving Messages
-The `MqttClient` raises the MessageReceived event every time a message arrives. The `MessageReceivedEventArgs`
+The `MqttClient` raises the `MessageAvailable` event every time a message arrives. The `MessageReceivedEventArgs`
 includes the topic, 
 
     client.MessageAvailable += (sender, e) =>
