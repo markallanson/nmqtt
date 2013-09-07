@@ -39,5 +39,7 @@ The xUnit framework test runners run on both the .Net Framework and Mono platfor
 prefix the xunit runner executables with `mono`, then issue your command line as normal (ie. the
 path to the nMQTTTests.dll assembly)
 
-
-
+Pull Requests
+-------------
+Please issue pull requests if you have additions or changes or bug fixes you would like to see
+in the main branch.
