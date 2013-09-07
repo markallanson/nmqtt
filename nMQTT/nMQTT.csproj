@@ -50,8 +50,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRules>
     </CodeAnalysisRules>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Debug\Nmqtt.XML</DocumentationFile>
     <AssemblyOriginatorKeyFile>nMQTTDevOnly.snk</AssemblyOriginatorKeyFile>
     <CodeAnalysisRuleSet>Migrated rules for nMQTT (2).ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -66,8 +65,7 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRules>
     </CodeAnalysisRules>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Release\Nmqtt.XML</DocumentationFile>
     <AssemblyOriginatorKeyFile>nMqttDevOnly.snk</AssemblyOriginatorKeyFile>
     <CodeAnalysisRuleSet>Migrated rules for nMQTT (2).ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
