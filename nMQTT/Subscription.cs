@@ -11,14 +11,19 @@
 */
 
 using System;
+using System.Linq;
+using System.Reactive.Subjects;
+using Common.Logging;
 
 namespace Nmqtt
 {
     /// <summary>
     ///     Entity that captures data related to an individual subscription
     /// </summary>
-    public class Subscription
+    internal abstract class Subscription
     {
+        protected static ILog Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         ///     The message identifier assigned to the subscription
         /// </summary>
@@ -40,8 +45,19 @@ namespace Nmqtt
         public MqttQos Qos { get; set; }
 
         /// <summary>
-        ///     The class that can process received data and turn it into a specific type data.
+        /// The observer that can be used to publish messages to to the observable.
         /// </summary>
-        public IPublishDataConverter DataProcessor { get; set; }
+        public ISubject<byte[]> Subject { get; set; }
+    }
+
+    /// <summary>
+    ///     Entity that captures data related to an individual subscription
+    /// </summary>
+    internal class Subscription<T> : Subscription
+    {
+        /// <summary>
+        /// The observable that receives messages from the broker.
+        /// </summary>
+        public IObservable<MqttReceivedMessage<T>>  Observable { get; set; }
     }
 }

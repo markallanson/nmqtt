@@ -16,3 +16,4 @@ _ReSharper.*
 *.DotSettings.user
 *.nupkg
 *.pfx
+packages/*

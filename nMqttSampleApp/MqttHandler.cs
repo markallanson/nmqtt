@@ -55,7 +55,6 @@ namespace nMqtt.SampleApp
 		public ConnectionState Connect (string server, short port)
 		{
 			client = new MqttClient (server, port, Options.ClientIdentifier);
-			client.MessageAvailable += ClientMessageAvailable;
             syncContext = SynchronizationContext.Current;
 
 			Trace.WriteLine ("Connecting to " + server + ":" + port.ToString ());

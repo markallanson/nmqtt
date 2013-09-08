@@ -14,7 +14,7 @@ namespace NmqttTests.DataConverters
         public void PassthroughToByteArray()
         {
             var input = new byte[] { 40, 41, 42, 43 }; 
-            var conv = new Nmqtt.PassThroughPublishDataConverter();
+            var conv = new Nmqtt.PassThroughPayloadConverter();
             byte[] output = conv.ConvertToBytes(input);
 
             Assert.Equal<int>(input.Length, output.Length);
@@ -28,7 +28,7 @@ namespace NmqttTests.DataConverters
         public void ByteArrayToPassthrough()
         {
             var input = new byte[] { 40, 41, 42, 43 };
-            var conv = new PassThroughPublishDataConverter();
+            var conv = new PassThroughPayloadConverter();
             var output = (byte[])conv.ConvertFromBytes(input);
 
             Assert.Equal<int>(input.Length, output.Length);

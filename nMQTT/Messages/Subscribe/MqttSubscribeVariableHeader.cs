@@ -16,7 +16,7 @@ using System.IO;
 namespace Nmqtt
 {
     /// <summary>
-    ///     Implementation of the variable header for an MQTT Subscribe message.
+    ///     Implementation of the variable header for an MQTT Observe message.
     /// </summary>
     internal sealed class MqttSubscribeVariableHeader : MqttVariableHeader
     {
@@ -33,18 +33,18 @@ namespace Nmqtt
             : base(headerStream) {}
 
         /// <summary>
-        ///     Returns the read flags for the Subscribe variabe header (prot name, version, Subscribe, keepalive)
+        ///     Returns the read flags for the Observe variabe header (prot name, version, Observe, keepalive)
         /// </summary>
         protected override MqttVariableHeader.ReadWriteFlags ReadFlags {
             get { return ReadWriteFlags.MessageIdentifier; }
         }
 
         /// <summary>
-        ///     Returns the write flags for the Subscribe variabe header (prot name, version, Subscribe, keepalive)
+        ///     Returns the write flags for the Observe variabe header (prot name, version, Observe, keepalive)
         /// </summary>
         protected override MqttVariableHeader.ReadWriteFlags WriteFlags {
             get {
-                // we read and write the same values on the Subscribe header.
+                // we read and write the same values on the Observe header.
                 return ReadFlags;
             }
         }
@@ -57,7 +57,7 @@ namespace Nmqtt
         /// </returns>
         public override string ToString() {
             return
-                String.Format("Subscribe Variable Header: Message Identifier={0}", MessageIdentifier);
+                String.Format("Observe Variable Header: Message Identifier={0}", MessageIdentifier);
         }
     }
 }

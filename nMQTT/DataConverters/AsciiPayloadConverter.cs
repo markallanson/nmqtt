@@ -15,7 +15,7 @@ namespace Nmqtt
     /// <summary>
     ///     Converts string data to and from the MQTT wire format
     /// </summary>
-    public class AsciiPublishDataConverter : IPublishDataConverter
+    public class AsciiPayloadConverter : IPayloadConverter<string>
     {
         /// <summary>
         ///     Processes received data and returns it as a string.
@@ -24,7 +24,7 @@ namespace Nmqtt
         /// <returns>
         ///     The data processed and turned into the specified type.
         /// </returns>
-        public object ConvertFromBytes(byte[] messageData) {
+        public string ConvertFromBytes(byte[] messageData) {
             return System.Text.Encoding.ASCII.GetString(messageData);
         }
 
@@ -33,8 +33,8 @@ namespace Nmqtt
         /// </summary>
         /// <param name="data">The string to convert to the byte array.</param>
         /// <returns>A byte array representation of the string.</returns>
-        public byte[] ConvertToBytes(object data) {
-            return System.Text.Encoding.ASCII.GetBytes((string) data);
+        public byte[] ConvertToBytes(string data) {
+            return System.Text.Encoding.ASCII.GetBytes(data);
         }
     }
 }

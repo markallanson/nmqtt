@@ -16,7 +16,7 @@ namespace Nmqtt
     ///     Acts as a passthrough for the raw data without doing any conversion.
     /// </summary>
     /// s
-    public class PassThroughPublishDataConverter : IPublishDataConverter
+    public class PassThroughPayloadConverter : IPayloadConverter<byte[]>
     {
         /// <summary>
         ///     Processes received data and returns it as a byte array.
@@ -25,7 +25,7 @@ namespace Nmqtt
         /// <returns>
         ///     The data processed and turned into a byte array.
         /// </returns>
-        public object ConvertFromBytes(byte[] messageData) {
+        public byte[] ConvertFromBytes(byte[] messageData) {
             return messageData;
         }
 
@@ -34,8 +34,8 @@ namespace Nmqtt
         /// </summary>
         /// <param name="data">The data to convert to the byte array.</param>
         /// <returns>A byte array representation of the data.</returns>
-        public byte[] ConvertToBytes(object data) {
-            return (byte[]) data;
+        public byte[] ConvertToBytes(byte[] data) {
+            return data;
         }
     }
 }

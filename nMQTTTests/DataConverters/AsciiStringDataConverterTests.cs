@@ -14,7 +14,7 @@ namespace NmqttTests.DataConverters
         public void AsciiStringToByteArray()
         {
             var testString = "testStringA-Z,1-9,a-z";
-            var conv = new AsciiPublishDataConverter();
+            var conv = new AsciiPayloadConverter();
             byte[] bytes = conv.ConvertToBytes(testString);
 
             Assert.Equal<int>(testString.Length, bytes.Length);
@@ -28,7 +28,7 @@ namespace NmqttTests.DataConverters
         public void ByteArrayToAsciiString()
         {
             var input = new byte[] { 40, 41, 42, 43 };
-            var conv = new AsciiPublishDataConverter();
+            var conv = new AsciiPayloadConverter();
             var output = (string)conv.ConvertFromBytes(input);
 
             Assert.Equal<int>(input.Length, output.Length);

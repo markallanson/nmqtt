@@ -33,20 +33,20 @@ namespace Nmqtt
     ///         constructor is supported.
     ///     </para>
     /// </remarks>
-    public interface IPublishDataConverter
+    public interface IPayloadConverter<T>
     {
         /// <summary>
         ///     Converts received data from a raw byte array to an object graph.
         /// </summary>
         /// <param name="messageData">The received data as an array of bytes.</param>
         /// <returns>The data processed and turned into the specified type.</returns>
-        object ConvertFromBytes(byte[] messageData);
+        T ConvertFromBytes(byte[] messageData);
 
         /// <summary>
         ///     Converts sent data from an object graph to a byte array.
         /// </summary>
         /// <param name="data">The data to convert to the byte array.</param>
         /// <returns>A byte array representation of the data.</returns>
-        byte[] ConvertToBytes(object data);
+        byte[] ConvertToBytes(T data);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Logging;
 
 namespace Nmqtt
 {
@@ -52,6 +53,8 @@ namespace Nmqtt
     /// </remarks>
     internal class PublishingManager
     {
+        private static ILog Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         ///     Stores messages that have been pubished but not yet acknowledged.
         /// </summary>
@@ -77,15 +80,14 @@ namespace Nmqtt
         /// <summary>
         ///     Stores a cache of data converters used when publishing data to a broker.
         /// </summary>
-        private readonly Dictionary<Type, IPublishDataConverter> dataConverters =
-            new Dictionary<Type, IPublishDataConverter>();
+        private readonly Dictionary<Type, object> dataConverters = new Dictionary<Type, object>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PublishingManager" /> class.
         /// </summary>
         /// <param name="connectionHandler">The connection handler.</param>
         /// <param name="publishMessageCallback">The function that should be called when a publish message is received.</param>
-        public PublishingManager(IMqttConnectionHandler connectionHandler,
+        public PublishingManager(IMqttConnectionHandler         connectionHandler,
                                  Func<MqttPublishMessage, bool> publishMessageCallback) {
             this.connectionHandler = connectionHandler;
             this.publishMessageCallback = publishMessageCallback;
@@ -103,13 +105,14 @@ namespace Nmqtt
         /// <param name="qualityOfService">The QOS to use when publishing the message.</param>
         /// <param name="data">The message to send.</param>
         /// <returns>The message identifier assigned to the message.</returns>
-        public short Publish<TDataConverter>(string topic, MqttQos qualityOfService, object data)
-            where TDataConverter : IPublishDataConverter {
-            short msgID = MessageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
+        public short Publish<T, TPayloadConverter>(string topic, MqttQos qualityOfService, T data)
+            where TPayloadConverter : IPayloadConverter<T>, new() {
+            var msgID = MessageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
 
-            IPublishDataConverter converter = GetPublishDataConverter<TDataConverter>();
+            Log.DebugFormat("Publishing message ID {0} on topic {1} using QOS {2}", msgID, topic, qualityOfService);
 
-            MqttPublishMessage msg = new MqttPublishMessage()
+            var converter = GetPayloadConverter<TPayloadConverter>();
+            var msg = new MqttPublishMessage()
                 .ToTopic(topic)
                 .WithMessageIdentifier(msgID)
                 .WithQos(qualityOfService)
@@ -121,24 +124,21 @@ namespace Nmqtt
             }
 
             connectionHandler.SendMessage(msg);
-
             return msgID;
         }
 
         /// <summary>
         ///     Gets an instance of the specified publish data converter.
         /// </summary>
-        /// <typeparam name="TDataConverter">The type of the data converter.</typeparam>
+        /// <typeparam name="TPayloadConverter">The type of the data converter.</typeparam>
         /// <returns></returns>
-        private IPublishDataConverter GetPublishDataConverter<TDataConverter>()
-            where TDataConverter : IPublishDataConverter {
-            IPublishDataConverter dataConverter;
-            if (!dataConverters.TryGetValue(typeof (TDataConverter), out dataConverter)) {
-                dataConverter = Activator.CreateInstance<TDataConverter>();
-                dataConverters.Add(typeof (TDataConverter), dataConverter);
+        private TPayloadConverter GetPayloadConverter<TPayloadConverter>() where TPayloadConverter : new() {
+            object dataConverter;
+            if (!dataConverters.TryGetValue(typeof(TPayloadConverter), out dataConverter)) {
+                dataConverter = new TPayloadConverter();
+                dataConverters.Add(typeof(TPayloadConverter), dataConverter);
             }
-
-            return dataConverter;
+            return (TPayloadConverter)dataConverter;
         }
 
         /// <summary>

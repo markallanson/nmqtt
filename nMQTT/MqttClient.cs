@@ -12,6 +12,7 @@
 
 using System;
 using System.Linq;
+using Common.Logging;
 using Nmqtt.Diagnostics;
 
 namespace Nmqtt
@@ -21,6 +22,8 @@ namespace Nmqtt
     /// </summary>
     public sealed class MqttClient : IDisposable
     {
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+
         private readonly string server;
 
         /// <summary>
@@ -87,11 +90,6 @@ namespace Nmqtt
         private MessageLogger messageLogger;
 
         /// <summary>
-        ///     Event raised when a Message has been received from the wire.
-        /// </summary>
-        public event EventHandler<MqttMessageEventArgs> MessageAvailable;
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="MqttClient" /> class using the default Mqtt Port.
         /// </summary>
         /// <param name="server">The server hostname to connect to.</param>
@@ -144,15 +142,20 @@ namespace Nmqtt
         /// <param name="message">The message that was received from the broker.</param>
         private bool HandlePublishMessage(MqttMessage message) {
             var pubMsg = (MqttPublishMessage) message;
-            Subscription subs = subscriptionsManager.GetSubscription(pubMsg.VariableHeader.TopicName);
-            if (subs == null) {
+            var subscription = subscriptionsManager.GetSubscription(pubMsg.VariableHeader.TopicName);
+            if (subscription == null) {
+                Log.WarnFormat("Recived message for a topic we're not subscribed to ({0})", pubMsg.VariableHeader.TopicName);
                 return false;
             }
 
-            // pass it on to the event subscribers.
-            OnMessageAvailable(pubMsg.VariableHeader.TopicName,
-                               subs.DataProcessor.ConvertFromBytes(pubMsg.Payload.Message.ToArray()));
-            return true;
+            var success = true;
+            try {
+                subscription.Subject.OnNext(pubMsg.Payload.Message.ToArray());
+            } catch (Exception ex) {
+                success = false;
+                Log.Error(m => m("Error while publishing message to observer for topic {0}.", subscription.Topic), ex);
+            }
+            return success;
         }
 
         /// <summary>
@@ -161,30 +164,26 @@ namespace Nmqtt
         /// <param name="topic">The topic.</param>
         /// <param name="qosLevel">The qos level.</param>
         /// <returns></returns>
-        public short Subscribe(string topic, MqttQos qosLevel) {
-            return Subscribe<PassThroughPublishDataConverter>(topic, qosLevel);
+        public IObservable<MqttReceivedMessage<byte[]>> Observe(string topic, MqttQos qosLevel) {
+            return Observe<byte[], PassThroughPayloadConverter>(topic, qosLevel);
         }
 
         /// <summary>
         ///     Initiates a topic subscription request to the connected broker with a strongly typed data processor callback.
         /// </summary>
-        /// <typeparam name="TPublishDataConverter">The type that implements TPublishDataConverter that can parse the data arriving on the subscription.</typeparam>
         /// <param name="topic">The topic to subscribe to.</param>
         /// <param name="qosLevel">The qos level the message was published at.</param>
         /// <returns>
         ///     The identifier assigned to the subscription.
         /// </returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
-            "CA1004:GenericMethodsShouldProvideTypeParameter",
-            Justification = "See method above for non generic implementation")]
-        public short Subscribe<TPublishDataConverter>(string topic, MqttQos qosLevel)
-            where TPublishDataConverter : IPublishDataConverter {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "See method above for non generic implementation")]
+        public IObservable<MqttReceivedMessage<T>> Observe<T, TPayloadConverter>(string topic, MqttQos qosLevel)
+            where TPayloadConverter : IPayloadConverter<T>, new() {
             if (connectionHandler.State != ConnectionState.Connected) {
                 throw new ConnectionException(connectionHandler.State);
             }
 
-            short messageIdentifier = subscriptionsManager.RegisterSubscription<TPublishDataConverter>(topic, qosLevel);
-            return messageIdentifier;
+            return subscriptionsManager.RegisterSubscription<T, TPayloadConverter>(topic, qosLevel);
         }
 
         /// <summary>
@@ -193,8 +192,8 @@ namespace Nmqtt
         /// <param name="topic">The topic to publish the message to.</param>
         /// <param name="data">The message to publish.</param>
         /// <returns>The message identiier assigned to the message.</returns>
-        public short PublishMessage(string topic, object data) {
-            return PublishMessage<PassThroughPublishDataConverter>(topic, MqttQos.AtMostOnce, data);
+        public short PublishMessage(string topic, byte[] data) {
+            return PublishMessage<byte[], PassThroughPayloadConverter>(topic, MqttQos.AtMostOnce, data);
         }
 
         /// <summary>
@@ -204,54 +203,45 @@ namespace Nmqtt
         /// <param name="qos">The QOS level to publish the message at.</param>
         /// <param name="data">The message to publish.</param>
         /// <returns>The message identiier assigned to the message.</returns>
-        public short PublishMessage(string topic, MqttQos qos, object data) {
-            return PublishMessage<PassThroughPublishDataConverter>(topic, qos, data);
+        public short PublishMessage(string topic, MqttQos qos, byte[] data) {
+            return PublishMessage<byte[], PassThroughPayloadConverter>(topic, qos, data);
         }
 
 
         /// <summary>
         ///     Publishes a message to the message broker.
         /// </summary>
-        /// <typeparam name="TDataConverter">The type of the data convert.</typeparam>
+        /// <typeparam name="TPayloadConverter">The type of the data convert.</typeparam>
+        /// <typeparam name="T">The Type of the data being published</typeparam>
         /// <param name="topic">The topic to publish the message to.</param>
         /// <param name="data">The message to publish.</param>
         /// <returns>
         ///     The message identiier assigned to the message.
         /// </returns>
-        public short PublishMessage<TDataConverter>(string topic, object data)
-            where TDataConverter : IPublishDataConverter {
-            return PublishMessage<TDataConverter>(topic, MqttQos.AtMostOnce, data);
+        public short PublishMessage<T, TPayloadConverter>(string topic, T data)
+            where TPayloadConverter : IPayloadConverter<T>, new() {
+            return PublishMessage<T, TPayloadConverter>(topic, MqttQos.AtMostOnce, data);
         }
 
         /// <summary>
         ///     Publishes a message to the message broker.
         /// </summary>
-        /// <typeparam name="TDataConverter">
-        ///     The type of the data converter to use for converting the data
-        ///     from the object to wire bytes.
-        /// </typeparam>
+        /// <typeparam name="TPayloadConverter">The type of the data converter to use.</typeparam>
+        /// <typeparam name="T">The Type of the data being published</typeparam>
         /// <param name="topic">The topic to publish the message to.</param>
         /// <param name="qualityOfService">The quality of service to attach to the message.</param>
         /// <param name="data">The message to publish.</param>
         /// <returns>
         ///     The message identiier assigned to the message.
         /// </returns>
-        public short PublishMessage<TDataConverter>(string topic, MqttQos qualityOfService, object data)
-            where TDataConverter : IPublishDataConverter {
+        public short PublishMessage<T, TPayloadConverter>(string topic, MqttQos qualityOfService, T data)
+            where TPayloadConverter : IPayloadConverter<T>, new() {
             if (connectionHandler.State != ConnectionState.Connected) {
                 throw new ConnectionException(connectionHandler.State);
             }
 
-            return publishingManager.Publish<TDataConverter>(topic, qualityOfService, data);
+            return publishingManager.Publish<T, TPayloadConverter>(topic, qualityOfService, data);
         }
-
-        private void OnMessageAvailable(string topic, object message) {
-            if (MessageAvailable != null) {
-                MessageAvailable(this, new MqttMessageEventArgs(topic, message));
-            }
-        }
-
-        #region IDisposable Members
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -275,7 +265,39 @@ namespace Nmqtt
 
             GC.SuppressFinalize(this);
         }
+    }
 
-        #endregion
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class MqttReceivedMessage<T>
+    {
+        private readonly string topic;
+        private readonly T      payload;
+
+        /// <summary>
+        /// The topic the message was received on.
+        /// </summary>
+        public string Topic {
+            get { return topic; }
+        }
+
+        /// <summary>
+        /// The payload of the mesage received.
+        /// </summary>
+        public T Payload {
+            get { return payload; }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of an MqttReceivedMessage class.
+        /// </summary>
+        /// <param name="topic">The topic the message was received on</param>
+        /// <param name="payload">The payload that was received.</param>
+        internal MqttReceivedMessage(string topic, T payload) {
+            this.topic = topic;
+            this.payload = payload;
+        }
     }
 }

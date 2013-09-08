@@ -13,6 +13,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Nmqtt
 {
@@ -41,13 +43,13 @@ namespace Nmqtt
         /// <param name="topic"></param>
         /// <param name="qos"></param>
         /// <returns>The subscription message identifier.</returns>
-        internal short RegisterSubscription<TPublishDataConverter>(string topic, MqttQos qos)
-            where TPublishDataConverter : IPublishDataConverter {
+        internal IObservable<MqttReceivedMessage<T>> RegisterSubscription<T, TPayloadConverter>(string topic, MqttQos qos)
+            where TPayloadConverter : IPayloadConverter<T>, new() {
             // check we don't have a pending subscription request for the topic.
             var pendingSubs = from ps in pendingSubscriptions.Values
                               where ps.Topic.Equals(topic)
                               select ps;
-            if (pendingSubs.Count<Subscription>() > 0) {
+            if (pendingSubs.Any()) {
                 throw new ArgumentException("There is already a pending subscription for this topic");
             }
 
@@ -57,13 +59,18 @@ namespace Nmqtt
                 throw new ArgumentException("You are already subscribed for this topic");
             }
 
+            var payloadConverter = new TPayloadConverter();
+            var subject = new Subject<byte[]>();
+            var observable = subject.Select(ba => new MqttReceivedMessage<T>(topic, payloadConverter.ConvertFromBytes(ba)));
+
             // Add a pending subscription...
-            var sub = new Subscription() {
+            var sub = new Subscription<T> {
                 Topic = topic,
                 Qos = qos,
                 MessageIdentifier = MessageIdentifierDispenser.GetNextMessageIdentifier("subscriptions"),
                 CreatedTime = DateTime.Now,
-                DataProcessor = Activator.CreateInstance<TPublishDataConverter>()
+                Subject = subject,
+                Observable = observable,
             };
 
             pendingSubscriptions.Add(sub.MessageIdentifier, sub);
@@ -75,7 +82,17 @@ namespace Nmqtt
                 .AtQos(sub.Qos);
 
             connectionHandler.SendMessage(msg);
-            return msg.VariableHeader.MessageIdentifier;
+
+            return sub.Observable;
+        }
+
+        /// <summary>
+        ///     Action delegate method that initates the unsubscribe process for a topic on the broker when there are no more subscribers.
+        /// </summary>
+        /// <param name="topic">The topic to clean.</param>
+        /// <param name="observer"></param>
+        public void SubscriptionCleaner<T>(string topic, IObserver<T> observer) {
+
         }
 
         /// <summary>
@@ -143,8 +160,6 @@ namespace Nmqtt
             return subs;
         }
 
-        #region IDisposable Members
-
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -155,7 +170,5 @@ namespace Nmqtt
 
             GC.SuppressFinalize(this);
         }
-
-        #endregion
     }
 }
