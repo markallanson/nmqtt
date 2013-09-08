@@ -16,77 +16,67 @@ using System.IO;
 namespace Nmqtt
 {
     /// <summary>
-    /// Implementation of the variable header for an MQTT Connect message.
+    ///     Implementation of the variable header for an MQTT Connect message.
     /// </summary>
     internal sealed class MqttPublishVariableHeader : MqttVariableHeader
     {
         /// <summary>
-        /// Stores the standard header
+        ///     Stores the standard header
         /// </summary>
-        private MqttHeader header;
+        private readonly MqttHeader header;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
+        ///     Initializes a new instance of the <see cref="MqttConnectVariableHeader" /> class.
         /// </summary>
-        public MqttPublishVariableHeader(MqttHeader header)
-        {
+        public MqttPublishVariableHeader(MqttHeader header) {
             this.header = header;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
+        ///     Initializes a new instance of the <see cref="MqttConnectVariableHeader" /> class.
         /// </summary>
         /// <param name="header">The messages header.</param>
         /// <param name="variableHeaderStream">A stream containing the header of the message.</param>
         public MqttPublishVariableHeader(MqttHeader header, Stream variableHeaderStream)
-            : this(header)
-        {
+            : this(header) {
             ReadFrom(variableHeaderStream);
         }
 
         /// <summary>
-        /// Returns the read flags for the publish message (topic, messageid)
+        ///     Returns the read flags for the publish message (topic, messageid)
         /// </summary>
-        protected override ReadWriteFlags ReadFlags
-        {
-            get
-            {
-                if (this.header.Qos == MqttQos.AtLeastOnce || this.header.Qos == MqttQos.ExactlyOnce)
-                {
+        protected override ReadWriteFlags ReadFlags {
+            get {
+                if (this.header.Qos == MqttQos.AtLeastOnce || this.header.Qos == MqttQos.ExactlyOnce) {
                     return
                         ReadWriteFlags.TopicName |
                         ReadWriteFlags.MessageIdentifier;
-                }
-                else
-                {
+                } else {
                     return ReadWriteFlags.TopicName;
                 }
             }
         }
 
         /// <summary>
-        /// Returns the read flags for the publish message (topic, messageid)
+        ///     Returns the read flags for the publish message (topic, messageid)
         /// </summary>
-        protected override ReadWriteFlags WriteFlags
-        {
-            get
-            {
+        protected override ReadWriteFlags WriteFlags {
+            get {
                 // Read and write flags are identical for Publish Messages
                 return ReadFlags;
             }
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return
                 String.Format("Publish Variable Header: TopicName={0}, MessageIdentifier={1}, VH Length={2}",
-                    TopicName, MessageIdentifier, Length);
+                              TopicName, MessageIdentifier, Length);
         }
     }
 }

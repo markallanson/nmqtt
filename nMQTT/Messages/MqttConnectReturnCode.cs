@@ -13,9 +13,10 @@
 namespace Nmqtt
 {
     /// <summary>
-    /// Enumeration of allowable connection request return codes.
+    ///     Enumeration of allowable connection request return codes.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32", Justification="Clarity with MQTT Spec")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32",
+        Justification = "Clarity with MQTT Spec")]
     internal enum MqttConnectReturnCode : byte
     {
         ConnectionAccepted = 0,

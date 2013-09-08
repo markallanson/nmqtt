@@ -13,23 +13,22 @@
 namespace Nmqtt
 {
     /// <summary>
-    /// Describes the status of a subscription
+    ///     Describes the status of a subscription
     /// </summary>
     public enum SubscriptionStatus
     {
-
         /// <summary>
-        /// The subscription does not exist / is not known
+        ///     The subscription does not exist / is not known
         /// </summary>
         DoesNotExist,
 
         /// <summary>
-        /// The subscription is currently pending acknowledgement by a broker.
+        ///     The subscription is currently pending acknowledgement by a broker.
         /// </summary>
         Pending,
 
         /// <summary>
-        /// The subscription is currently active and messages will be received.
+        ///     The subscription is currently active and messages will be received.
         /// </summary>
         Active
     }

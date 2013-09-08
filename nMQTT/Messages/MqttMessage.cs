@@ -11,18 +11,18 @@
 */
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 
 namespace Nmqtt
 {
     /// <summary>
-    /// Represents an MQTT message that contains a fixed header, variable header and message body.
+    ///     Represents an MQTT message that contains a fixed header, variable header and message body.
     /// </summary>
     /// <remarks>
-    /// Messages roughly look as follows.
-    /// <code>
+    ///     Messages roughly look as follows.
+    ///     <code>
     /// ----------------------------
     /// | Header, 2-5 Bytes Length |
     /// ----------------------------
@@ -37,52 +37,45 @@ namespace Nmqtt
     internal class MqttMessage
     {
         /// <summary>
-        /// The header of the MQTT Message. Contains metadata about the message
+        ///     The header of the MQTT Message. Contains metadata about the message
         /// </summary>
         public MqttHeader Header { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttMessage"/> class.
+        ///     Initializes a new instance of the <see cref="MqttMessage" /> class.
         /// </summary>
         /// <remarks>
-        /// Only called via the MqttMessage.Create operation during processing of an Mqtt message stream.
+        ///     Only called via the MqttMessage.Create operation during processing of an Mqtt message stream.
         /// </remarks>
-        public MqttMessage()
-            {
-        }
+        public MqttMessage() {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttMessage"/> class.
+        ///     Initializes a new instance of the <see cref="MqttMessage" /> class.
         /// </summary>
         /// <param name="header">The header of the message.</param>
-        public MqttMessage(MqttHeader header)
-        {
+        public MqttMessage(MqttHeader header) {
             Header = header;
         }
 
         /// <summary>
-        /// Creates a new instance of an MQTT Message based on a raw message bytes.
+        ///     Creates a new instance of an MQTT Message based on a raw message bytes.
         /// </summary>
         /// <param name="messageBytes">The message bytes.</param>
         /// <returns></returns>
-        public static MqttMessage CreateFrom(IEnumerable<byte> messageBytes)
-        {
-            using (MemoryStream messageStream = new MemoryStream(messageBytes.ToArray<byte>()))
-            {
+        public static MqttMessage CreateFrom(IEnumerable<byte> messageBytes) {
+            using (var messageStream = new MemoryStream(messageBytes.ToArray<byte>())) {
                 return CreateFrom(messageStream);
             }
         }
 
         /// <summary>
-        /// Creates a new instance of an MQTT Message based on a raw message stream.
+        ///     Creates a new instance of an MQTT Message based on a raw message stream.
         /// </summary>
         /// <param name="messageStream">The message stream.</param>
         /// <returns>An MqttMessage containing details of the message.</returns>
-        public static MqttMessage CreateFrom(Stream messageStream)
-        {
-            try
-            {
-                MqttHeader header = new MqttHeader();
+        public static MqttMessage CreateFrom(Stream messageStream) {
+            try {
+                var header = new MqttHeader();
 
                 // pass the input stream sequentially through the component deserialization(create) methods
                 // to build a full MqttMessage.
@@ -91,39 +84,34 @@ namespace Nmqtt
                 MqttMessage message = MqttMessageFactory.GetMessage(header, messageStream);
 
                 return message;
-            }
-            catch (InvalidHeaderException ex)
-            {
-                throw new InvalidMessageException("The data provided in the message stream was not a valid MQTT Message", ex);
+            } catch (InvalidHeaderException ex) {
+                throw new InvalidMessageException(
+                    "The data provided in the message stream was not a valid MQTT Message", ex);
             }
         }
 
         /// <summary>
-        /// Writes the message to the supplied stream.
+        ///     Writes the message to the supplied stream.
         /// </summary>
         /// <param name="messageStream">The stream to write the message to.</param>
-        public virtual void WriteTo(Stream messageStream)
-        {
+        public virtual void WriteTo(Stream messageStream) {
             Header.WriteTo(0, messageStream);
         }
 
         /// <summary>
-        /// Reads a message from the supplied stream.
+        ///     Reads a message from the supplied stream.
         /// </summary>
         /// <param name="messageStream">The message stream.</param>
-        public virtual void ReadFrom(Stream messageStream)
-        {
-        }
+        public virtual void ReadFrom(Stream messageStream) {}
 
         /// <summary>
-        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </returns>
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
+        public override string ToString() {
+            var sb = new StringBuilder();
 
             sb.Append("MQTTMessage of type ");
             sb.AppendLine(this.GetType().ToString());

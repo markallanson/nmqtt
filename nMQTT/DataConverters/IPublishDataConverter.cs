@@ -13,31 +13,37 @@
 namespace Nmqtt
 {
     /// <summary>
-    /// Interface that defines the methods and properties that must be provided by classes
-    /// that interpret and convert inbound and outbound published message data.
+    ///     Interface that defines the methods and properties that must be provided by classes
+    ///     that interpret and convert inbound and outbound published message data.
     /// </summary>
     /// <remarks>
-    /// <para>Types that implement this interface should be aware that for the purposes of converting
-    /// data from published messages (byte array to object model) that the MqttSubscriptionsManager
-    /// creates a single instance of the data converter and uses it for all messages that are 
-    /// received.</para>
-    /// <para>The same is true for the publishing of data to a broker. The PublishingManager will 
-    /// also cache instances of the converters until the MqttClient is disposed.</para>
-    /// <para>This means, in both cases you can store state in the data converters if you wish, and 
-    /// that state will persist between messages received or published, but only a default empty
-    /// constructor is supported.</para>
+    ///     <para>
+    ///         Types that implement this interface should be aware that for the purposes of converting
+    ///         data from published messages (byte array to object model) that the MqttSubscriptionsManager
+    ///         creates a single instance of the data converter and uses it for all messages that are
+    ///         received.
+    ///     </para>
+    ///     <para>
+    ///         The same is true for the publishing of data to a broker. The PublishingManager will
+    ///         also cache instances of the converters until the MqttClient is disposed.
+    ///     </para>
+    ///     <para>
+    ///         This means, in both cases you can store state in the data converters if you wish, and
+    ///         that state will persist between messages received or published, but only a default empty
+    ///         constructor is supported.
+    ///     </para>
     /// </remarks>
     public interface IPublishDataConverter
     {
         /// <summary>
-        /// Converts received data from a raw byte array to an object graph.
+        ///     Converts received data from a raw byte array to an object graph.
         /// </summary>
         /// <param name="messageData">The received data as an array of bytes.</param>
         /// <returns>The data processed and turned into the specified type.</returns>
         object ConvertFromBytes(byte[] messageData);
 
         /// <summary>
-        /// Converts sent data from an object graph to a byte array.
+        ///     Converts sent data from an object graph to a byte array.
         /// </summary>
         /// <param name="data">The data to convert to the byte array.</param>
         /// <returns>A byte array representation of the data.</returns>

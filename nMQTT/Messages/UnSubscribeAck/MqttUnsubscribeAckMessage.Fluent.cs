@@ -10,26 +10,19 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
 namespace Nmqtt
 {
     /// <summary>
-    /// Implementation of an MQTT Unsubscribe ACK Message, used to acknowledge that an unsubscribe message has been processed.
+    ///     Implementation of an MQTT Unsubscribe ACK Message, used to acknowledge that an unsubscribe message has been processed.
     /// </summary>
     internal sealed partial class MqttUnsubscribeAckMessage : MqttMessage
     {
         /// <summary>
-        /// Sets the message identifier on the unsubscribe message.
+        ///     Sets the message identifier on the unsubscribe message.
         /// </summary>
         /// <param name="messageIdentifier">The ID of the message.</param>
         /// <returns>The updated instance of the MqttSubscribeAckMessage.</returns>
-        public MqttUnsubscribeAckMessage WithMessageIdentifier(short messageIdentifier)
-        {
+        public MqttUnsubscribeAckMessage WithMessageIdentifier(short messageIdentifier) {
             this.VariableHeader.MessageIdentifier = messageIdentifier;
             return this;
         }

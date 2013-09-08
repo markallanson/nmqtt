@@ -12,33 +12,26 @@
 
 using System;
 using System.IO;
-
-using Nmqtt.ExtensionMethods;
 using Nmqtt.Encoding;
+using Nmqtt.ExtensionMethods;
 
 namespace Nmqtt
 {
     /// <summary>
-    /// Class that contains details related to an MQTT Connect messages payload 
+    ///     Class that contains details related to an MQTT Connect messages payload
     /// </summary>
     internal sealed class MqttConnectPayload : MqttPayload
     {
         private string clientIdentifier;
-        private MqttConnectVariableHeader variableHeader;
+        private readonly MqttConnectVariableHeader variableHeader;
 
         /// <summary>
-        /// The identifier of the client that is/has sent the connet message.
+        ///     The identifier of the client that is/has sent the connet message.
         /// </summary>
-        public string ClientIdentifier
-        {
-            get
-            {
-                return clientIdentifier;
-            }
-            set
-            {
-                if (value.Length > Constants.MaxClientIdentifierLength)
-                {
+        public string ClientIdentifier {
+            get { return clientIdentifier; }
+            set {
+                if (value.Length > Constants.MaxClientIdentifierLength) {
                     throw new ClientIdentifierException(value);
                 }
 
@@ -50,65 +43,57 @@ namespace Nmqtt
         public string WillMessage { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectPayload"/> class.
+        ///     Initializes a new instance of the <see cref="MqttConnectPayload" /> class.
         /// </summary>
-        public MqttConnectPayload(MqttConnectVariableHeader variableHeader)
-        {
+        public MqttConnectPayload(MqttConnectVariableHeader variableHeader) {
             this.variableHeader = variableHeader;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectPayload"/> class.
+        ///     Initializes a new instance of the <see cref="MqttConnectPayload" /> class.
         /// </summary>
         /// <param name="variableHeader">The variable header to use for the message.</param>
         /// <param name="payloadStream">The payload stream.</param>
-        public MqttConnectPayload(MqttConnectVariableHeader variableHeader, Stream payloadStream)
-        {
+        public MqttConnectPayload(MqttConnectVariableHeader variableHeader, Stream payloadStream) {
             this.variableHeader = variableHeader;
             ReadFrom(payloadStream);
         }
 
         /// <summary>
-        /// Writes the connect message payload to the supplied stream.
+        ///     Writes the connect message payload to the supplied stream.
         /// </summary>
         /// <param name="payloadStream"></param>
         /// <remarks>
-        /// A basic message has no Variable Header.
+        ///     A basic message has no Variable Header.
         /// </remarks>
-        public override void WriteTo(Stream payloadStream)
-        {
+        public override void WriteTo(Stream payloadStream) {
             payloadStream.WriteMqttString(ClientIdentifier);
-            if (variableHeader.ConnectFlags.WillFlag)
-            {
+            if (variableHeader.ConnectFlags.WillFlag) {
                 payloadStream.WriteMqttString(WillTopic);
                 payloadStream.WriteMqttString(WillMessage);
             }
         }
 
         /// <summary>
-        /// Creates a payload from the specified header stream.
+        ///     Creates a payload from the specified header stream.
         /// </summary>
         /// <param name="payloadStream"></param>
-        public override void ReadFrom(Stream payloadStream)
-        {
+        public override void ReadFrom(Stream payloadStream) {
             ClientIdentifier = payloadStream.ReadMqttString();
 
-            if (this.variableHeader.ConnectFlags.WillFlag)
-            {
+            if (this.variableHeader.ConnectFlags.WillFlag) {
                 WillTopic = payloadStream.ReadMqttString();
                 WillMessage = payloadStream.ReadMqttString();
             }
         }
 
-        internal override int GetWriteLength()
-        {
+        internal override int GetWriteLength() {
             int length = 0;
-            MqttEncoding enc = new MqttEncoding();
-            
+            var enc = new MqttEncoding();
+
             length += enc.GetByteCount(ClientIdentifier);
 
-            if (this.variableHeader.ConnectFlags.WillFlag)
-            {
+            if (this.variableHeader.ConnectFlags.WillFlag) {
                 length += enc.GetByteCount(WillTopic);
                 length += enc.GetByteCount(WillMessage);
             }
@@ -117,14 +102,12 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Returns a string representation of the payload.
+        ///     Returns a string representation of the payload.
         /// </summary>
         /// <returns>A string representation of the payload.</returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return String.Format("Payload: ClientIdentifier={0}, WillTopic={1}, WillMessage={2}",
-                ClientIdentifier, WillTopic, WillMessage);
+                                 ClientIdentifier, WillTopic, WillMessage);
         }
-
     }
 }

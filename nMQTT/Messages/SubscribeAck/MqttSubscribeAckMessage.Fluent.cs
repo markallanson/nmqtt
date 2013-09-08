@@ -12,29 +12,26 @@
 
 namespace Nmqtt
 {
-    internal sealed partial class MqttSubscribeAckMessage 
+    internal sealed partial class MqttSubscribeAckMessage
     {
         /// <summary>
-        /// Sets the message identifier on the subscribe acknowledgement message.
+        ///     Sets the message identifier on the subscribe acknowledgement message.
         /// </summary>
         /// <param name="messageIdentifier">The ID of the message.</param>
         /// <returns>The updated instance of the message.</returns>
-        public MqttSubscribeAckMessage WithMessageIdentifier(short messageIdentifier)
-        {
+        public MqttSubscribeAckMessage WithMessageIdentifier(short messageIdentifier) {
             this.VariableHeader.MessageIdentifier = messageIdentifier;
             return this;
         }
 
         /// <summary>
-        /// Adds a subscription grant to the message.
+        ///     Adds a subscription grant to the message.
         /// </summary>
         /// <param name="qosGranted">The granted Qos to add.</param>
         /// <returns>The updated instance of the message.</returns>
-        public MqttSubscribeAckMessage AddQosGrant(MqttQos qosGranted)
-        {
+        public MqttSubscribeAckMessage AddQosGrant(MqttQos qosGranted) {
             this.Payload.AddGrant(qosGranted);
             return this;
         }
-
     }
 }

@@ -13,20 +13,18 @@
 namespace Nmqtt
 {
     /// <summary>
-    /// Implementation of an MQTT Publish Acknowledgement Message, used to ACK a publish message that has it's QOS set to AtLeast or Exactly Once.
+    ///     Implementation of an MQTT Publish Acknowledgement Message, used to ACK a publish message that has it's QOS set to AtLeast or Exactly Once.
     /// </summary>
     internal sealed partial class MqttPublishAckMessage
     {
         /// <summary>
-        /// Sets the message identifier of the MqttMessage.
+        ///     Sets the message identifier of the MqttMessage.
         /// </summary>
         /// <param name="messageIdentifier">The ID of the message.</param>
         /// <returns>An updated instance of the message.</returns>
-        public MqttPublishAckMessage WithMessageIdentifier(short messageIdentifier)
-        {
+        public MqttPublishAckMessage WithMessageIdentifier(short messageIdentifier) {
             this.VariableHeader.MessageIdentifier = messageIdentifier;
             return this;
         }
- 
     }
 }

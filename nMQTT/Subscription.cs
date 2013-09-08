@@ -11,39 +11,36 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Nmqtt
 {
     /// <summary>
-    /// Entity that captures data related to an individual subscription
+    ///     Entity that captures data related to an individual subscription
     /// </summary>
     public class Subscription
     {
         /// <summary>
-        /// The message identifier assigned to the subscription
+        ///     The message identifier assigned to the subscription
         /// </summary>
         public short MessageIdentifier { get; set; }
 
         /// <summary>
-        /// The time the subscription was created.
+        ///     The time the subscription was created.
         /// </summary>
         public DateTime CreatedTime { get; set; }
 
         /// <summary>
-        /// The topic that is subscribed to.
+        ///     The topic that is subscribed to.
         /// </summary>
         public string Topic { get; set; }
 
         /// <summary>
-        /// The QOS level of the topics subscription
+        ///     The QOS level of the topics subscription
         /// </summary>
         public MqttQos Qos { get; set; }
 
         /// <summary>
-        /// The class that can process received data and turn it into a specific type data.
+        ///     The class that can process received data and turn it into a specific type data.
         /// </summary>
         public IPublishDataConverter DataProcessor { get; set; }
     }

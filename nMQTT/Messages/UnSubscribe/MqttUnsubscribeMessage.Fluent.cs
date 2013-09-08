@@ -15,44 +15,40 @@ namespace Nmqtt
     internal sealed partial class MqttUnsubscribeMessage : MqttMessage
     {
         /// <summary>
-        /// Sets the message identifier on the unsubscribe message.
+        ///     Sets the message identifier on the unsubscribe message.
         /// </summary>
         /// <param name="messageIdentifier">The ID of the message.</param>
         /// <returns>The updated instance of the MqttSubscribeAckMessage.</returns>
-        public MqttUnsubscribeMessage WithMessageIdentifier(short messageIdentifier)
-        {
+        public MqttUnsubscribeMessage WithMessageIdentifier(short messageIdentifier) {
             this.VariableHeader.MessageIdentifier = messageIdentifier;
             return this;
         }
 
         /// <summary>
-        /// Adds a topic to the list of topics to unsubscribe from.
+        ///     Adds a topic to the list of topics to unsubscribe from.
         /// </summary>
         /// <param name="topic">The topic to unsubscribe.</param>
         /// <returns>An updated instance of the message.</returns>
-        public MqttUnsubscribeMessage FromTopic(string topic)
-        {
+        public MqttUnsubscribeMessage FromTopic(string topic) {
             this.Payload.AddSubscription(topic);
             return this;
         }
 
         /// <summary>
-        /// Sets the message up to request acknowledgement from the broker for each topic un-subscription.
+        ///     Sets the message up to request acknowledgement from the broker for each topic un-subscription.
         /// </summary>
         /// <returns>An updated instance of the message.</returns>
-        public MqttUnsubscribeMessage ExpectAcknowledgement()
-        {
+        public MqttUnsubscribeMessage ExpectAcknowledgement() {
             this.Header.WithQos(MqttQos.AtLeastOnce);
             return this;
         }
 
         /// <summary>
-        /// Sets the duplicate flag for the message to indicate its a duplicate of a previous message type 
-        /// with the same message identifier.
+        ///     Sets the duplicate flag for the message to indicate its a duplicate of a previous message type
+        ///     with the same message identifier.
         /// </summary>
         /// <returns>An updated version of the message.</returns>
-        public MqttUnsubscribeMessage IsDuplicate()
-        {
+        public MqttUnsubscribeMessage IsDuplicate() {
             this.Header.IsDuplicate();
             return this;
         }

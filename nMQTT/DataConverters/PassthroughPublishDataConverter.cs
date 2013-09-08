@@ -13,30 +13,29 @@
 namespace Nmqtt
 {
     /// <summary>
-    /// Acts as a passthrough for the raw data without doing any conversion.
-    /// </summary>s
+    ///     Acts as a passthrough for the raw data without doing any conversion.
+    /// </summary>
+    /// s
     public class PassThroughPublishDataConverter : IPublishDataConverter
     {
         /// <summary>
-        /// Processes received data and returns it as a byte array.
+        ///     Processes received data and returns it as a byte array.
         /// </summary>
         /// <param name="messageData">The received data as an array of bytes.</param>
         /// <returns>
-        /// The data processed and turned into a byte array.
+        ///     The data processed and turned into a byte array.
         /// </returns>
-        public object ConvertFromBytes(byte[] messageData)
-        {
+        public object ConvertFromBytes(byte[] messageData) {
             return messageData;
         }
 
         /// <summary>
-        /// Converts sent data from an object graph to a byte array.
+        ///     Converts sent data from an object graph to a byte array.
         /// </summary>
         /// <param name="data">The data to convert to the byte array.</param>
         /// <returns>A byte array representation of the data.</returns>
-        public byte[] ConvertToBytes(object data)
-        {
-            return (byte[])data;
+        public byte[] ConvertToBytes(object data) {
+            return (byte[]) data;
         }
     }
 }

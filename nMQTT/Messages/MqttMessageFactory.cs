@@ -16,20 +16,18 @@ using System.IO;
 namespace Nmqtt
 {
     /// <summary>
-    /// Factory for generating instances of MQTT Messages
+    ///     Factory for generating instances of MQTT Messages
     /// </summary>
     internal static class MqttMessageFactory
     {
         /// <summary>
-        /// Gets an instance of an MqttMessage based on the message type requested.
+        ///     Gets an instance of an MqttMessage based on the message type requested.
         /// </summary>
         /// <param name="header">The message header.</param>
         /// <param name="messageStream">The content of the message, including variable header where applicable.</param>
         /// <returns>An instance of the desired message type.</returns>
-        public static MqttMessage GetMessage(MqttHeader header, Stream messageStream)
-        {
-            switch (header.MessageType)
-            {
+        public static MqttMessage GetMessage(MqttHeader header, Stream messageStream) {
+            switch (header.MessageType) {
                 case MqttMessageType.Connect:
                     return new MqttConnectMessage(header, messageStream);
                 case MqttMessageType.ConnectAck:
@@ -60,9 +58,10 @@ namespace Nmqtt
                     return new MqttDisconnectMessage(header);
                 default:
                     throw new InvalidHeaderException(
-                        String.Format("The Message Type specified ({0}) is not a valid MQTT Message type or currently not supported.", (int)header.MessageType));
+                        String.Format(
+                            "The Message Type specified ({0}) is not a valid MQTT Message type or currently not supported.",
+                            (int) header.MessageType));
             }
-
         }
     }
 }

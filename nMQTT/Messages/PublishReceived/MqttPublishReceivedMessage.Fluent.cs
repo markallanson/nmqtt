@@ -13,17 +13,16 @@
 namespace Nmqtt
 {
     /// <summary>
-    /// Implementation of an MQTT Publish Received Message.
+    ///     Implementation of an MQTT Publish Received Message.
     /// </summary>
     internal sealed partial class MqttPublishReceivedMessage : MqttMessage
     {
         /// <summary>
-        /// Sets the message identifier on the publishReceived message.
+        ///     Sets the message identifier on the publishReceived message.
         /// </summary>
         /// <param name="messageIdentifier">The ID of the message.</param>
         /// <returns>The updated instance of the MqttPublishReceivedMessage.</returns>
-        public MqttPublishReceivedMessage WithMessageIdentifier(short messageIdentifier)
-        {
+        public MqttPublishReceivedMessage WithMessageIdentifier(short messageIdentifier) {
             this.VariableHeader.MessageIdentifier = messageIdentifier;
             return this;
         }

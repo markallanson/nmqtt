@@ -14,42 +14,33 @@ using System;
 
 namespace Nmqtt
 {
-	/// <summary>
-	/// Describes the event arguments that represent an available MqttMessage.
-	/// </summary>
-	public class MqttMessageEventArgs : EventArgs
-	{
-		/// <summary>
-		/// Gets or sets the topic the message was published to.
-		/// </summary>
-		public string Topic
-		{
-			get;
-			set;
-		}
-	
-		/// <summary>
-		/// Gets or sets the nessage that was published.
-		/// </summary>
-		public object Message
-		{
-			get;
-			set;
-		}
-	
-		/// <summary>
-		/// Creates a new instance of the MqttMessageEventArgs class.
-		/// </summary>
-		/// <param name="topic">
-		/// A <see cref="System.String"/> that represents the topic the message was published to.
-		/// </param>
-		/// <param name="message">
-		/// A <see cref="MqttMessage"/> that represents the message that was published.
-		/// </param>
-		public MqttMessageEventArgs(string topic, object message)
-		{
-			Message = message;
-			Topic = topic;
-		}
-	}
+    /// <summary>
+    ///     Describes the event arguments that represent an available MqttMessage.
+    /// </summary>
+    public class MqttMessageEventArgs : EventArgs
+    {
+        /// <summary>
+        ///     Gets or sets the topic the message was published to.
+        /// </summary>
+        public string Topic { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the nessage that was published.
+        /// </summary>
+        public object Message { get; set; }
+
+        /// <summary>
+        ///     Creates a new instance of the MqttMessageEventArgs class.
+        /// </summary>
+        /// <param name="topic">
+        ///     A <see cref="System.String" /> that represents the topic the message was published to.
+        /// </param>
+        /// <param name="message">
+        ///     A <see cref="MqttMessage" /> that represents the message that was published.
+        /// </param>
+        public MqttMessageEventArgs(string topic, object message) {
+            Message = message;
+            Topic = topic;
+        }
+    }
 }

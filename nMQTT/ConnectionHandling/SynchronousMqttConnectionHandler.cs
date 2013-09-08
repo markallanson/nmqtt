@@ -11,15 +11,12 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Nmqtt
 {
     /// <summary>
-    /// Connection handler that performs connections and disconnections to the hostname in a synchronous manner.
+    ///     Connection handler that performs connections and disconnections to the hostname in a synchronous manner.
     /// </summary>
     internal sealed class SynchronousMqttConnectionHandler : MqttConnectionHandler
     {
@@ -27,17 +24,15 @@ namespace Nmqtt
         private const int MaxConnectionAttempts = 5;
 
         /// <summary>
-        /// Synchronously connect to the specific Mqtt Connection.
+        ///     Synchronously connect to the specific Mqtt Connection.
         /// </summary>
         /// <param name="hostname">The hostname hostnameto connect to.</param>
         /// <param name="port">The port on the host to connect to.</param>
         /// <param name="connectMessage">The connection message that should be used to initiate the connection.</param>
-        protected override ConnectionState InternalConnect(string hostname, int port, MqttConnectMessage connectMessage)
-        {
+        protected override ConnectionState InternalConnect(string hostname, int port, MqttConnectMessage connectMessage) {
             int connectionAttempts = 0;
 
-            do
-            {
+            do {
                 // Initiate the connection
                 connectionState = ConnectionState.Connecting;
 
@@ -49,31 +44,27 @@ namespace Nmqtt
                 SendMessage(connectMessage);
 
                 // we're the sync connection handler so we need to wait for the brokers acknowlegement of the connections
-                if (!connectionResetEvent.WaitOne(5000, false))
-                {
+                if (!connectionResetEvent.WaitOne(5000, false)) {
                     // if we don't get a response in 5 seconds, dispose the connection and rebuild it.
                     connectionState = ConnectionState.Disconnecting;
                     connection.Dispose();
                     connectionState = ConnectionState.Disconnected;
                 }
-
             } while (connectionState != ConnectionState.Connected && ++connectionAttempts < MaxConnectionAttempts);
 
             // if we've failed to handshake with the broker, throw an exception.
-            if (connectionState != ConnectionState.Connected)
-            {
+            if (connectionState != ConnectionState.Connected) {
                 throw new ConnectionException(
                     String.Format("The maximum allowed connection attempts ({0}) were exceeded. The broker " +
-                        "is not responding to the connection request message (Missing Connection Acknowledgement)", 
-                        MaxConnectionAttempts),
+                                  "is not responding to the connection request message (Missing Connection Acknowledgement)",
+                                  MaxConnectionAttempts),
                     connectionState);
             }
 
             return connectionState;
         }
 
-        protected override ConnectionState Disconnect()
-        {
+        protected override ConnectionState Disconnect() {
             // send a disconnect message to the broker
             connectionState = ConnectionState.Disconnecting;
             SendMessage(new MqttDisconnectMessage());
@@ -83,10 +74,9 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Disconnects the underlying connection object.
+        ///     Disconnects the underlying connection object.
         /// </summary>
-        private void PerformConnectionDisconnect()
-        {
+        private void PerformConnectionDisconnect() {
             // set the connection to disconnected.
             connectionState = ConnectionState.Disconnecting;
             connection.Dispose();
@@ -95,33 +85,26 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Processes the connect acknowledgement message.
+        ///     Processes the connect acknowledgement message.
         /// </summary>
         /// <param name="msg">The connect acknowledgement message.</param>
-        private bool ConnectAckProcessor(MqttMessage msg)
-        {
-            try
-            {
-                MqttConnectAckMessage ackMsg = (MqttConnectAckMessage)msg;
+        private bool ConnectAckProcessor(MqttMessage msg) {
+            try {
+                var ackMsg = (MqttConnectAckMessage) msg;
 
                 // drop the connection if our connect request has been rejected.
                 if (ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.BrokerUnavailable ||
                     ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.IdentifierRejected ||
-                    ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.UnacceptedProtocolVersion)
-                {
+                    ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.UnacceptedProtocolVersion) {
                     // TODO: Decide on a way to let the client know why we have been rejected.
                     PerformConnectionDisconnect();
-                }
-                else
-                {
+                } else {
                     // initialize the keepalive to start the ping based keepalive process.
                     connectionState = ConnectionState.Connected;
                 }
 
                 connectionResetEvent.Set();
-            }
-            catch (InvalidMessageException)
-            {
+            } catch (InvalidMessageException) {
                 PerformConnectionDisconnect();
 
                 // not exactly, ready, but we've reached an end state so we should signal a bad connection attempt.

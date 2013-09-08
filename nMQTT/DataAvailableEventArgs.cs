@@ -16,30 +16,25 @@ using System.Collections.ObjectModel;
 namespace Nmqtt
 {
     /// <summary>
-    /// Event arguments for the Data Available event fired by the MqttConnection class.
+    ///     Event arguments for the Data Available event fired by the MqttConnection class.
     /// </summary>
     public class DataAvailableEventArgs : EventArgs
     {
-        private Collection<byte> messageData;
+        private readonly Collection<byte> messageData;
 
         /// <summary>
-        /// Gets or sets the data stream that contains the data to read from.
+        ///     Gets or sets the data stream that contains the data to read from.
         /// </summary>
         /// <value>The data stream.</value>
-        public Collection<byte> MessageData
-        {
-            get
-            {
-                return messageData;
-            }
+        public Collection<byte> MessageData {
+            get { return messageData; }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataAvailableEventArgs"/> class.
+        ///     Initializes a new instance of the <see cref="DataAvailableEventArgs" /> class.
         /// </summary>
         /// <param name="messageData">A collection of bytes containing the message data.</param>
-        public DataAvailableEventArgs(Collection<byte> messageData)
-        {
+        public DataAvailableEventArgs(Collection<byte> messageData) {
             this.messageData = messageData;
         }
     }

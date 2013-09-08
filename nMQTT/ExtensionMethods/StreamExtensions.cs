@@ -17,74 +17,70 @@ using Nmqtt.Encoding;
 namespace Nmqtt.ExtensionMethods
 {
     /// <summary>
-    /// Provides stream extension methods useful for interacting with streams of MQTT messges.
+    ///     Provides stream extension methods useful for interacting with streams of MQTT messges.
     /// </summary>
     internal static class StreamExtensions
     {
         /// <summary>
-        /// Writes a short to the underlying stream.
+        ///     Writes a short to the underlying stream.
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
         /// <param name="value">The value to write to the stream.</param>
-        public static void WriteShort(this Stream stream, short value)
-        {
-            stream.WriteByte((byte)(value >> 8));
-            stream.WriteByte((byte)(value & 0xFF));
+        public static void WriteShort(this Stream stream, short value) {
+            stream.WriteByte((byte) (value >> 8));
+            stream.WriteByte((byte) (value & 0xFF));
         }
 
         /// <summary>
-        /// Reads a short from the underlying stream.
+        ///     Reads a short from the underlying stream.
         /// </summary>
         /// <param name="stream">The stream to read from</param>
         /// <returns>A short value.</returns>
-        public static short ReadShort(this Stream stream)
-        {
+        public static short ReadShort(this Stream stream) {
             byte high, low;
-            high = (byte)stream.ReadByte();
-            low = (byte)stream.ReadByte();
+            high = (byte) stream.ReadByte();
+            low = (byte) stream.ReadByte();
 
-            return (short)((high << 8) + low);
+            return (short) ((high << 8) + low);
         }
 
         /// <summary>
-        /// Reads an MQTT string from the underlying stream.
+        ///     Reads an MQTT string from the underlying stream.
         /// </summary>
         /// <param name="stringStream">The stream to read the string from.</param>
         /// <returns>The Mqtt String.</returns>
-        public static string ReadMqttString(this Stream stringStream)
-        {
+        public static string ReadMqttString(this Stream stringStream) {
             // read and check the length
             var lengthBytes = new byte[2];
             int bytesRead = stringStream.Read(lengthBytes, 0, 2);
-            if (bytesRead < 2)
-            {
+            if (bytesRead < 2) {
                 throw new ArgumentException(
                     "The stream did not have enough bytes to describe the length of the string",
                     "stringStream");
             }
 
             System.Text.Encoding enc = new MqttEncoding();
-            short stringLength = (short)enc.GetCharCount(lengthBytes);
+            var stringLength = (short) enc.GetCharCount(lengthBytes);
 
             // read the bytes from the string, validate we have enough etc.
             var stringBytes = new byte[stringLength];
             bytesRead = stringStream.Read(stringBytes, 0, stringLength);
-            if (bytesRead < stringLength)
-            {
+            if (bytesRead < stringLength) {
                 throw new ArgumentException("stream",
-                    String.Format("The stream did not have enough bytes to match the defined string length {0}", stringLength));
+                                            String.Format(
+                                                "The stream did not have enough bytes to match the defined string length {0}",
+                                                stringLength));
             }
 
             return enc.GetString(stringBytes);
         }
 
         /// <summary>
-        /// Writes the MQTT string.
+        ///     Writes the MQTT string.
         /// </summary>
         /// <param name="stringStream">The stream containing the string to write.</param>
         /// <param name="stringToWrite">The string to write.</param>
-        public static void WriteMqttString(this Stream stringStream, string stringToWrite)
-        {
+        public static void WriteMqttString(this Stream stringStream, string stringToWrite) {
             System.Text.Encoding enc = new MqttEncoding();
             byte[] stringBytes = enc.GetBytes(stringToWrite);
             stringStream.Write(stringBytes, 0, stringBytes.Length);

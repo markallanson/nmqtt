@@ -20,30 +20,91 @@
 // "In Project Suppression File". 
 // You do not need to add suppressions to this file manually. 
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flag", Scope = "member", Target = "Nmqtt.MqttConnectFlags.#WillFlag")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Scope = "member", Target = "Nmqtt.MqttMessage.#.ctor(System.IO.Stream)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Scope = "member", Target = "Nmqtt.MqttMessage.#.ctor(Nmqtt.MqttHeader)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1700:DoNotNameEnumValuesReserved", Scope = "member", Target = "Nmqtt.MqttMessageType.#Reserved1")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1700:DoNotNameEnumValuesReserved", Scope = "member", Target = "Nmqtt.MqttMessageType.#Reserved2")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Scope = "member", Target = "Nmqtt.MqttPayload.#.ctor(System.IO.Stream)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Scope = "member", Target = "Nmqtt.MqttVariableHeader.#.ctor(System.IO.Stream)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1717:OnlyFlagsEnumsShouldHavePluralNames", Scope = "type", Target = "Nmqtt.MqttQos")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttVariableHeader.#ConnectFlags")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttVariableHeader.#ReadConnectFlags(System.IO.Stream)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttVariableHeader.#ReadFlags")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttVariableHeader.#WriteConnectFlags(System.IO.Stream)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttVariableHeader.#WriteFlags")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "type", Target = "Nmqtt.MqttVariableHeader+ReadWriteFlags")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttVariableHeader+ReadWriteFlags.#ConnectFlags")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1700:DoNotNameEnumValuesReserved", Scope = "member", Target = "Nmqtt.MqttQos.#Reserved1")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flag", Scope = "member", Target = "Nmqtt.MqttConnectPayload.#.ctor(System.IO.Stream,System.Boolean)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttConnectFlags.#WriteTo(System.IO.Stream)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Scope = "member", Target = "Nmqtt.MqttConnectFlags.#.ctor(System.IO.Stream)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Scope = "member", Target = "Nmqtt.MqttVariableHeader.#GetWriteLength()")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "messageSize", Scope = "member", Target = "Nmqtt.MqttHeader.#WriteTo(System.Int32,System.IO.Stream)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "Nmqtt.Subscription.#CreatedTime")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "member", Target = "Nmqtt.MqttClient.#PublishMessage`1(System.String,Nmqtt.MqttQos,System.Object)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "member", Target = "Nmqtt.MqttClient.#PublishMessage`1(System.String,System.Object)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "Nmqtt.Storage")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "Nmqtt.ExtensionMethods")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA2210:AssembliesShouldHaveValidStrongNames", Justification="Only signed for release with private key.")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flag",
+        Scope = "member", Target = "Nmqtt.MqttConnectFlags.#WillFlag")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
+        "CA2214:DoNotCallOverridableMethodsInConstructors", Scope = "member",
+        Target = "Nmqtt.MqttMessage.#.ctor(System.IO.Stream)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
+        "CA2214:DoNotCallOverridableMethodsInConstructors", Scope = "member",
+        Target = "Nmqtt.MqttMessage.#.ctor(Nmqtt.MqttHeader)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1700:DoNotNameEnumValuesReserved",
+        Scope = "member", Target = "Nmqtt.MqttMessageType.#Reserved1")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1700:DoNotNameEnumValuesReserved",
+        Scope = "member", Target = "Nmqtt.MqttMessageType.#Reserved2")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
+        "CA2214:DoNotCallOverridableMethodsInConstructors", Scope = "member",
+        Target = "Nmqtt.MqttPayload.#.ctor(System.IO.Stream)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
+        "CA2214:DoNotCallOverridableMethodsInConstructors", Scope = "member",
+        Target = "Nmqtt.MqttVariableHeader.#.ctor(System.IO.Stream)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1717:OnlyFlagsEnumsShouldHavePluralNames",
+        Scope = "type", Target = "Nmqtt.MqttQos")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "member", Target = "Nmqtt.MqttVariableHeader.#ConnectFlags")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "member", Target = "Nmqtt.MqttVariableHeader.#ReadConnectFlags(System.IO.Stream)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "member", Target = "Nmqtt.MqttVariableHeader.#ReadFlags")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "member", Target = "Nmqtt.MqttVariableHeader.#WriteConnectFlags(System.IO.Stream)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "member", Target = "Nmqtt.MqttVariableHeader.#WriteFlags")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "type", Target = "Nmqtt.MqttVariableHeader+ReadWriteFlags")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "member", Target = "Nmqtt.MqttVariableHeader+ReadWriteFlags.#ConnectFlags")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1700:DoNotNameEnumValuesReserved",
+        Scope = "member", Target = "Nmqtt.MqttQos.#Reserved1")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flag",
+        Scope = "member", Target = "Nmqtt.MqttConnectPayload.#.ctor(System.IO.Stream,System.Boolean)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "member", Target = "Nmqtt.MqttConnectFlags.#WriteTo(System.IO.Stream)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags",
+        Scope = "member", Target = "Nmqtt.MqttConnectFlags.#.ctor(System.IO.Stream)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
+        Scope = "member", Target = "Nmqtt.MqttVariableHeader.#GetWriteLength()")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability",
+        "CA1500:VariableNamesShouldNotMatchFieldNames", MessageId = "messageSize", Scope = "member",
+        Target = "Nmqtt.MqttHeader.#WriteTo(System.Int32,System.IO.Stream)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode",
+        Scope = "member", Target = "Nmqtt.Subscription.#CreatedTime")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+        "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "member",
+        Target = "Nmqtt.MqttClient.#PublishMessage`1(System.String,Nmqtt.MqttQos,System.Object)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+        "CA1004:GenericMethodsShouldProvideTypeParameter", Scope = "member",
+        Target = "Nmqtt.MqttClient.#PublishMessage`1(System.String,System.Object)")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes",
+        Scope = "namespace", Target = "Nmqtt.Storage")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes",
+        Scope = "namespace", Target = "Nmqtt.ExtensionMethods")]
+[assembly:
+    System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA2210:AssembliesShouldHaveValidStrongNames",
+        Justification = "Only signed for release with private key.")]
