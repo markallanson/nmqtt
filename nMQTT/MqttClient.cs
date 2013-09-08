@@ -10,12 +10,8 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-//using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System;
-using System.IO;
 using Nmqtt.Diagnostics;
 
 namespace Nmqtt
@@ -105,6 +101,11 @@ namespace Nmqtt
         private MessageLogger messageLogger;
 
         /// <summary>
+        /// Event raised when a Message has been received from the wire. 
+        /// </summary>
+        public event EventHandler<MqttMessageEventArgs> MessageAvailable;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MqttClient"/> class using the default Mqtt Port.
         /// </summary>
         /// <param name="server">The server hostname to connect to.</param>
@@ -159,7 +160,7 @@ namespace Nmqtt
         /// <summary>
         /// Handles the processing of messages arriving from the message broker.
         /// </summary>
-        /// <param name="mqttMessage"></param>
+        /// <param name="message">The message that was received from the broker.</param>
         private bool HandlePublishMessage(MqttMessage message)
         {
             MqttPublishMessage pubMsg = (MqttPublishMessage)message;
@@ -179,7 +180,6 @@ namespace Nmqtt
         /// </summary>
         /// <param name="topic">The topic.</param>
         /// <param name="qosLevel">The qos level.</param>
-        /// <param name="subscriptionCallback">The subscription callback.</param>
         /// <returns></returns>
         public short Subscribe(string topic, MqttQos qosLevel)
         {
@@ -189,10 +189,9 @@ namespace Nmqtt
         /// <summary>
         /// Initiates a topic subscription request to the connected broker with a strongly typed data processor callback.
         /// </summary>
-        /// <typeparam name="TReceivedDataProcessor">The type that implements TReceivedDataProcessor that can parse the data arriving on the subscription.</typeparam>
+        /// <typeparam name="TPublishDataConverter">The type that implements TPublishDataConverter that can parse the data arriving on the subscription.</typeparam>
         /// <param name="topic">The topic to subscribe to.</param>
         /// <param name="qosLevel">The qos level the message was published at.</param>
-        /// <param name="subscriptionCallback">The subscription callback.</param>
         /// <returns>
         /// The identifier assigned to the subscription.
         /// </returns>
@@ -224,6 +223,7 @@ namespace Nmqtt
         /// Publishes a message to the message broker.
         /// </summary>
         /// <param name="topic">The topic to publish the message to.</param>
+        /// <param name="qos">The QOS level to publish the message at.</param>
         /// <param name="data">The message to publish.</param>
         /// <returns>The message identiier assigned to the message.</returns>
         public short PublishMessage(string topic, MqttQos qos, object data)
@@ -268,9 +268,6 @@ namespace Nmqtt
 
             return publishingManager.Publish<TDataConverter>(topic, qualityOfService, data);
         }
-
-
-		public event EventHandler<MqttMessageEventArgs> MessageAvailable;
 		
 		private void OnMessageAvailable(string topic, object message)
 		{

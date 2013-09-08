@@ -10,11 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Nmqtt
 {
     /// <summary>
@@ -22,10 +17,29 @@ namespace Nmqtt
     /// </summary>
     public enum ConnectionState
     {
+        /// <summary>
+        /// The MQTT Connection is in the process of disconnecting from the broker.
+        /// </summary>
         Disconnecting,
+
+        /// <summary>
+        /// The MQTT Connection is not currently connected to any broker.
+        /// </summary>
         Disconnected,
+
+        /// <summary>
+        /// The MQTT Connection is in the process of connecting to the broker.
+        /// </summary>
         Connecting,
+
+        /// <summary>
+        /// The MQTT Connection is currently connected to the broker.
+        /// </summary>
         Connected,
+
+        /// <summary>
+        /// The MQTT Connection is faulted and no longer communicating with the broker.
+        /// </summary>
         Faulted
     }
 }

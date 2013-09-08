@@ -10,14 +10,9 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Nmqtt
 {
-    public partial class MqttHeader
+    internal partial class MqttHeader
     {
         /*
          * This here class contains some experimental Fluent interface for building

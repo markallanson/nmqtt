@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of the variable header for an MQTT Publish Acknowledgement message.
     /// </summary>
-    public sealed class MqttUnsubscribeAckVariableHeader : MqttVariableHeader
+    internal sealed class MqttUnsubscribeAckVariableHeader : MqttVariableHeader
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.

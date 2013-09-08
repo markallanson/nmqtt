@@ -10,17 +10,12 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Nmqtt
 {
     /// <summary>
     /// Implementation of an Mqtt Connect Message. Used to initiate a connection to an RSMB
     /// </summary>
-    public sealed partial class MqttConnectMessage
+    internal sealed partial class MqttConnectMessage
     {
         /// <summary>
         /// Sets the name of the protocol to use.
@@ -94,7 +89,7 @@ namespace Nmqtt
         /// <summary>
         /// Sets the client identifier of the message.
         /// </summary>
-        /// <param name="clientID">The client ID.</param>
+        /// <param name="clientIdentifier">The client ID.</param>
         /// <returns></returns>
         public MqttConnectMessage WithClientIdentifier(string clientIdentifier)
         {

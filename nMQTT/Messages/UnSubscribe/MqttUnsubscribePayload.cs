@@ -11,8 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
@@ -25,7 +23,7 @@ namespace Nmqtt
     /// <summary>
     /// Class that contains details related to an MQTT Unsubscribe messages payload 
     /// </summary>
-    public sealed class MqttUnsubscribePayload : MqttPayload
+    internal sealed class MqttUnsubscribePayload : MqttPayload
     {
         private MqttVariableHeader variableHeader;
         private MqttHeader header;
@@ -54,9 +52,8 @@ namespace Nmqtt
         /// Initializes a new instance of the <see cref="MqttUnsubscribePayload"/> class.
         /// </summary>
         /// <param name="payloadStream">The payload stream.</param>
-        /// <param name="willFlag">
-        /// Set to true to indicate that the payload stream should be interrogated for the 
-        /// Will Topic and Message</param>
+        /// <param name="header">The header to use for the message.</param>
+        /// <param name="variableHeader">The variable header to use for the message.</param>
         public MqttUnsubscribePayload(MqttHeader header, MqttUnsubscribeVariableHeader variableHeader, Stream payloadStream)
         {
             this.header = header;

@@ -11,10 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Collections.ObjectModel;
 
 namespace Nmqtt
@@ -41,7 +37,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="DataAvailableEventArgs"/> class.
         /// </summary>
-        /// <param name="dataStream">The data stream containing the message available for processing.</param>
+        /// <param name="messageData">A collection of bytes containing the message data.</param>
         public DataAvailableEventArgs(Collection<byte> messageData)
         {
             this.messageData = messageData;

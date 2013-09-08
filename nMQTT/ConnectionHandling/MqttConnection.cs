@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net.Sockets;
 using System.IO;
 using System.Collections.ObjectModel;
@@ -103,20 +100,16 @@ namespace Nmqtt
                     networkStream.Write(message, 0, message.Length);
                     networkStream.Flush();
                 }
-                else
-                {
-                    // todo: throw an exception if there is no network stream.
-                }
             }
         }
 
         /// <summary>
         /// Callback for when data is available for reading from the underlying stream.
         /// </summary>
-        /// <param name="state">The state.</param>
+        /// <param name="asyncResult">The async result from the read.</param>
         private void ReadComplete(IAsyncResult asyncResult)
         {
-            var bytesRead = 0;
+            int bytesRead;
             NetworkStream dataStream = (NetworkStream)asyncResult.AsyncState;
 
             try

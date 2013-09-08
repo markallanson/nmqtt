@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Security.Permissions;
 
 namespace Nmqtt
@@ -25,19 +22,15 @@ namespace Nmqtt
     public class ClientIdentifierException : Exception
     {
         private const string MessageTemplate = "The client identifier {0} is too long ({1}). Maximum ClientIdentifier length is {2}";
-        private const string DefaultMessage = "The client identifier is invalid";
 
+        /// <summary>
+        /// The client identifier that was incorrect.
+        /// </summary>
         public string ClientIdentifier { get; set; }
-
-        public ClientIdentifierException()
-            : base(DefaultMessage)
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
         /// </summary>
-        /// <param name="length">The length.</param>
         /// <param name="clientIdentifier">The client identifier.</param>
         public ClientIdentifierException(string clientIdentifier)
             : base(String.Format(MessageTemplate, clientIdentifier, clientIdentifier.Length, Constants.MaxClientIdentifierLength))
@@ -48,7 +41,6 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
         /// </summary>
-        /// <param name="length">The length of the client identifier.</param>
         /// <param name="clientIdentifier">The client identifier.</param>
         /// <param name="innerException">The inner exception.</param>
         public ClientIdentifierException(string clientIdentifier, Exception innerException)
@@ -60,6 +52,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
         /// </summary>
+        /// <param name="clientIdentifier">The client identifier.</param>
         /// <param name="message">The message.</param>
         public ClientIdentifierException(string clientIdentifier, string message)
             : base(message)
@@ -70,6 +63,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
         /// </summary>
+        /// <param name="clientIdentifier">The client idenfitier that caused the problem.</param>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
         public ClientIdentifierException(string clientIdentifier, string message, Exception innerException)
@@ -93,7 +87,7 @@ namespace Nmqtt
             : base(info, context)
         {
             if (info == null)
-                throw new System.ArgumentNullException("info");
+                throw new ArgumentNullException("info");
 
             ClientIdentifier = info.GetString("ClientIdentifier");
         }
@@ -114,7 +108,7 @@ namespace Nmqtt
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
         {
             if (info == null)
-                throw new System.ArgumentNullException("info");
+                throw new ArgumentNullException("info");
 
             base.GetObjectData(info, context);
 

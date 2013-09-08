@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Nmqtt
@@ -26,7 +23,8 @@ namespace Nmqtt
         /// <summary>
         /// Gets an instance of an MqttMessage based on the message type requested.
         /// </summary>
-        /// <param name="messageType">Type of message to retrieve an instance of.</param>
+        /// <param name="header">The message header.</param>
+        /// <param name="messageStream">The content of the message, including variable header where applicable.</param>
         /// <returns>An instance of the desired message type.</returns>
         public static MqttMessage GetMessage(MqttHeader header, Stream messageStream)
         {

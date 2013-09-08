@@ -11,9 +11,7 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using System.IO;
 
 using Nmqtt.ExtensionMethods;
@@ -24,7 +22,7 @@ namespace Nmqtt
     /// <summary>
     /// Represents the base class for the Variable Header portion of some MQTT Messages.
     /// </summary>
-    public class MqttVariableHeader
+    internal class MqttVariableHeader
     {
         private int length;
 
@@ -89,43 +87,43 @@ namespace Nmqtt
         /// <summary>
         /// Writes the variable header to the supplied stream.
         /// </summary>
-        /// <param name="messageStream">The stream to s the variable header to.</param>
+        /// <param name="variableHeaderStream">The stream to write the variable header to.</param>
         /// <remarks>
         /// This base implementation uses the WriteFlags property that can be 
         /// overridden in subclasses to determine what to read from the variable header.
         /// A subclass can override this method to do completely custom read operations 
         /// if required.
         /// </remarks>
-        public virtual void WriteTo(Stream headerStream) 
+        public virtual void WriteTo(Stream variableHeaderStream) 
         {
-            if ((WriteFlags & ReadWriteFlags.ProtocolName) == ReadWriteFlags.ProtocolName)          WriteProtocolName(headerStream);
-            if ((WriteFlags & ReadWriteFlags.ProtocolVersion) == ReadWriteFlags.ProtocolVersion)    WriteProtocolVersion(headerStream);
-            if ((WriteFlags & ReadWriteFlags.ConnectFlags) == ReadWriteFlags.ConnectFlags)          WriteConnectFlags(headerStream);
-            if ((WriteFlags & ReadWriteFlags.KeepAlive) == ReadWriteFlags.KeepAlive)                WriteKeepAlive(headerStream);
-            if ((WriteFlags & ReadWriteFlags.ReturnCode) == ReadWriteFlags.ReturnCode)              WriteReturnCode(headerStream);
-            if ((WriteFlags & ReadWriteFlags.TopicName) == ReadWriteFlags.TopicName)                WriteTopicName(headerStream);
-            if ((WriteFlags & ReadWriteFlags.MessageIdentifier) == ReadWriteFlags.MessageIdentifier) WriteMessageIdentifier(headerStream);
+            if ((WriteFlags & ReadWriteFlags.ProtocolName) == ReadWriteFlags.ProtocolName)          WriteProtocolName(variableHeaderStream);
+            if ((WriteFlags & ReadWriteFlags.ProtocolVersion) == ReadWriteFlags.ProtocolVersion)    WriteProtocolVersion(variableHeaderStream);
+            if ((WriteFlags & ReadWriteFlags.ConnectFlags) == ReadWriteFlags.ConnectFlags)          WriteConnectFlags(variableHeaderStream);
+            if ((WriteFlags & ReadWriteFlags.KeepAlive) == ReadWriteFlags.KeepAlive)                WriteKeepAlive(variableHeaderStream);
+            if ((WriteFlags & ReadWriteFlags.ReturnCode) == ReadWriteFlags.ReturnCode)              WriteReturnCode(variableHeaderStream);
+            if ((WriteFlags & ReadWriteFlags.TopicName) == ReadWriteFlags.TopicName)                WriteTopicName(variableHeaderStream);
+            if ((WriteFlags & ReadWriteFlags.MessageIdentifier) == ReadWriteFlags.MessageIdentifier) WriteMessageIdentifier(variableHeaderStream);
         }
 
         /// <summary>
         /// Creates a variable header from the specified header stream. 
         /// </summary>
-        /// <param name="headerStream">The header stream.</param>
+        /// <param name="variableHeaderStream">The stream to read the variable header from.</param>
         /// <remarks>
         /// This base implementation uses the ReadFlags property that can be 
         /// overridden in subclasses to determine what to read from the variable header.
         /// A subclass can override this method to do completely custom read operations 
         /// if required.
         /// </remarks>
-        public virtual void ReadFrom(Stream headerStream) 
+        public virtual void ReadFrom(Stream variableHeaderStream) 
         {
-            if ((ReadFlags & ReadWriteFlags.ProtocolName) == ReadWriteFlags.ProtocolName)           ReadProtocolName(headerStream);
-            if ((ReadFlags & ReadWriteFlags.ProtocolVersion) == ReadWriteFlags.ProtocolVersion)     ReadProtocolVersion(headerStream);
-            if ((ReadFlags & ReadWriteFlags.ConnectFlags) == ReadWriteFlags.ConnectFlags)           ReadConnectFlags(headerStream);
-            if ((ReadFlags & ReadWriteFlags.KeepAlive) == ReadWriteFlags.KeepAlive)                 ReadKeepAlive(headerStream);
-            if ((ReadFlags & ReadWriteFlags.ReturnCode) == ReadWriteFlags.ReturnCode)               ReadReturnCode(headerStream);
-            if ((ReadFlags & ReadWriteFlags.TopicName) == ReadWriteFlags.TopicName)                 ReadTopicName(headerStream);
-            if ((ReadFlags & ReadWriteFlags.MessageIdentifier) == ReadWriteFlags.MessageIdentifier) ReadMessageIdentifier(headerStream);
+            if ((ReadFlags & ReadWriteFlags.ProtocolName) == ReadWriteFlags.ProtocolName)           ReadProtocolName(variableHeaderStream);
+            if ((ReadFlags & ReadWriteFlags.ProtocolVersion) == ReadWriteFlags.ProtocolVersion)     ReadProtocolVersion(variableHeaderStream);
+            if ((ReadFlags & ReadWriteFlags.ConnectFlags) == ReadWriteFlags.ConnectFlags)           ReadConnectFlags(variableHeaderStream);
+            if ((ReadFlags & ReadWriteFlags.KeepAlive) == ReadWriteFlags.KeepAlive)                 ReadKeepAlive(variableHeaderStream);
+            if ((ReadFlags & ReadWriteFlags.ReturnCode) == ReadWriteFlags.ReturnCode)               ReadReturnCode(variableHeaderStream);
+            if ((ReadFlags & ReadWriteFlags.TopicName) == ReadWriteFlags.TopicName)                 ReadTopicName(variableHeaderStream);
+            if ((ReadFlags & ReadWriteFlags.MessageIdentifier) == ReadWriteFlags.MessageIdentifier) ReadMessageIdentifier(variableHeaderStream);
 
         }
 

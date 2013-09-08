@@ -10,18 +10,12 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
 namespace Nmqtt
 {
     /// <summary>
     /// Implementation of an MQTT Publish Complete Message.
     /// </summary>
-    public sealed partial class MqttPublishCompleteMessage : MqttMessage
+    internal sealed partial class MqttPublishCompleteMessage 
     {
         /// <summary>
         /// Sets the message identifier on the publishComplete message.

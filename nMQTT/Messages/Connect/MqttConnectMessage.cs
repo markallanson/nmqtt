@@ -10,9 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
@@ -21,7 +18,7 @@ namespace Nmqtt
     /// <summary>
     /// An Mqtt message that is used to initiate a connection to a message broker.
     /// </summary>
-    public sealed partial class MqttConnectMessage : MqttMessage
+    internal sealed partial class MqttConnectMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -56,6 +53,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectMessage"/> class.
         /// </summary>
+        /// <param name="header">The header to use for the message.</param>
         /// <param name="messageStream">The message stream positioned after the header.</param>
         internal MqttConnectMessage(MqttHeader header, Stream messageStream)
         {

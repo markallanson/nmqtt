@@ -12,9 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.IO;
 
 namespace Nmqtt.Encoding
 {
@@ -49,7 +47,7 @@ namespace Nmqtt.Encoding
             List<byte> stringBytes = new List<byte>();
             stringBytes.Add((byte)(s.Length >> 8));
             stringBytes.Add((byte)(s.Length & 0xFF));
-            stringBytes.AddRange(System.Text.Encoding.ASCII.GetBytes(s));
+            stringBytes.AddRange(ASCII.GetBytes(s));
 
             return stringBytes.ToArray();
         }
@@ -61,7 +59,7 @@ namespace Nmqtt.Encoding
         /// <returns>
         /// A <see cref="T:System.String"/> containing the results of decoding the specified sequence of bytes.
         /// </returns>
-        /// <exceptionGetCharCount cref="T:System.ArgumentNullException">
+        /// <exception cref="T:System.ArgumentNullException">
         /// 	<paramref name="bytes"/> is null.
         /// </exception>
         /// <exception cref="T:System.Text.DecoderFallbackException">
@@ -71,7 +69,7 @@ namespace Nmqtt.Encoding
         /// </exception>
 		public override string GetString (byte[] bytes)
 		{
-            return System.Text.Encoding.ASCII.GetString(bytes);
+            return ASCII.GetString(bytes);
         }
 
         /// <summary>

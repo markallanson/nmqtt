@@ -10,7 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,12 +34,12 @@ namespace Nmqtt
     /// ----------------------------
     /// </code>
     /// </remarks>
-    public class MqttMessage
+    internal class MqttMessage
     {
         /// <summary>
         /// The header of the MQTT Message. Contains metadata about the message
         /// </summary>
-        public virtual MqttHeader Header { get; set; }
+        public MqttHeader Header { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttMessage"/> class.
@@ -56,7 +55,6 @@ namespace Nmqtt
         /// Initializes a new instance of the <see cref="MqttMessage"/> class.
         /// </summary>
         /// <param name="header">The header of the message.</param>
-        /// <param name="payload">The payload of the message.</param>
         public MqttMessage(MqttHeader header)
         {
             Header = header;

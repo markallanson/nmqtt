@@ -90,7 +90,8 @@ namespace Nmqtt
         /// Publish a message to the broker on the specified topic.
         /// </summary>
         /// <param name="topic">The topic to send the message to.</param>
-        /// <param name="payload">The message to send.</param>
+        /// <param name="qualityOfService">The QOS to use when publishing the message.</param>
+        /// <param name="data">The message to send.</param>
         /// <returns>The message identifier assigned to the message.</returns>
         public short Publish<TDataConverter>(string topic, MqttQos qualityOfService, object data)
             where TDataConverter : IPublishDataConverter

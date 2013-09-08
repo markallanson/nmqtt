@@ -3738,6 +3738,20 @@
             <param name="arg16">The sixteenth parameter of the method that this delegate encapsulates.</param>
             <return>The return value of the method that this delegate encapsulates.</return>
         </member>
+        <member name="T:Moq.MockExtensions">
+            <summary>
+            Provides additional methods on mocks.
+            </summary>
+            <remarks>
+            Those methods are useful for Testeroids support. 
+            </remarks>
+        </member>
+        <member name="M:Moq.MockExtensions.ResetCalls(Moq.Mock)">
+            <summary>
+            Resets the calls previously made on the specified mock.
+            </summary>
+            <param name="mock">The mock whose calls need to be reset.</param>
+        </member>
         <member name="T:Moq.MockSequence">
             <summary>
             Helper class to setup a full trace between many mocks
@@ -4514,7 +4528,7 @@
             Obsolete.
             </summary>
         </member>
-        <member name="T:Moq.MockExtensions">
+        <member name="T:Moq.ObsoleteMockExtensions">
             <summary>
             Provides additional methods on mocks.
             </summary>
@@ -4523,7 +4537,7 @@
             with the overloads taking Action.
             </devdoc>
         </member>
-        <member name="M:Moq.MockExtensions.SetupSet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+        <member name="M:Moq.ObsoleteMockExtensions.SetupSet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
             <summary>
             Specifies a setup on the mocked type for a call to 
             to a property setter, regardless of its value.
@@ -4546,7 +4560,7 @@
             confusing the compiler with the new Action syntax.
             </devdoc>
         </member>
-        <member name="M:Moq.MockExtensions.VerifySet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+        <member name="M:Moq.ObsoleteMockExtensions.VerifySet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
             <summary>
             Verifies that a property has been set on the mock, regarless of its value.
             </summary>
@@ -4569,7 +4583,7 @@
             <typeparam name="TProperty">Type of the property to verify. Typically omitted as it can 
             be inferred from the expression's return type.</typeparam>
         </member>
-        <member name="M:Moq.MockExtensions.VerifySet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.String)">
+        <member name="M:Moq.ObsoleteMockExtensions.VerifySet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.String)">
             <summary>
             Verifies that a property has been set on the mock, specifying a failure  
             error message. 
@@ -4594,7 +4608,7 @@
             <typeparam name="TProperty">Type of the property to verify. Typically omitted as it can 
             be inferred from the expression's return type.</typeparam>
         </member>
-        <member name="M:Moq.MockExtensions.VerifySet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Moq.Times)">
+        <member name="M:Moq.ObsoleteMockExtensions.VerifySet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Moq.Times)">
             <summary>
             Verifies that a property has been set on the mock, regardless 
             of the value but only the specified number of times.
@@ -4621,7 +4635,7 @@
             <typeparam name="TProperty">Type of the property to verify. Typically omitted as it can 
             be inferred from the expression's return type.</typeparam>
         </member>
-        <member name="M:Moq.MockExtensions.VerifySet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Moq.Times,System.String)">
+        <member name="M:Moq.ObsoleteMockExtensions.VerifySet``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Moq.Times,System.String)">
             <summary>
             Verifies that a property has been set on the mock, regardless 
             of the value but only the specified number of times, and specifying a failure  

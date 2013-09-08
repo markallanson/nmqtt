@@ -10,10 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Nmqtt
 {
     /// <summary>
@@ -21,8 +17,6 @@ namespace Nmqtt
     /// </summary>
     public class AsciiPublishDataConverter : IPublishDataConverter
     {
-        #region IPublishDataConverter Members
-
         /// <summary>
         /// Processes received data and returns it as a string.
         /// </summary>
@@ -44,7 +38,5 @@ namespace Nmqtt
         {
             return System.Text.Encoding.ASCII.GetBytes((string)data);
         }
-
-        #endregion
     }
 }

@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
@@ -24,7 +23,7 @@ namespace Nmqtt
     /// <summary>
     /// Class that contains details related to an MQTT Subscribe messages payload 
     /// </summary>
-    public sealed class MqttSubscribePayload : MqttPayload
+    internal sealed class MqttSubscribePayload : MqttPayload
     {
         private MqttVariableHeader variableHeader;
         private MqttHeader header;
@@ -51,10 +50,9 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttSubscribePayload"/> class.
         /// </summary>
+        /// <param name="header">The header to use for the message.</param>
+        /// <param name="variableHeader">The variable header to use for the message.</param>
         /// <param name="payloadStream">The payload stream.</param>
-        /// <param name="willFlag">
-        /// Set to true to indicate that the payload stream should be interrogated for the 
-        /// Will Topic and Message</param>
         public MqttSubscribePayload(MqttHeader header, MqttSubscribeVariableHeader variableHeader, Stream payloadStream)
         {
             this.header = header;

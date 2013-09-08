@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Nmqtt
@@ -22,7 +19,7 @@ namespace Nmqtt
     /// Represents the connect flags part of the MQTT Variable Header
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Justification="Keeping terminology consistent with Mqtt Spec")]
-    public class MqttConnectFlags
+    internal class MqttConnectFlags
     {
         public bool Reserved1 { get; set; }
         public bool CleanStart { get; set; }

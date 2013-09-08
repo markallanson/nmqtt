@@ -22,20 +22,6 @@ namespace NmqttTests.Exceptions
     public class ClientIdentifierException
     {
         [Fact]
-        public void DefaultCtor()
-        {
-            try
-            {
-                throw new Nmqtt.ClientIdentifierException();
-            }
-            catch (Nmqtt.ClientIdentifierException ex)
-            {
-                // ensure we got a message with the default ctor.
-                Assert.True(ex.Message.Length > 0);
-            }
-        }
-
-        [Fact]
         public void Ctor_ClientIdentifier()
         {
             try

@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Nmqtt.Encoding;
 
@@ -52,7 +49,7 @@ namespace Nmqtt.ExtensionMethods
         /// <summary>
         /// Reads an MQTT string from the underlying stream.
         /// </summary>
-        /// <param name="stream">The stream to read the string from.</param>
+        /// <param name="stringStream">The stream to read the string from.</param>
         /// <returns>The Mqtt String.</returns>
         public static string ReadMqttString(this Stream stringStream)
         {
@@ -84,7 +81,7 @@ namespace Nmqtt.ExtensionMethods
         /// <summary>
         /// Writes the MQTT string.
         /// </summary>
-        /// <param name="stream">The stream.</param>
+        /// <param name="stringStream">The stream containing the string to write.</param>
         /// <param name="stringToWrite">The string to write.</param>
         public static void WriteMqttString(this Stream stringStream, string stringToWrite)
         {

@@ -10,17 +10,12 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Nmqtt
 {
     /// <summary>
     /// An enumeration of all available MQTT Message Types
     /// </summary>
-    public enum MqttMessageType
+    internal enum MqttMessageType
     {
         /// <summary>
         /// Reserved by the MQTT spec, should not be used.

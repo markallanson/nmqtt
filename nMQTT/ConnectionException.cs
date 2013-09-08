@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Security.Permissions;
 
 namespace Nmqtt
@@ -25,17 +22,14 @@ namespace Nmqtt
     public class ConnectionException : Exception
     {
         private const string MessageTemplate = "The connection must be in the Connected state in order to perform this operation. Current state is {0}";
-        private const string DefaultMessage = "The connection is currently not in a state in which you can perform this operation.";
-
-        public ConnectionState ConnectionState { get; set; }
-
-        public ConnectionException()
-            : base(DefaultMessage)
-        {
-        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
+        /// The connection state that caused the exception.
+        /// </summary>
+        public ConnectionState ConnectionState { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectionException"/> class.
         /// </summary>
         /// <param name="connectionState">State of the connection.</param>
         public ConnectionException(ConnectionState connectionState)
@@ -45,7 +39,7 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
+        /// Initializes a new instance of the <see cref="ConnectionException"/> class.
         /// </summary>
         /// <param name="connectionState">State of the connection.</param>
         /// <param name="innerException">The inner exception.</param>
@@ -56,7 +50,7 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
+        /// Initializes a new instance of the <see cref="ConnectionException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
         public ConnectionException(string message)
@@ -66,18 +60,21 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
+        /// Initializes a new instance of the <see cref="ConnectionException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
+        /// <param name="innerException">The exception that caused the connection problem</param>
         public ConnectionException(string message, Exception innerException)
             : base(message, innerException)
         {
             ConnectionState = ConnectionState.Disconnected;
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientIdentifierException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
+        /// <param name="connectionState">The current connection state.</param>
         public ConnectionException(string message, ConnectionState connectionState)
             : this(message)
         {
@@ -89,6 +86,7 @@ namespace Nmqtt
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
+        /// <param name="connectionState">The current connection state.</param>
         public ConnectionException(string message, ConnectionState connectionState, Exception innerException)
             : this(message, innerException)
         {
@@ -110,7 +108,7 @@ namespace Nmqtt
             : base(info, context)
         {
             if (info == null)
-                throw new System.ArgumentNullException("info");
+                throw new ArgumentNullException("info");
 
             ConnectionState = (ConnectionState)info.GetUInt32("ConnectionState");
         }

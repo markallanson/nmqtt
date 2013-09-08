@@ -10,15 +10,9 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
 namespace Nmqtt
 {
-    public sealed partial class MqttSubscribeAckMessage : MqttMessage
+    internal sealed partial class MqttSubscribeAckMessage 
     {
         /// <summary>
         /// Sets the message identifier on the subscribe acknowledgement message.

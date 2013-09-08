@@ -13,7 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Nmqtt
 {
@@ -87,7 +86,7 @@ namespace Nmqtt
         /// <summary>
         /// Confirms a subscription has been made with the broker. Marks the sub as confirmed in the subs storage.
         /// </summary>
-        /// <param name="subAck"></param>
+        /// <param name="msg">The message that triggered subscription confirmation.</param>
         private bool ConfirmSubscription(MqttMessage msg)
         {
             MqttSubscribeAckMessage subAck = (MqttSubscribeAckMessage)msg;

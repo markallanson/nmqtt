@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Nmqtt
@@ -21,7 +18,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of the variable header for an MQTT Subscribe message.
     /// </summary>
-    public sealed class MqttSubscribeVariableHeader : MqttVariableHeader
+    internal sealed class MqttSubscribeVariableHeader : MqttVariableHeader
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttSubscribeVariableHeader"/> class.

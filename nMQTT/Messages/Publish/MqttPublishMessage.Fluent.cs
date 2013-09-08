@@ -10,12 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
 using Nmqtt.ExtensionMethods;
 
 namespace Nmqtt
@@ -23,7 +17,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Publish Message, used for publishing telemetry data along a live MQTT stream.
     /// </summary>
-    public sealed partial class MqttPublishMessage : MqttMessage
+    internal sealed partial class MqttPublishMessage
     {
         /// <summary>
         /// Sets the topic to publish data to.
@@ -39,7 +33,7 @@ namespace Nmqtt
         /// <summary>
         /// Appends data to publish to the end of the current message payload.
         /// </summary>
-        /// <param name="publishData">The data to append to the end of the published data</param>
+        /// <param name="data">The data to append to the end of the published data</param>
         /// <returns>The updated instance of the message.</returns>
         public MqttPublishMessage PublishData(byte[] data)
         {

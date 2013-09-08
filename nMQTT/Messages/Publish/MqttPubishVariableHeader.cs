@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Nmqtt
@@ -21,7 +18,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of the variable header for an MQTT Connect message.
     /// </summary>
-    public sealed class MqttPublishVariableHeader : MqttVariableHeader
+    internal sealed class MqttPublishVariableHeader : MqttVariableHeader
     {
         /// <summary>
         /// Stores the standard header
@@ -39,11 +36,12 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
         /// </summary>
-        /// <param name="headerStream">A stream containing the header of the message.</param>
-        public MqttPublishVariableHeader(MqttHeader header, Stream headerStream)
+        /// <param name="header">The messages header.</param>
+        /// <param name="variableHeaderStream">A stream containing the header of the message.</param>
+        public MqttPublishVariableHeader(MqttHeader header, Stream variableHeaderStream)
             : this(header)
         {
-            ReadFrom(headerStream);
+            ReadFrom(variableHeaderStream);
         }
 
         /// <summary>

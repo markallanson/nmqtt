@@ -10,10 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Nmqtt
 {
     /// <summary>
@@ -21,8 +17,6 @@ namespace Nmqtt
     /// </summary>s
     public class PassThroughPublishDataConverter : IPublishDataConverter
     {
-        #region IPublishDataConverter Members
-
         /// <summary>
         /// Processes received data and returns it as a byte array.
         /// </summary>
@@ -44,7 +38,5 @@ namespace Nmqtt
         {
             return (byte[])data;
         }
-
-        #endregion
     }
 }

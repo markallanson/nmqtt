@@ -12,10 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Net.Sockets;
 
 namespace Nmqtt
 {
@@ -75,7 +72,7 @@ namespace Nmqtt
         /// <summary>
         /// Connect to the specific Mqtt Connection.
         /// </summary>
-        /// <param name="server">The server to connect to.</param>
+        /// <param name="server">The hostname to connect to.</param>
         /// <param name="port">The port to connect to.</param>
         /// <param name="message">The connect message to use as part of the connection process.</param>
         public ConnectionState Connect(string server, int port, MqttConnectMessage message)
@@ -102,10 +99,10 @@ namespace Nmqtt
         /// <summary>
         /// Connect to the specific Mqtt Connection.
         /// </summary>
-        /// <param name="server">The server to connect to.</param>
+        /// <param name="hostname">The hostname to connect to.</param>
         /// <param name="port">The port to connect to.</param>
         /// <param name="message">The connect message to use as part of the connection process.</param>
-        protected abstract ConnectionState InternalConnect(string server, int port, MqttConnectMessage message);
+        protected abstract ConnectionState InternalConnect(string hostname, int port, MqttConnectMessage message);
 
         /// <summary>
         /// Sends a message to the broker through the current connection.
@@ -153,7 +150,7 @@ namespace Nmqtt
         /// Registers for the receipt of messages when they arrive.
         /// </summary>
         /// <param name="msgType">The message type to register for.</param>
-        /// <param name="msgProcessor">The callback function that will be executed when the message arrives.</param>
+        /// <param name="msgProcessorCallback">The callback function that will be executed when the message arrives.</param>
         public void RegisterForMessage(MqttMessageType msgType, Func<MqttMessage, bool> msgProcessorCallback)
         {
             messageProcessorRegistry[msgType].Add(msgProcessorCallback);
@@ -212,10 +209,8 @@ namespace Nmqtt
             }
         }
 
-        #region IDisposable Members
-
         /// <summary>
-        /// Cleans up the underlying raw connection to the server.
+        /// Cleans up the underlying raw connection to the hostname.
         /// </summary>
         public void Dispose()
         {
@@ -231,7 +226,5 @@ namespace Nmqtt
 
             GC.SuppressFinalize(this);
         }
-
-        #endregion
     }
 }

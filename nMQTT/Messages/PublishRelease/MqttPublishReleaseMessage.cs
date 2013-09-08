@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Publish Release Message.
     /// </summary>
-    public sealed partial class MqttPublishReleaseMessage : MqttMessage
+    internal sealed partial class MqttPublishReleaseMessage 
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -51,6 +51,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttPublishReleaseMessage"/> class.
         /// </summary>
+        /// <param name="header">The header to use for the message.</param>
         /// <param name="messageStream">The message stream positioned after the header.</param>
         internal MqttPublishReleaseMessage(MqttHeader header, Stream messageStream)
         {

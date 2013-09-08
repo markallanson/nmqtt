@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using System.Collections.ObjectModel;
@@ -22,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Represents the Fixed Header of an MQTT message.
     /// </summary>
-    public partial class MqttHeader
+    internal partial class MqttHeader
     {
         /// <summary>
         /// Backing storage for the payload size.
@@ -57,7 +56,7 @@ namespace Nmqtt
         /// Gets or sets the size of the variable header + payload section of the message.
         /// </summary>
         /// <value>The size of the variable header + payload.</value>
-        /// <exception cref="nMQQT.InvalidPayloadSizeException">The size of the variable header + payload exceeds the maximum allowed size.</exception>
+        /// <exception cref="Nmqtt.InvalidPayloadSizeException">The size of the variable header + payload exceeds the maximum allowed size.</exception>
         public int MessageSize
         {
             get
@@ -85,7 +84,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttHeader"/> class based on data contained within the supplied stream.
         /// </summary>
-        /// <param name="stream">The stream containing the header message.</param>
+        /// <param name="headerStream">The stream containing the header message.</param>
         public MqttHeader(Stream headerStream)
         {
             ReadFrom(headerStream);
@@ -94,6 +93,7 @@ namespace Nmqtt
         /// <summary>
         /// Writes the header to a supplied stream.
         /// </summary>
+        /// <param name="messageSize">The size of the message to write.</param>
         /// <param name="messageStream">The stream to write the header bytes to.</param>
         public void WriteTo(int messageSize, Stream messageStream)
         {

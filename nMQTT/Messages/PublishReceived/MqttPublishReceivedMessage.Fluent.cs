@@ -10,18 +10,12 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
 namespace Nmqtt
 {
     /// <summary>
     /// Implementation of an MQTT Publish Received Message.
     /// </summary>
-    public sealed partial class MqttPublishReceivedMessage : MqttMessage
+    internal sealed partial class MqttPublishReceivedMessage : MqttMessage
     {
         /// <summary>
         /// Sets the message identifier on the publishReceived message.

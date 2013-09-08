@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Security.Permissions;
 
 namespace Nmqtt
@@ -24,13 +21,6 @@ namespace Nmqtt
     [Serializable]
     public class InvalidHeaderException : Exception
     {
-        private const string DefaultMessage = "The header supplied is invalid";
-
-        public InvalidHeaderException()
-            : base(DefaultMessage)
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidHeaderException"/> class.
         /// </summary>

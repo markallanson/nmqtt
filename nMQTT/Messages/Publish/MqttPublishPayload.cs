@@ -16,7 +16,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-using Nmqtt.ExtensionMethods;
 using System.Collections.ObjectModel;
 
 namespace Nmqtt
@@ -24,7 +23,7 @@ namespace Nmqtt
     /// <summary>
     /// Class that contains details related to an MQTT Connect messages payload 
     /// </summary>
-    public sealed class MqttPublishPayload : MqttPayload
+    internal sealed class MqttPublishPayload : MqttPayload
     {
         private MqttHeader header;
         private MqttPublishVariableHeader variableHeader;

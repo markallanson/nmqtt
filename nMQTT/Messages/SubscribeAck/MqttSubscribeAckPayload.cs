@@ -11,21 +11,17 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
-using Nmqtt.ExtensionMethods;
 using System.Collections.ObjectModel;
-using Nmqtt.Encoding;
 
 namespace Nmqtt
 {
     /// <summary>
     /// Class that contains details related to an MQTT SubscribeAck messages payload 
     /// </summary>
-    public sealed class MqttSubscribeAckPayload : MqttPayload
+    internal sealed class MqttSubscribeAckPayload : MqttPayload
     {
         private MqttVariableHeader variableHeader;
         private MqttHeader header;
@@ -53,10 +49,9 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttSubscribeAckPayload"/> class.
         /// </summary>
+        /// <param name="header">The header to use for the message.</param>
+        /// <param name="variableHeader">The variable header to use for the message.</param>
         /// <param name="payloadStream">The payload stream.</param>
-        /// <param name="willFlag">
-        /// Set to true to indicate that the payload stream should be interrogated for the 
-        /// Will Topic and Message</param>
         public MqttSubscribeAckPayload(MqttHeader header, MqttSubscribeAckVariableHeader variableHeader, Stream payloadStream)
         {
             this.header = header;

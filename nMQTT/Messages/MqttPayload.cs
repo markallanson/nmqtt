@@ -10,10 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Nmqtt
@@ -21,7 +17,7 @@ namespace Nmqtt
     /// <summary>
     /// Represents the payload (Body) of an MQTT Message.
     /// </summary>
-    public abstract class MqttPayload
+    internal abstract class MqttPayload
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttPayload"/> class.
@@ -42,7 +38,7 @@ namespace Nmqtt
         /// <summary>
         /// Writes the payload to the supplied stream.
         /// </summary>
-        /// <param name="messageStream">The stream to s the variable header to.</param>
+        /// <param name="payloadStream">The stream to write the variable header to.</param>
         /// <remarks>
         /// A basic message has no Variable Header.
         /// </remarks>
@@ -51,7 +47,7 @@ namespace Nmqtt
         /// <summary>
         /// Creates a payload from the specified header stream.
         /// </summary>
-        /// <param name="headerStream">The header stream.</param>
+        /// <param name="payloadStream">The stream to read the payload from.</param>
         public abstract void ReadFrom(Stream payloadStream);
 
         /// <summary>

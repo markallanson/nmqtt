@@ -10,18 +10,12 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
 namespace Nmqtt
 {
     /// <summary>
     /// Message that indicates a connection acknowledgement.
     /// </summary>
-    public sealed partial class MqttConnectAckMessage : MqttMessage
+    internal sealed partial class MqttConnectAckMessage
     {
         /// <summary>
         /// Sets the return code of the Variable Header.

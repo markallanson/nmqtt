@@ -19,18 +19,20 @@ using System.Threading;
 namespace Nmqtt
 {
     /// <summary>
-    /// Connection handler that performs connections and disconnections to the server in a synchronous manner.
+    /// Connection handler that performs connections and disconnections to the hostname in a synchronous manner.
     /// </summary>
     internal sealed class SynchronousMqttConnectionHandler : MqttConnectionHandler
     {
-        private AutoResetEvent connectionResetEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent connectionResetEvent = new AutoResetEvent(false);
         private const int MaxConnectionAttempts = 5;
 
         /// <summary>
         /// Synchronously connect to the specific Mqtt Connection.
         /// </summary>
-        /// <param name="connection"></param>
-        protected override ConnectionState InternalConnect(string server, int port, MqttConnectMessage connectMessage)
+        /// <param name="hostname">The hostname hostnameto connect to.</param>
+        /// <param name="port">The port on the host to connect to.</param>
+        /// <param name="connectMessage">The connection message that should be used to initiate the connection.</param>
+        protected override ConnectionState InternalConnect(string hostname, int port, MqttConnectMessage connectMessage)
         {
             int connectionAttempts = 0;
 
@@ -39,7 +41,7 @@ namespace Nmqtt
                 // Initiate the connection
                 connectionState = ConnectionState.Connecting;
 
-                connection = MqttConnection.Connect(server, port);
+                connection = MqttConnection.Connect(hostname, port);
                 this.RegisterForMessage(MqttMessageType.ConnectAck, ConnectAckProcessor);
                 connection.DataAvailable += connection_MessageDataAvailable;
 
@@ -124,12 +126,6 @@ namespace Nmqtt
 
                 // not exactly, ready, but we've reached an end state so we should signal a bad connection attempt.
                 connectionResetEvent.Set();
-            }
-            finally
-            {
-                // connected or disconnected now, don't need to process no more.
-                // TODO: Implement one time only message registrations
-                //this.UnRegisterForMessage(MqttMessageType.ConnectAck, ConnectAckProcessor);
             }
 
             return true;

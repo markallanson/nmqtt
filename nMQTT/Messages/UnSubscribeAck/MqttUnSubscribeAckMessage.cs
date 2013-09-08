@@ -21,7 +21,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Unsubscribe ACK Message, used to acknowledge that an unsubscribe message has been processed.
     /// </summary>
-    public sealed partial class MqttUnsubscribeAckMessage : MqttMessage
+    internal sealed partial class MqttUnsubscribeAckMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -48,6 +48,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectMessage"/> class.
         /// </summary>
+        /// <param name="header">The header to use for the message.</param>
         /// <param name="messageStream">The message stream positioned after the header.</param>
         internal MqttUnsubscribeAckMessage(MqttHeader header, Stream messageStream)
         {

@@ -10,9 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
@@ -21,7 +18,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of an MQTT Publish Message, used for publishing telemetry data along a live MQTT stream.
     /// </summary>
-    public sealed partial class MqttPublishMessage : MqttMessage
+    internal sealed partial class MqttPublishMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -51,6 +48,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectMessage"/> class.
         /// </summary>
+        /// <param name="header">The header to use for the message.</param>
         /// <param name="messageStream">The message stream positioned after the header.</param>
         internal MqttPublishMessage(MqttHeader header, Stream messageStream)
         {

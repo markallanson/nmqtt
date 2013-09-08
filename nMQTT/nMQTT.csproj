@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Nmqtt</RootNamespace>
     <AssemblyName>Nmqtt</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <SccProjectName>Svn</SccProjectName>
@@ -37,6 +37,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -166,8 +167,6 @@
     <Compile Include="PublishingManager.cs" />
     <Compile Include="DataConverters\AsciiPublishDataConverter.cs" />
     <Compile Include="DataConverters\PassthroughPublishDataConverter.cs" />
-    <Compile Include="Storage\InMemoryStorage.cs" />
-    <Compile Include="Storage\IStorage.cs" />
     <Compile Include="Subscription.cs" />
     <Compile Include="SubscriptionsManager.cs" />
     <Compile Include="SubscriptionStatus.cs" />
@@ -185,6 +184,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

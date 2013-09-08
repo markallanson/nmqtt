@@ -10,13 +10,8 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.IO;
-
 
 namespace Nmqtt.ExtensionMethods
 {

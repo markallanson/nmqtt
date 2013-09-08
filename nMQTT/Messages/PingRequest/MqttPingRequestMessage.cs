@@ -10,18 +10,14 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.IO;
 
 namespace Nmqtt
 {
     /// <summary>
     /// Implementation of an MQTT Ping Request Message.
     /// </summary>
-    public sealed class MqttPingRequestMessage : MqttMessage
+    internal sealed class MqttPingRequestMessage : MqttMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttPublishMessage"/> class.
@@ -37,7 +33,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectMessage"/> class.
         /// </summary>
-        /// <param name="messageStream">The message stream positioned after the header.</param>
+        /// <param name="header">The message header.</param>
         internal MqttPingRequestMessage(MqttHeader header)
         {
             this.Header = header;

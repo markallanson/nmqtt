@@ -10,15 +10,12 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
 namespace Nmqtt
 {
-    public sealed partial class MqttSubscribeAckMessage : MqttMessage
+    internal sealed partial class MqttSubscribeAckMessage : MqttMessage
     {
         /// <summary>
         /// Gets or sets the variable header contents. Contains extended metadata about the message
@@ -48,6 +45,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttSubscribeAckMessage"/> class.
         /// </summary>
+        /// <param name="header">The header to use for the message.</param>
         /// <param name="messageStream">The message stream positioned after the header.</param>
         internal MqttSubscribeAckMessage(MqttHeader header, Stream messageStream)
         {

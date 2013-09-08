@@ -16,7 +16,7 @@ namespace NmqttTests
     /// Mocks a broker, such as the RSMB, so that we can test the MqttConnection class, and some bits of the
     /// connection handlers that are difficult to test otherwise.
     /// </summary>
-    public class MockBroker : IDisposable
+    internal class MockBroker : IDisposable
     {
         int brokerPort = 1883;
         TcpListener listener = null;
@@ -78,7 +78,7 @@ namespace NmqttTests
         /// <summary>
         /// Sends the message to the client connected to the broker.
         /// </summary>
-        /// <param name="msg">The MSG.</param>
+        /// <param name="msg">The Mqtt Message.</param>
         public void SendMessage(MqttMessage msg)
         {
             msg.WriteTo(networkStream);

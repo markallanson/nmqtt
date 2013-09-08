@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Nmqtt
@@ -21,7 +18,7 @@ namespace Nmqtt
     /// <summary>
     /// Implementation of the variable header for an MQTT ConnectAck message.
     /// </summary>
-    public sealed class MqttConnectAckVariableHeader : MqttVariableHeader
+    internal sealed class MqttConnectAckVariableHeader : MqttVariableHeader
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
@@ -42,23 +39,23 @@ namespace Nmqtt
         /// <summary>
         /// Writes the variable header for an MQTT Connect message to the supplied stream.
         /// </summary>
-        /// <param name="headerStream"></param>
-        public override void WriteTo(System.IO.Stream headerStream)
+        /// <param name="variableHeaderStream"></param>
+        public override void WriteTo(System.IO.Stream variableHeaderStream)
         {
             // unused additional "compression" byte used within the variable header acknowledgement.
-            headerStream.WriteByte(0);
-            WriteReturnCode(headerStream);
+            variableHeaderStream.WriteByte(0);
+            WriteReturnCode(variableHeaderStream);
         }
 
         /// <summary>
         /// Creates a variable header from the specified header stream.
         /// </summary>
-        /// <param name="headerStream">The header stream.</param>
-        public override void ReadFrom(System.IO.Stream headerStream)
+        /// <param name="variableHeaderStream">The header stream.</param>
+        public override void ReadFrom(System.IO.Stream variableHeaderStream)
         {
             // unused additional "compression" byte used within the variable header acknowledgement.
-            headerStream.ReadByte();
-            ReadReturnCode(headerStream);
+            variableHeaderStream.ReadByte();
+            ReadReturnCode(variableHeaderStream);
         }
 
         /// <summary>

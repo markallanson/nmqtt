@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Nmqtt.Properties;
 using System.IO;
 
@@ -74,7 +71,8 @@ namespace Nmqtt.Diagnostics
         /// <summary>
         /// Logs a message to the message log
         /// </summary>
-        /// <param name="msg"></param>
+        /// <param name="msg">The message to log.</param>
+        /// <param name="inbound">Set to true if the message is inbound to the client.</param>
         public void LogMessage(MqttMessage msg, bool inbound)
         {
             if (!disposed)

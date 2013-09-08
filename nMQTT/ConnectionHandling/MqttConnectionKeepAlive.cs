@@ -11,9 +11,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Nmqtt
@@ -29,6 +26,7 @@ namespace Nmqtt
     internal sealed class MqttConnectionKeepAlive : IDisposable
     {
         private readonly int keepAlivePeriod;
+
         private IMqttConnectionHandler connectionHandler;
 
         /// <summary>
@@ -49,7 +47,7 @@ namespace Nmqtt
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectionKeepAlive"/> class.
         /// </summary>
-        /// <param name="connection">The connection to keep alive.</param>
+        /// <param name="connectionHandler">The connection to keep alive.</param>
         /// <param name="keepAliveSeconds">The keep alive duration in seconds.</param>
         public MqttConnectionKeepAlive(IMqttConnectionHandler connectionHandler, int keepAliveSeconds)
         {
@@ -68,8 +66,6 @@ namespace Nmqtt
         /// <summary>
         /// Handles the MessageSent event of the connectionHandler control.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private bool MessageSent(MqttMessage msg)
         {
             if (!this.disposed)
@@ -143,8 +139,6 @@ namespace Nmqtt
             return true;
         }
 
-        #region IDisposable Members
-
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -169,7 +163,5 @@ namespace Nmqtt
 
             GC.SuppressFinalize(this);
         }
-
-        #endregion
     }
 }

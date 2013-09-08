@@ -10,15 +10,9 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-
 namespace Nmqtt
 {
-    public sealed partial class MqttSubscribeMessage : MqttMessage
+    internal sealed partial class MqttSubscribeMessage 
     {
         private string lastTopic;
 
