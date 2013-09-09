@@ -11,19 +11,21 @@
 */
 
 using System;
-using System.IO;
+using Common.Logging;
 using Nmqtt.Properties;
 
 namespace Nmqtt.Diagnostics
 {
     /// <summary>
+    /// Implements message logging by observing the messages received and the messages sent.
     /// </summary>
     internal class MessageLogger : IDisposable
     {
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+
         private bool disposed;
 
         private readonly MqttConnectionHandler connectionHandler;
-        private readonly StreamWriter logFileWriter;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MessageLogger" /> class.
@@ -37,8 +39,6 @@ namespace Nmqtt.Diagnostics
                     connectionHandler.RegisterForMessage(msgType, MessageLoggerCallback);
                 }
                 connectionHandler.RegisterForAllSentMessages(MessageSentCallback);
-
-                logFileWriter = new StreamWriter(Settings.Default.MessageLoggingFile);
             }
         }
 
@@ -67,18 +67,13 @@ namespace Nmqtt.Diagnostics
         /// </summary>
         /// <param name="msg">The message to log.</param>
         /// <param name="inbound">Set to true if the message is inbound to the client.</param>
-        public void LogMessage(MqttMessage msg, bool inbound) {
+        private void LogMessage(MqttMessage msg, bool inbound) {
             if (!disposed) {
-                if (logFileWriter != null) {
-                    logFileWriter.WriteLine(String.Format("{0} {1} ]>----<[ {2} ]>----|", inbound ? "<<<<" : ">>>>",
-                                                          DateTime.Now, msg.Header.MessageType));
-                    logFileWriter.WriteLine(msg.ToString());
-                    logFileWriter.Flush();
-                }
+                Log.Info(m => m(String.Format("{0} {1} ]>----<[ {2} ]>----|", inbound ? "<<<<" : ">>>>",
+                                              DateTime.Now, 
+                                              msg.Header.MessageType)));
             }
         }
-
-        #region IDisposable Members
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -90,12 +85,6 @@ namespace Nmqtt.Diagnostics
             foreach (MqttMessageType msgType in Enum.GetValues(typeof (MqttMessageType))) {
                 connectionHandler.UnRegisterForMessage(msgType, MessageLoggerCallback);
             }
-
-            logFileWriter.Dispose();
-
-            GC.SuppressFinalize(this);
         }
-
-        #endregion
     }
 }
