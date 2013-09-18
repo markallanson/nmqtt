@@ -11,6 +11,7 @@
 */
 
 using System;
+using System.Reactive.Linq;
 using Nmqtt;
 using System.Diagnostics;
 using System.Threading;
@@ -62,11 +63,6 @@ namespace nMqtt.SampleApp
 			return client.Connect();
 		}
 
-		private void ClientMessageAvailable (object sender, MqttMessageEventArgs e)
-		{
-			OnClientMessageArrived(e);
-		}
-
         /// <summary>
         /// Disconnects from the Mqtt server.
         /// </summary>
@@ -84,20 +80,14 @@ namespace nMqtt.SampleApp
 		{
             if (client == null) throw new InvalidOperationException("You must connect before you can subscribe to a topic.");
 
-			client.Subscribe(topic, (MqttQos)qos);
+			client.Observe(topic, (MqttQos)qos)
+                .ObserveOn(SynchronizationContext.Current)
+                .Subscribe(msg => this.ClientMessageArrived(instance, new MqttMessageEventArgs(msg.Topic, msg.Payload)));
 		}
 		
 		/// <summary>
 		/// Event fired when a message arrives from the remote server.
 		/// </summary>
 		public event EventHandler<MqttMessageEventArgs> ClientMessageArrived;
-		private void OnClientMessageArrived (MqttMessageEventArgs e)
-		{
-			Trace.WriteLine (String.Format ("Message Arrived on Topic '{0}'.", e.Topic));
-			if (ClientMessageArrived != null)
-			{
-                syncContext.Post((data) => this.ClientMessageArrived(instance, e), null);
-			}
-		}
 	}
 }
