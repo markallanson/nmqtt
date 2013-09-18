@@ -1,6 +1,8 @@
 # nMQTT Quickstart
 Code snippets to help you getting started with nMQTT.
 
+*This readme in the RX Branch is a work in progress and more of an idea about what I am thinking about where to take this*
+
 ## Connection
 Connect to an MQTT server running on the local machine using the default MQTT port.
 
