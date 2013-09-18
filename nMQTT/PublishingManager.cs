@@ -56,6 +56,11 @@ namespace Nmqtt
         private static ILog Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
+        ///     Handles dispensing of message ids for messages published to a topic.
+        /// </summary>
+        private readonly MessageIdentifierDispenser         messageIdentifierDispenser = new MessageIdentifierDispenser();
+
+        /// <summary>
         ///     Stores messages that have been pubished but not yet acknowledged.
         /// </summary>
         private readonly Dictionary<int, MqttPublishMessage> publishedMessages =
@@ -107,7 +112,7 @@ namespace Nmqtt
         /// <returns>The message identifier assigned to the message.</returns>
         public short Publish<T, TPayloadConverter>(string topic, MqttQos qualityOfService, T data)
             where TPayloadConverter : IPayloadConverter<T>, new() {
-            var msgID = MessageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
+            var msgID = this.messageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
 
             Log.DebugFormat("Publishing message ID {0} on topic {1} using QOS {2}", msgID, topic, qualityOfService);
 

@@ -26,17 +26,22 @@ namespace Nmqtt
         /// <summary>
         ///     used to synchronize access to subscriptions.
         /// </summary>
-        private readonly object                           subscriptionPadlock = new object();
+        private readonly object                           subscriptionPadlock        = new object();
+
+        /// <summary>
+        ///     Dispenser used for keeping track of subscription ids
+        /// </summary>
+        private readonly MessageIdentifierDispenser       messageIdentifierDispenser = new MessageIdentifierDispenser(); 
 
         /// <summary>
         ///     List of confirmed subscriptions, keyed on the topic name.
         /// </summary>
-        private readonly Dictionary<string, Subscription> subscriptions = new Dictionary<string, Subscription>();
+        private readonly Dictionary<string, Subscription> subscriptions               = new Dictionary<string, Subscription>();
 
         /// <summary>
         ///     A list of subscriptions that are pending acknowledgement, keyed on the message identifier.
         /// </summary>
-        private readonly Dictionary<int, Subscription>    pendingSubscriptions = new Dictionary<int, Subscription>();
+        private readonly Dictionary<int, Subscription>    pendingSubscriptions        = new Dictionary<int, Subscription>();
 
         /// <summary>
         ///     The connection handler that we use to subscribe to subscription acknowledgements.
@@ -106,12 +111,12 @@ namespace Nmqtt
             // Add a pending subscription...
             var subject = new Subject<byte[]>();
             var sub = new Subscription {
-                Topic = topic,
-                Qos = qos,
-                MessageIdentifier = MessageIdentifierDispenser.GetNextMessageIdentifier("subscriptions"),
-                CreatedTime = DateTime.Now,
-                Subject = subject,
-                Observable = subject,
+                Topic             = topic,
+                Qos               = qos,
+                MessageIdentifier = messageIdentifierDispenser.GetNextMessageIdentifier("subscriptions"),
+                CreatedTime       = DateTime.Now,
+                Subject           = subject,
+                Observable        = subject,
             };
 
             pendingSubscriptions.Add(sub.MessageIdentifier, sub);

@@ -14,9 +14,9 @@ using System.Collections.Generic;
 
 namespace Nmqtt
 {
-    internal static class MessageIdentifierDispenser
+    internal class MessageIdentifierDispenser
     {
-        private static readonly Dictionary<string, short> idStorage = new Dictionary<string, short>();
+        private readonly Dictionary<string, short> idStorage = new Dictionary<string, short>();
 
         /// <summary>
         ///     Used to synchronise access
@@ -28,7 +28,7 @@ namespace Nmqtt
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public static short GetNextMessageIdentifier(string key) {
+        public short GetNextMessageIdentifier(string key) {
             // only a single id can be dispensed at a time, regardless of the key. 
             // Will revise to per-key locking if it proves bottleneck
             lock (idPadlock) {

@@ -22,31 +22,33 @@ namespace NmqttTests.MessageIdentifierDispenser
     public class MessageIdentifierDispatcherTests
     {
         [Fact]
-        public void NewSequenceStartsNumberingAtOne()
-        {
-            Assert.Equal<int>(1, Nmqtt.MessageIdentifierDispenser.GetNextMessageIdentifier(Guid.NewGuid().ToString()));
+        public void NewSequenceStartsNumberingAtOne() {
+            var dispenser = new Nmqtt.MessageIdentifierDispenser();
+            Assert.Equal<int>(1, dispenser.GetNextMessageIdentifier(Guid.NewGuid().ToString()));
         }
 
         [Fact]
         public void SequenceIncrementsByOneForEachCall()
         {
-            int first = Nmqtt.MessageIdentifierDispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic");
-            int second = Nmqtt.MessageIdentifierDispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic");
+            var dispenser = new Nmqtt.MessageIdentifierDispenser();
+            int first = dispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic");
+            int second = dispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic");
             Assert.Equal<int>(first + 1, second);
         }
 
         [Fact]
         public void SequenceOverflowRollsBackToOne()
         {
+            var dispenser = new Nmqtt.MessageIdentifierDispenser();
             for (
-                int i = Nmqtt.MessageIdentifierDispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic/Overflow");
+                int i = dispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic/Overflow");
                 i < short.MaxValue;
-                i = Nmqtt.MessageIdentifierDispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic/Overflow"))
+                i = dispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic/Overflow"))
             {
             }
 
             // one more call should overflow us and reset us back to 1.
-            Assert.Equal<int>(1, Nmqtt.MessageIdentifierDispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic/Overflow"));
+            Assert.Equal<int>(1, dispenser.GetNextMessageIdentifier("Topic::Sample/My/Topic/Overflow"));
         }
     }
 }
