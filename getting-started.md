@@ -16,13 +16,12 @@ the connection. There is currently no Asynchronous connection model.
     
 
 ## Subscription
-Subscribe to a topic in order to receive messages published to that topic, and request that the message is
-received at most one time ([QOS Level](http://public.dhe.ibm.com/software/dw/webservices/ws-mqtt/mqtt-v3r1.html#qos-flows) 0). 
-Note that this method returns raw object data to the event handler on the client (the payload of the mqtt messages received).
-You are responsible for parsing that raw object data in any way you choose.
-
-    client.MessageAvailable += (sender, e) => Console.WriteLine(e.Message);
-    short subscriptionId = client.Subscribe("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
+nMQTT models MQTT subscriptions as observable sequences of messages using the 
+[Rx Framework](http://msdn.microsoft.com/en-us/data/gg577609.aspx). To subscribe to a topic simply
+call the client's `ObserveTopic` method, which returns an `IObservable`.
+ 
+    IObservable<MqttRecivedMessage<byte[]> observation 
+		= client.ObserveTopic("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
 
 You can also subscribe with a data converter that handles serialization of the messages to and from
 the Mqtt payload. The sample below converts the raw mqtt data to and from ASCII strings.
@@ -39,20 +38,42 @@ the Mqtt payload. The sample below converts the raw mqtt data to and from ASCII 
         }
     }
 
-    short subscriptionId = client.Subscribe<AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
-
-Two implementations are provided out of the box, The ascii converter above, and a passthrough converter which
-is the default if no converter is explicitly supplied. The passthrough converter just passes through byte arrays.
+    IObservable<MsqqReceivedMessage<string>> observable 
+           = client.ObserveTopic<string, AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
 
 ## Receiving Messages
-The `MqttClient` raises the `MessageAvailable` event every time a message arrives. The `MessageReceivedEventArgs`
-includes the topic, 
+You can receive messages from the observation by subscribing to the observation using standard Rx symantics.
 
-    client.MessageAvailable += (sender, e) =>
-    {
-        Console.WriteLine(e.Topic);
-        Console.WriteLine(e.Message);
-    };
+    IDisposable subscription = observation.Subscribe(msg => Process(msg.Topic, msg.Payload));
+			 
+nMQTT makes no guarantees about the thread that the messages will be yielded on, therefore you should take 
+the same care that you would under normal Rx circumstances by observing the messages on your expected thread.
+For example, in a Windows Forms application, you could observe the messages on the main UI thread using
+the Rx ObserveOn extension method.
+
+    IDisposable subscription = observable.ObserveOn(SynchronizationContext.Current)
+                                         .Subscribe(msg => Process(msg.Topic, msg.Payload));
+
+You can subscribe more than one to the same observation, and each subscription will receive each message
+that arrives on that topic.
+
+    IDisposable subscription1 = observable.Subscribe(msg => Process(msg.Topic, msg.Payload));
+    IDisposable subscription2 = observable.Subscribe(msg => DoSomethingElse(msg.Topic, msg.Payload));
+
+## Chaining Subscription and Receipt
+Rx Observables can be chained, so of course you can so it all in one shot.
+
+    IDisposable subscription = client.ObserveTopic<string, AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce)
+                                     .ObserveOn(SynchronizationContext.Current)
+												 .Subscribe(msg => Process(msg.Topic, msg.Payload));
+
+## Unsubscribing
+Once you no longer want to receive messages for a topic, simply dispose your subscription. 
+
+    subscription.Dispose();
+
+Once all subscribers for a specific topic have been disposed, nMQTT will unsubscribe from the topic 
+on the broker.
 
 ## Publishing Messages
 Publishing messages performed using the `Publish` method on the `MqttClient`

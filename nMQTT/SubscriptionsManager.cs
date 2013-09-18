@@ -2,7 +2,7 @@
  * nMQTT, a .Net MQTT v3 client implementation.
  * http://wiki.github.com/markallanson/nmqtt
  * 
- * Copyright (c) 2009 Mark Allanson (mark@markallanson.net)
+ * Copyright (c) 2009-2013 Mark Allanson (mark@markallanson.net)
  *
  * Licensed under the MIT License. You may not use this file except 
  * in compliance with the License. You may obtain a copy of the License at
@@ -18,8 +18,16 @@ using System.Reactive.Subjects;
 
 namespace Nmqtt
 {
+    /// <summary>
+    /// A class that can manage the topic subscription process.
+    /// </summary>
     internal class SubscriptionsManager : IDisposable
     {
+        /// <summary>
+        ///     used to synchronize access to subscriptions.
+        /// </summary>
+        private readonly object                           subscriptionPadlock = new object();
+
         /// <summary>
         ///     List of confirmed subscriptions, keyed on the topic name.
         /// </summary>
@@ -28,13 +36,21 @@ namespace Nmqtt
         /// <summary>
         ///     A list of subscriptions that are pending acknowledgement, keyed on the message identifier.
         /// </summary>
-        private readonly Dictionary<int, Subscription> pendingSubscriptions = new Dictionary<int, Subscription>();
+        private readonly Dictionary<int, Subscription>    pendingSubscriptions = new Dictionary<int, Subscription>();
 
-        private readonly IMqttConnectionHandler connectionHandler;
+        /// <summary>
+        ///     The connection handler that we use to subscribe to subscription acknowledgements.
+        /// </summary>
+        private readonly IMqttConnectionHandler           connectionHandler;
 
+        /// <summary>
+        ///     Creates a new instance of a SubscriptionsManager that uses the specified connection to manage subscriptions. 
+        /// </summary>
+        /// <param name="connectionHandler">The connection handler that will be used to subscribe to topics.</param>
         public SubscriptionsManager(IMqttConnectionHandler connectionHandler) {
             this.connectionHandler = connectionHandler;
-            this.connectionHandler.RegisterForMessage(MqttMessageType.SubscribeAck, ConfirmSubscription);
+            this.connectionHandler.RegisterForMessage(MqttMessageType.SubscribeAck,   ConfirmSubscription);
+            this.connectionHandler.RegisterForMessage(MqttMessageType.UnsubscribeAck, ConfirmUnsubscribe);
         }
 
         /// <summary>
@@ -43,103 +59,145 @@ namespace Nmqtt
         /// <param name="topic"></param>
         /// <param name="qos"></param>
         /// <returns>The subscription message identifier.</returns>
-        internal IObservable<MqttReceivedMessage<T>> RegisterSubscription<T, TPayloadConverter>(string topic, MqttQos qos)
+        public IObservable<MqttReceivedMessage<T>> RegisterSubscription<T, TPayloadConverter>(string topic, MqttQos qos)
             where TPayloadConverter : IPayloadConverter<T>, new() {
-            // check we don't have a pending subscription request for the topic.
-            var pendingSubs = from ps in pendingSubscriptions.Values
-                              where ps.Topic.Equals(topic)
-                              select ps;
-            if (pendingSubs.Any()) {
-                throw new ArgumentException("There is already a pending subscription for this topic");
+            // if we have a pending subscription or established subscription just return the existing observable.
+            lock (subscriptionPadlock) {
+                IObservable<MqttReceivedMessage<T>> existingObservable;
+                if (TryGetExistingSubscription<T, TPayloadConverter>(topic, out existingObservable)) {
+                    return existingObservable;
+                }
+                return CreateNewSubscription<T, TPayloadConverter>(topic, qos);
             }
+        }
 
-            // no pending subscription, if we already have a subscription then throw it back out as well
-            if (subscriptions.ContainsKey(topic)) {
-                // TODO: we might want to treat this as an ignore/silent confirm because they will be receiving messages for the topic already
-                throw new ArgumentException("You are already subscribed for this topic");
-            }
+        /// <summary>
+        ///     Gets a view on the existing observable, if the subscription already exists.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TPayloadConverter"></typeparam>
+        /// <param name="topic">The subscription topic to get.</param>
+        /// <param name="observable">Set to an observable on the subscription if one exists, otherwise null.</param>
+        /// <returns>True if an existing observable is available, otherwise false.</returns>
+        private bool TryGetExistingSubscription<T, TPayloadConverter>(string topic, out IObservable<MqttReceivedMessage<T>> observable)
+            where TPayloadConverter : IPayloadConverter<T>, new() {
+            var existingObservable = this.pendingSubscriptions.Values
+                                                              .Union(this.subscriptions.Values)
+                                                              .Where(ps => ps.Topic.Equals(topic))
+                                                              .Select(ps => ps.Observable)
+                                                              .FirstOrDefault();
+            observable = null;
+            if (existingObservable != null) {
+                observable = WrapSubscriptionObservable<T, TPayloadConverter>(topic, existingObservable);
+            } 
+            return observable != null;
+        }
 
-            var payloadConverter = new TPayloadConverter();
-            var subject = new Subject<byte[]>();
-            var observable = subject.Select(ba => new MqttReceivedMessage<T>(topic, payloadConverter.ConvertFromBytes(ba)));
-
+        /// <summary>
+        ///     Creates a new subscription for the specified topic.
+        /// </summary>
+        /// <typeparam name="T">The type of data the subscription is expected to return.</typeparam>
+        /// <typeparam name="TPayloadConverter">The type of the converter that can convert from bytes to the type T.</typeparam>
+        /// <param name="topic">The topic to subscribe to.</param>
+        /// <param name="qos">The QOS level to subscribe at.</param>
+        /// <returns>An observable that yields messages when they arrive.</returns>
+        private IObservable<MqttReceivedMessage<T>> CreateNewSubscription<T, TPayloadConverter>(string topic, MqttQos qos)
+            where TPayloadConverter : IPayloadConverter<T>, new() {
             // Add a pending subscription...
-            var sub = new Subscription<T> {
+            var subject = new Subject<byte[]>();
+            var sub = new Subscription {
                 Topic = topic,
                 Qos = qos,
                 MessageIdentifier = MessageIdentifierDispenser.GetNextMessageIdentifier("subscriptions"),
                 CreatedTime = DateTime.Now,
                 Subject = subject,
-                Observable = observable,
+                Observable = subject,
             };
 
             pendingSubscriptions.Add(sub.MessageIdentifier, sub);
 
-            // build a subscribe message for the caller.
-            MqttSubscribeMessage msg = new MqttSubscribeMessage()
-                .WithMessageIdentifier(sub.MessageIdentifier)
-                .ToTopic(sub.Topic)
-                .AtQos(sub.Qos);
-
+            // build a subscribe message for the caller and send it off to the broker.
+            var msg = new MqttSubscribeMessage().WithMessageIdentifier(sub.MessageIdentifier)
+                                                .ToTopic(sub.Topic)
+                                                .AtQos(sub.Qos);
             connectionHandler.SendMessage(msg);
 
-            return sub.Observable;
+            return WrapSubscriptionObservable<T, TPayloadConverter>(topic, sub.Observable);
         }
 
         /// <summary>
-        ///     Action delegate method that initates the unsubscribe process for a topic on the broker when there are no more subscribers.
+        ///     Wraps a raw byte array observable with the payload converter and yields a serialized messages in place.
         /// </summary>
-        /// <param name="topic">The topic to clean.</param>
-        /// <param name="observer"></param>
-        public void SubscriptionCleaner<T>(string topic, IObserver<T> observer) {
-
+        /// <typeparam name="T">The type of data the subscription is expected to return.</typeparam>
+        /// <typeparam name="TPayloadConverter">The type of the converter that can convert from bytes to the type T.</typeparam>
+        /// <param name="topic">The topic being wrapped</param>
+        /// <param name="observable">The observable on the raw byte array to be wrapped.</param>
+        /// <returns>An observable that yields MqttReceivedMessages of type T when a message arrives on the subscription.</returns>
+        private static IObservable<MqttReceivedMessage<T>>  WrapSubscriptionObservable<T, TPayloadConverter>(string topic, IObservable<byte[]> observable) 
+            where TPayloadConverter : IPayloadConverter<T>, new() {
+            var payloadConverter = new TPayloadConverter();
+            return observable.Select(ba => new MqttReceivedMessage<T>(topic, payloadConverter.ConvertFromBytes(ba)));
         }
 
         /// <summary>
         ///     Confirms a subscription has been made with the broker. Marks the sub as confirmed in the subs storage.
         /// </summary>
         /// <param name="msg">The message that triggered subscription confirmation.</param>
+        /// <returns>True, always.</returns>
         private bool ConfirmSubscription(MqttMessage msg) {
-            var subAck = (MqttSubscribeAckMessage) msg;
+            lock (subscriptionPadlock) {
+                var subAck = (MqttSubscribeAckMessage)msg;
+                Subscription sub;
+                if (!pendingSubscriptions.TryGetValue(subAck.VariableHeader.MessageIdentifier, out sub)) {
+                    throw new ArgumentException(
+                        String.Format("There is no pending subscription against message identifier {0}",
+                                      subAck.VariableHeader.MessageIdentifier));
+                }
 
-            Subscription sub;
-            if (!pendingSubscriptions.TryGetValue(subAck.VariableHeader.MessageIdentifier, out sub)) {
-                throw new ArgumentException(
-                    String.Format("There is no pending subscription against message identifier {0}",
-                                  subAck.VariableHeader.MessageIdentifier));
+                // move it to the subscriptions pool, and out of the pending pool.
+                subscriptions.Add(sub.Topic, sub);
+                pendingSubscriptions.Remove(subAck.VariableHeader.MessageIdentifier);
+
+                return true;
             }
-
-            // move it to the subscriptions pool, and out of the pending pool.
-            subscriptions.Add(sub.Topic, sub);
-            pendingSubscriptions.Remove(subAck.VariableHeader.MessageIdentifier);
-
-            return true;
         }
 
         /// <summary>
-        ///     Gets the current status of a subscription
+        ///     Cleans up after an unsubscribe message is received from the broker.
+        /// </summary>
+        /// <param name="msg">The unsubscribe message from the broker.</param>
+        /// <returns>True, always.</returns>
+        private bool ConfirmUnsubscribe(MqttMessage msg) {
+            lock (subscriptionPadlock) {
+                var unSubAck = (MqttUnsubscribeAckMessage)msg;
+                var existingSubscription = subscriptions[unSubAck.VariableHeader.TopicName];
+                if (existingSubscription != null) {
+                    // Complete the observable sequence for the subscription, then remove it from the subscriptions.
+                    // This is "proper" but may or may not be useful as we unsubscribe dynamically when the
+                    // last of the subscribers has disposed themselves.
+                    existingSubscription.Subject.OnCompleted();
+                    subscriptions.Remove(existingSubscription.Topic);
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the current status of a subscription.
         /// </summary>
         /// <param name="topic">The topic to check the subscription for.</param>
         /// <returns>The current status of the subscription</returns>
         public SubscriptionStatus GetSubscriptionsStatus(string topic) {
-            var status = SubscriptionStatus.DoesNotExist;
-
-            // if its live, return active
-            if (subscriptions.ContainsKey(topic)) {
-                status = SubscriptionStatus.Active;
+            lock (subscriptionPadlock) {
+                var status = SubscriptionStatus.DoesNotExist;
+                if (subscriptions.ContainsKey(topic)) {
+                    status = SubscriptionStatus.Active;
+                }
+                if (pendingSubscriptions.Any(pair => pair.Value.Topic.Equals(topic, StringComparison.Ordinal))) {
+                    status = SubscriptionStatus.Pending;
+                }
+                return status;
             }
-
-
-            pendingSubscriptions.SingleOrDefault<KeyValuePair<int, Subscription>>(
-                pair => pair.Value.Topic.Equals(topic, StringComparison.Ordinal));
-
-            // if its pending, return pending.
-            //if (pendingSubscriptions.SingleOrDefault<KeyValuePair<int, Subscription>>(pair => pair.Value.Topic.Equals(topic, StringComparison.Ordinal)) != null)
-            //{
-            //    status = SubscriptionStatus.Pending;
-            // }
-
-            return status;
         }
 
         /// <summary>

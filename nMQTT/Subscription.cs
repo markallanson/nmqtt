@@ -2,7 +2,7 @@
  * nMQTT, a .Net MQTT v3 client implementation.
  * http://wiki.github.com/markallanson/nmqtt
  * 
- * Copyright (c) 2009 Mark Allanson (mark@markallanson.net)
+ * Copyright (c) 2009-2013 Mark Allanson (mark@markallanson.net)
  *
  * Licensed under the MIT License. You may not use this file except 
  * in compliance with the License. You may obtain a copy of the License at
@@ -11,7 +11,6 @@
 */
 
 using System;
-using System.Linq;
 using System.Reactive.Subjects;
 using Common.Logging;
 
@@ -20,7 +19,7 @@ namespace Nmqtt
     /// <summary>
     ///     Entity that captures data related to an individual subscription
     /// </summary>
-    internal abstract class Subscription
+    internal class Subscription
     {
         protected static ILog Log = LogManager.GetCurrentClassLogger();
 
@@ -48,16 +47,10 @@ namespace Nmqtt
         /// The observer that can be used to publish messages to to the observable.
         /// </summary>
         public ISubject<byte[]> Subject { get; set; }
-    }
 
-    /// <summary>
-    ///     Entity that captures data related to an individual subscription
-    /// </summary>
-    internal class Subscription<T> : Subscription
-    {
         /// <summary>
         /// The observable that receives messages from the broker.
         /// </summary>
-        public IObservable<MqttReceivedMessage<T>>  Observable { get; set; }
+        public IObservable<byte[]> Observable { get; set; }
     }
 }

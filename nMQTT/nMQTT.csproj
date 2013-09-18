@@ -108,6 +108,7 @@
     <Compile Include="ConnectionHandling\ConnectionState.cs" />
     <Compile Include="ConnectionHandling\MqttConnectionHandler.cs" />
     <Compile Include="ConnectionException.cs" />
+    <Compile Include="DataConverters\MqttTypeConverter.cs" />
     <Compile Include="Diagnostics\MessageLogger.cs" />
     <Compile Include="ExtensionMethods\CollectionExtensions.cs" />
     <Compile Include="ConnectionHandling\MqttConnectionKeepAlive.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Messages\Subscribe\MqttSubscribeMessage.Fluent.cs" />
     <Compile Include="Messages\UnsubscribeAck\MqttUnsubscribeAckMessage.Fluent.cs" />
     <Compile Include="Messages\Unsubscribe\MqttUnsubscribeMessage.Fluent.cs" />
+    <Compile Include="MqttReceivedMessage.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <DependentUpon>Settings.settings</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -202,7 +204,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

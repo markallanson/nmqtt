@@ -2,7 +2,7 @@
  * nMQTT, a .Net MQTT v3 client implementation.
  * http://wiki.github.com/markallanson/nmqtt
  * 
- * Copyright (c) 2009 Mark Allanson (mark@markallanson.net)
+ * Copyright (c) 2009-2013 Mark Allanson (mark@markallanson.net)
  *
  * Licensed under the MIT License. You may not use this file except 
  * in compliance with the License. You may obtain a copy of the License at
@@ -22,57 +22,21 @@ namespace Nmqtt
     /// </summary>
     public sealed class MqttClient : IDisposable
     {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        private static readonly ILog    Log = LogManager.GetCurrentClassLogger();
 
-        private readonly string server;
-
-        /// <summary>
-        ///     The remote server that this client will connect to.
-        /// </summary>
-        public string Server {
-            get { return server; }
-        }
-
-        private readonly int port;
-
-        /// <summary>
-        ///     The port on the remote server that this client will connect to.
-        /// </summary>
-        public int Port {
-            get { return port; }
-        }
-
-        private readonly string clientIdentifier;
-
-        /// <summary>
-        ///     Gets the Client Identifier of this instance of the MqttClient
-        /// </summary>
-        public string ClientIdentifier {
-            get { return clientIdentifier; }
-        }
-
-        /// <summary>
-        ///     Gets the current conneciton state of the Mqtt Client.
-        /// </summary>
-        public ConnectionState ConnectionState {
-            get {
-                if (connectionHandler != null) {
-                    return connectionHandler.State;
-                } else {
-                    return Nmqtt.ConnectionState.Disconnected;
-                }
-            }
-        }
+        private readonly string         server;
+        private readonly int            port;
+        private readonly string         clientIdentifier;
 
         /// <summary>
         ///     The Handler that is managing the connection to the remote server.
         /// </summary>
-        private MqttConnectionHandler connectionHandler;
+        private MqttConnectionHandler   connectionHandler;
 
         /// <summary>
         ///     The subscriptions manager responsible for tracking subscriptions.
         /// </summary>
-        private SubscriptionsManager subscriptionsManager;
+        private SubscriptionsManager    subscriptionsManager;
 
         /// <summary>
         ///     Handles the connection management while idle.
@@ -82,12 +46,42 @@ namespace Nmqtt
         /// <summary>
         ///     Handles everything to do with publication management.
         /// </summary>
-        private PublishingManager publishingManager;
+        private PublishingManager       publishingManager;
 
         /// <summary>
         ///     Handles the logging of received messages for diagnostic purpose.
         /// </summary>
-        private MessageLogger messageLogger;
+        private MessageLogger           messageLogger;
+
+        /// <summary>
+        ///     The remote server that this client will connect to.
+        /// </summary>
+        public string          Server {
+            get { return server; }
+        }
+
+        /// <summary>
+        ///     The port on the remote server that this client will connect to.
+        /// </summary>
+        public int             Port {
+            get { return port; }
+        }
+
+        /// <summary>
+        ///     Gets the Client Identifier of this instance of the MqttClient
+        /// </summary>
+        public string          ClientIdentifier {
+            get { return clientIdentifier; }
+        }
+
+        /// <summary>
+        ///     Gets the current conneciton state of the Mqtt Client.
+        /// </summary>
+        public ConnectionState ConnectionState {
+            get {
+                return connectionHandler != null ? connectionHandler.State : Nmqtt.ConnectionState.Disconnected;
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MqttClient" /> class using the default Mqtt Port.
@@ -113,16 +107,13 @@ namespace Nmqtt
         ///     Performs a synchronous connect to the message broker.
         /// </summary>
         public ConnectionState Connect() {
-            MqttConnectMessage connectMessage = GetConnectMessage();
-            connectionHandler = new SynchronousMqttConnectionHandler();
-
-            // TODO: Get Get timeout from config or ctor or elsewhere.
-            keepAlive = new MqttConnectionKeepAlive(connectionHandler, 30);
+            connectionHandler    = new SynchronousMqttConnectionHandler();
+            keepAlive            = new MqttConnectionKeepAlive(connectionHandler, 30); // TODO: Configurable timeout
             subscriptionsManager = new SubscriptionsManager(connectionHandler);
-            messageLogger = new MessageLogger(connectionHandler);
-            publishingManager = new PublishingManager(connectionHandler, HandlePublishMessage);
+            messageLogger        = new MessageLogger(connectionHandler);
+            publishingManager    = new PublishingManager(connectionHandler, HandlePublishMessage);
 
-            return connectionHandler.Connect(this.server, this.port, connectMessage);
+            return connectionHandler.Connect(this.server, this.port, GetConnectMessage());
         }
 
         /// <summary>
@@ -133,7 +124,7 @@ namespace Nmqtt
             return new MqttConnectMessage()
                 .WithClientIdentifier(clientIdentifier)
                 .KeepAliveFor(30)
-                .StartClean();
+                .StartClean(); // TODO: Not compatible for QOS Level 2 when implemented...
         }
 
         /// <summary>
@@ -141,13 +132,14 @@ namespace Nmqtt
         /// </summary>
         /// <param name="message">The message that was received from the broker.</param>
         private bool HandlePublishMessage(MqttMessage message) {
-            var pubMsg = (MqttPublishMessage) message;
+            var pubMsg       = (MqttPublishMessage) message;
             var subscription = subscriptionsManager.GetSubscription(pubMsg.VariableHeader.TopicName);
             if (subscription == null) {
                 Log.WarnFormat("Recived message for a topic we're not subscribed to ({0})", pubMsg.VariableHeader.TopicName);
                 return false;
             }
 
+            // Publish the message to the subscribers
             var success = true;
             try {
                 subscription.Subject.OnNext(pubMsg.Payload.Message.ToArray());
@@ -207,7 +199,6 @@ namespace Nmqtt
             return PublishMessage<byte[], PassThroughPayloadConverter>(topic, qos, data);
         }
 
-
         /// <summary>
         ///     Publishes a message to the message broker.
         /// </summary>
@@ -264,40 +255,6 @@ namespace Nmqtt
             }
 
             GC.SuppressFinalize(this);
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class MqttReceivedMessage<T>
-    {
-        private readonly string topic;
-        private readonly T      payload;
-
-        /// <summary>
-        /// The topic the message was received on.
-        /// </summary>
-        public string Topic {
-            get { return topic; }
-        }
-
-        /// <summary>
-        /// The payload of the mesage received.
-        /// </summary>
-        public T Payload {
-            get { return payload; }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of an MqttReceivedMessage class.
-        /// </summary>
-        /// <param name="topic">The topic the message was received on</param>
-        /// <param name="payload">The payload that was received.</param>
-        internal MqttReceivedMessage(string topic, T payload) {
-            this.topic = topic;
-            this.payload = payload;
         }
     }
 }
