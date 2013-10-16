@@ -41,29 +41,29 @@ namespace nMqtt.SampleApp.Views
         private void InitializeComponent()
         {
             this.publishGroupBox = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.messageTextbox = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.publishButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.qosNumeric = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.topicsCombo = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.publishGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.qosNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // publishGroupBox
             // 
-            this.publishGroupBox.Controls.Add(this.textBox1);
+            this.publishGroupBox.Controls.Add(this.messageTextbox);
             this.publishGroupBox.Controls.Add(this.button3);
             this.publishGroupBox.Controls.Add(this.button2);
-            this.publishGroupBox.Controls.Add(this.button1);
+            this.publishGroupBox.Controls.Add(this.publishButton);
             this.publishGroupBox.Controls.Add(this.checkBox1);
-            this.publishGroupBox.Controls.Add(this.numericUpDown1);
+            this.publishGroupBox.Controls.Add(this.qosNumeric);
             this.publishGroupBox.Controls.Add(this.label2);
-            this.publishGroupBox.Controls.Add(this.comboBox1);
+            this.publishGroupBox.Controls.Add(this.topicsCombo);
             this.publishGroupBox.Controls.Add(this.label1);
             this.publishGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.publishGroupBox.Location = new System.Drawing.Point(0, 0);
@@ -75,14 +75,14 @@ namespace nMqtt.SampleApp.Views
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.messageTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(11, 51);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(380, 225);
-            this.textBox1.TabIndex = 22;
+            this.messageTextbox.Location = new System.Drawing.Point(11, 51);
+            this.messageTextbox.Multiline = true;
+            this.messageTextbox.Name = "messageTextbox";
+            this.messageTextbox.Size = new System.Drawing.Size(380, 225);
+            this.messageTextbox.TabIndex = 22;
             // 
             // button3
             // 
@@ -106,13 +106,13 @@ namespace nMqtt.SampleApp.Views
             // 
             // button1
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(397, 51);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "Publish";
-            this.button1.UseVisualStyleBackColor = true;
+            this.publishButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.publishButton.Location = new System.Drawing.Point(397, 51);
+            this.publishButton.Name = "publishButton";
+            this.publishButton.Size = new System.Drawing.Size(75, 23);
+            this.publishButton.TabIndex = 19;
+            this.publishButton.Text = "Publish";
+            this.publishButton.UseVisualStyleBackColor = true;
             // 
             // checkBox1
             // 
@@ -127,11 +127,11 @@ namespace nMqtt.SampleApp.Views
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDown1.Location = new System.Drawing.Point(364, 20);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(31, 20);
-            this.numericUpDown1.TabIndex = 17;
+            this.qosNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.qosNumeric.Location = new System.Drawing.Point(364, 20);
+            this.qosNumeric.Name = "qosNumeric";
+            this.qosNumeric.Size = new System.Drawing.Size(31, 20);
+            this.qosNumeric.TabIndex = 17;
             // 
             // label2
             // 
@@ -145,13 +145,13 @@ namespace nMqtt.SampleApp.Views
             // 
             // comboBox1
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.topicsCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(88, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(233, 21);
-            this.comboBox1.TabIndex = 15;
+            this.topicsCombo.FormattingEnabled = true;
+            this.topicsCombo.Location = new System.Drawing.Point(88, 19);
+            this.topicsCombo.Name = "topicsCombo";
+            this.topicsCombo.Size = new System.Drawing.Size(233, 21);
+            this.topicsCombo.TabIndex = 15;
             // 
             // label1
             // 
@@ -171,7 +171,7 @@ namespace nMqtt.SampleApp.Views
             this.Size = new System.Drawing.Size(478, 282);
             this.publishGroupBox.ResumeLayout(false);
             this.publishGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.qosNumeric)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -180,13 +180,13 @@ namespace nMqtt.SampleApp.Views
 
         private System.Windows.Forms.GroupBox publishGroupBox;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown qosNumeric;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox topicsCombo;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox messageTextbox;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button publishButton;
     }
 }

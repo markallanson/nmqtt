@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using nMqtt.SampleApp.ViewModels;
+using nMqtt.SampleApp.ViewsModels;
 
 namespace nMqtt.SampleApp.Views
 {
@@ -43,6 +44,7 @@ namespace nMqtt.SampleApp.Views
 			this.connectionView1.ViewModel = new ConnectionViewModel();
 			this.optionsView1.ViewModel = new OptionsViewModel();
 			this.subscriptionView1.ViewModel = new SubscriptionViewModel();
+            this.publishMessageView1.ViewModel = new PublishMessageViewModel();
 		}
     }
 }
