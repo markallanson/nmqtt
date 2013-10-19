@@ -32,5 +32,29 @@ namespace nMqtt.SampleApp
 				Model.ClientIdentifier = value;
 			}
 		}
+
+        public string Username
+        {
+            get
+            {
+                return Model.Username;
+            }
+            set
+            {
+                Model.Username = value;
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                return Model.Password;
+            }
+            set
+            {
+                Model.Password = value;
+            }
+        }
 	}
 }

@@ -60,7 +60,7 @@ namespace nMqtt.SampleApp
 
 			Trace.WriteLine ("Connecting to " + server + ":" + port.ToString ());
 			
-			return client.Connect();
+			return client.Connect(Options.Username, Options.Password);
 		}
 
 		private void ClientMessageAvailable (object sender, MqttMessageEventArgs e)

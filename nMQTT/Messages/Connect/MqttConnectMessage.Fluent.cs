@@ -118,5 +118,22 @@ namespace Nmqtt
             this.Payload.WillTopic = willTopic;
             return this;
         }
+
+        /// <summary>
+        /// Sets the authentication
+        /// </summary>
+        /// <param name="username">Username to authenticate as</param>
+        /// <param name="password">Password to authenticate with</param>
+        /// <returns></returns>
+        public MqttConnectMessage AuthenticateAs(string username, string password)
+        {
+            this.VariableHeader.ConnectFlags.UsernameFlag = !string.IsNullOrEmpty(username);
+            this.VariableHeader.ConnectFlags.PasswordFlag = !string.IsNullOrEmpty(password);
+
+            this.Payload.Username = username;
+            this.Payload.Password = password;
+
+            return this;
+        }
     }
 }
