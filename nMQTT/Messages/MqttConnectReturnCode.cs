@@ -21,8 +21,6 @@ namespace Nmqtt
         ConnectionAccepted = 0,
         UnacceptedProtocolVersion,
         IdentifierRejected,
-        BrokerUnavailable,
-        BadUsernameOrPassword,
-        NotAuthorized
+        BrokerUnavailable
     }
 }
