@@ -51,9 +51,9 @@ namespace Nmqtt
     /// </code>
     ///     </para>
     /// </remarks>
-    internal class PublishingManager
+    internal sealed class PublishingManager : IPublishingManager
     {
-        private static ILog Log = LogManager.GetCurrentClassLogger();
+        private static readonly ILog                        Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Handles dispensing of message ids for messages published to a topic.
@@ -73,11 +73,6 @@ namespace Nmqtt
             new Dictionary<int, MqttPublishMessage>();
 
         /// <summary>
-        ///     Callback executed when a published message has been received from the broker.
-        /// </summary>
-        private readonly Func<MqttPublishMessage, bool> publishMessageCallback;
-
-        /// <summary>
         ///     The current connection handler.
         /// </summary>
         private readonly IMqttConnectionHandler connectionHandler;
@@ -88,14 +83,16 @@ namespace Nmqtt
         private readonly Dictionary<Type, object> dataConverters = new Dictionary<Type, object>();
 
         /// <summary>
+        /// Raised when a message has been recieved by the client and the relevant QOS handshake is complete.
+        /// </summary>
+        public event EventHandler<PublishEventArgs> MessageReceived;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="PublishingManager" /> class.
         /// </summary>
         /// <param name="connectionHandler">The connection handler.</param>
-        /// <param name="publishMessageCallback">The function that should be called when a publish message is received.</param>
-        public PublishingManager(IMqttConnectionHandler         connectionHandler,
-                                 Func<MqttPublishMessage, bool> publishMessageCallback) {
+        public PublishingManager(IMqttConnectionHandler         connectionHandler) {
             this.connectionHandler = connectionHandler;
-            this.publishMessageCallback = publishMessageCallback;
             connectionHandler.RegisterForMessage(MqttMessageType.PublishAck, HandlePublishAcknowledgement);
             connectionHandler.RegisterForMessage(MqttMessageType.Publish, HandlePublish);
             connectionHandler.RegisterForMessage(MqttMessageType.PublishComplete, HandlePublishComplete);
@@ -112,24 +109,24 @@ namespace Nmqtt
         /// <returns>The message identifier assigned to the message.</returns>
         public short Publish<T, TPayloadConverter>(string topic, MqttQos qualityOfService, T data)
             where TPayloadConverter : IPayloadConverter<T>, new() {
-            var msgID = this.messageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
+            var msgId = messageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
 
-            Log.DebugFormat("Publishing message ID {0} on topic {1} using QOS {2}", msgID, topic, qualityOfService);
+            Log.DebugFormat("Publishing message ID {0} on topic {1} using QOS {2}", msgId, topic, qualityOfService);
 
             var converter = GetPayloadConverter<TPayloadConverter>();
             var msg = new MqttPublishMessage()
                 .ToTopic(topic)
-                .WithMessageIdentifier(msgID)
+                .WithMessageIdentifier(msgId)
                 .WithQos(qualityOfService)
                 .PublishData(converter.ConvertToBytes(data));
 
             // QOS level 1 or 2 messages need to be saved so we can do the ack processes
             if (qualityOfService == MqttQos.AtLeastOnce || qualityOfService == MqttQos.ExactlyOnce) {
-                publishedMessages.Add(msgID, msg);
+                publishedMessages.Add(msgId, msg);
             }
 
             connectionHandler.SendMessage(msg);
-            return msgID;
+            return msgId;
         }
 
         /// <summary>
@@ -172,39 +169,41 @@ namespace Nmqtt
         /// <returns></returns>
         private bool HandlePublish(MqttMessage msg) {
             var pubMsg = (MqttPublishMessage) msg;
-            bool publishSuccess = false;
+            bool publishSuccess = true;
 
-            if (pubMsg.Header.Qos == MqttQos.AtMostOnce) {
-                // QOS AtMostOnce 0 require no response.
+            try {
+                if (pubMsg.Header.Qos == MqttQos.AtMostOnce) {
+                    // QOS AtMostOnce 0 require no response.
 
-                // send the message for processing to whoever is waiting.
-                publishSuccess = publishMessageCallback(pubMsg);
-            } else if (pubMsg.Header.Qos == MqttQos.AtLeastOnce) {
-                // QOS AtLeastOnce 1 require an acknowledgement
+                    // send the message for processing to whoever is waiting.
+                    OnMessageReceived(pubMsg);
+                } else if (pubMsg.Header.Qos == MqttQos.AtLeastOnce) {
+                    // QOS AtLeastOnce 1 require an acknowledgement
 
-                // send the message for processing to whoever is waiting.
-                publishSuccess = publishMessageCallback(pubMsg);
+                    // send the message for processing to whoever is waiting.
+                    OnMessageReceived(pubMsg);
 
-                MqttPublishAckMessage ackMsg = new MqttPublishAckMessage()
-                    .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
-                connectionHandler.SendMessage(ackMsg);
-            } else if (pubMsg.Header.Qos == MqttQos.ExactlyOnce) {
-                // QOS ExactlyOnce means we can't give it away yet, we gotta do a handshake 
-                // to make sure the broker knows we got it, and we know he knows we got it.
+                    var ackMsg = new MqttPublishAckMessage()
+                        .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
+                    connectionHandler.SendMessage(ackMsg);
+                } else if (pubMsg.Header.Qos == MqttQos.ExactlyOnce) {
+                    // QOS ExactlyOnce means we can't give it away yet, we gotta do a handshake 
+                    // to make sure the broker knows we got it, and we know he knows we got it.
 
-                // if we've already got it thats ok, it just means its being republished because
-                // of a handshake breakdown, overwrite our existing one for the sake of it
-                if (!receivedMessages.ContainsKey(pubMsg.VariableHeader.MessageIdentifier)) {
-                    receivedMessages[pubMsg.VariableHeader.MessageIdentifier] = pubMsg;
+                    // if we've already got it thats ok, it just means its being republished because
+                    // of a handshake breakdown, overwrite our existing one for the sake of it
+                    if (!receivedMessages.ContainsKey(pubMsg.VariableHeader.MessageIdentifier)) {
+                        receivedMessages[pubMsg.VariableHeader.MessageIdentifier] = pubMsg;
+                    }
+
+                    var pubRecv = new MqttPublishReceivedMessage()
+                        .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
+                    connectionHandler.SendMessage(pubRecv);
                 }
-
-                MqttPublishReceivedMessage pubRecv = new MqttPublishReceivedMessage()
-                    .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
-                connectionHandler.SendMessage(pubRecv);
-
-                publishSuccess = true;
+            } catch (Exception ex) {
+                Log.Error(m => m("An error occurred while processing a message received from a broker ({0}).", msg), ex);
+                publishSuccess = false;
             }
-
             return publishSuccess;
         }
 
@@ -215,32 +214,39 @@ namespace Nmqtt
         /// <returns>Boolean value indicating whether the message was successfull processed.</returns>
         private bool HandlePublishRelease(MqttMessage msg) {
             var pubRelMsg = (MqttPublishReleaseMessage) msg;
-            bool publishSuccess = false;
+            var publishSuccess = true;
 
-            MqttPublishMessage pubMsg;
-            receivedMessages.TryGetValue(pubRelMsg.VariableHeader.MessageIdentifier, out pubMsg);
-            if (pubMsg != null) {
-                receivedMessages.Remove(pubRelMsg.VariableHeader.MessageIdentifier);
+            try {
+                MqttPublishMessage pubMsg;
+                receivedMessages.TryGetValue(pubRelMsg.VariableHeader.MessageIdentifier, out pubMsg);
+                if (pubMsg != null) {
+                    receivedMessages.Remove(pubRelMsg.VariableHeader.MessageIdentifier);
 
-                // send the message for processing to whoever is waiting.
-                publishSuccess = publishMessageCallback(pubMsg);
+                    // send the message for processing to whoever is waiting.
+                    OnMessageReceived(pubMsg);
 
-                MqttPublishCompleteMessage compMsg = new MqttPublishCompleteMessage()
-                    .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
-                connectionHandler.SendMessage(compMsg);
-            } else {
-                // TODO: if we receive a publish release but haven't seen the original publish message, what do we do?!
+                    var compMsg = new MqttPublishCompleteMessage()
+                        .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
+                    connectionHandler.SendMessage(compMsg);
+                }
+            } catch (Exception ex) {
+                Log.Error(m => m("An error occurred while processing a publish release message received from a broker ({0}).", msg), ex);
+                publishSuccess = false;
             }
 
             return publishSuccess;
         }
 
-
-        /*
-         * 
-         * The callbacks below are to deal with workflow when sending messages TO a broker.
-         *
-         */
+        /// <summary>
+        /// Raises the MessageReceived event.
+        /// </summary>
+        /// <param name="msg">The message received.</param>
+        private void OnMessageReceived(MqttPublishMessage msg) {
+            var handler = MessageReceived;
+            if (handler != null) {
+                handler(this, new PublishEventArgs(msg));
+            }
+        }
 
         /// <summary>
         ///     Handles a publish complete message received from a broker.

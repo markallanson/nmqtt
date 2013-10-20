@@ -38,9 +38,9 @@ namespace nMqtt.SampleApp.Views
         		messageHistory.DataBindings.Add("Text", ViewModel, "MessageHistory");
         }
 
-		protected override void InitializeEventHandlers()
-		{
-			subscribeButton.Click += (sender, e) => ViewModel.Subscribe();
-		}
+        protected override void InitializeEventHandlers() {
+            subscribeButton.Click += (sender, e) => ViewModel.Subscribe();
+            unsubscribeButton.Click += (sender, e) => ViewModel.Unsubscribe();
+        }
     }
 }

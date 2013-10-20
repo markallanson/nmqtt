@@ -18,7 +18,7 @@ namespace nMqtt.SampleApp
 {
 	public class SubscriptionModel : Model, ISubscriptionModel
 	{
-		private bool subscribedToEvent = false;
+		private bool subscribedToEvent;
 	
 		public BindingList<string> Topics  
 		{
@@ -72,9 +72,15 @@ namespace nMqtt.SampleApp
 		void HandleMqttHandlerInstanceClientMessageArrived (object sender, Nmqtt.MqttMessageEventArgs e)
 		{
             // Assume the arrived message is a byte array that contains a simple ASCII string.
-            string messagePublished = Encoding.ASCII.GetString((byte[])e.Message);
-
+            var messagePublished = Encoding.ASCII.GetString((byte[])e.Message);
 			MessageHistory += String.Format("{0}: {1}{2}", e.Topic, messagePublished, Environment.NewLine);	
 		}
+
+	    public void Unsubscribe() {
+	        if (Topics.Contains(Topic)) {
+	            MqttHandler.Instance.Unsubscribe(Topic);
+	            Topics.Remove(Topic);
+	        }
+	    }
 	}
 }

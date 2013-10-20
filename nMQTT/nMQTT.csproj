@@ -112,6 +112,7 @@
     <Compile Include="ExtensionMethods\CollectionExtensions.cs" />
     <Compile Include="ConnectionHandling\MqttConnectionKeepAlive.cs" />
     <Compile Include="DataConverters\IPayloadConverter.cs" />
+    <Compile Include="IPublishingManager.cs" />
     <Compile Include="MessageIdentifierDispenser.cs" />
     <Compile Include="Messages\ConnectAck\MqttConnectAckMessage.Fluent.cs" />
     <Compile Include="Messages\PublishAck\MqttPublishAckMessage.Fluent.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="MqttQos.cs" />
     <Compile Include="Messages\MqttVariableHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublishEventArgs.cs" />
     <Compile Include="PublishingManager.cs" />
     <Compile Include="DataConverters\AsciiPayloadConverter.cs" />
     <Compile Include="DataConverters\PassThroughPayloadConverter.cs" />

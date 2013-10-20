@@ -44,11 +44,6 @@ namespace Nmqtt
         public MqttQos Qos { get; set; }
 
         /// <summary>
-        /// The observer that can be used to publish messages to to the observable.
-        /// </summary>
-        public ISubject<byte[]> Subject { get; set; }
-
-        /// <summary>
         /// The observable that receives messages from the broker.
         /// </summary>
         public IObservable<byte[]> Observable { get; set; }

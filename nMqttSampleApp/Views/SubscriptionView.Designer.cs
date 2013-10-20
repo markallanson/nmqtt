@@ -43,7 +43,7 @@ namespace nMqtt.SampleApp.Views
             this.subscriptionsGroupBox = new System.Windows.Forms.GroupBox();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.unsubscribeButton = new System.Windows.Forms.Button();
             this.subscribeButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -64,7 +64,7 @@ namespace nMqtt.SampleApp.Views
             this.subscriptionsGroupBox.Controls.Add(this.messageHistory);
             this.subscriptionsGroupBox.Controls.Add(this.button4);
             this.subscriptionsGroupBox.Controls.Add(this.button3);
-            this.subscriptionsGroupBox.Controls.Add(this.button2);
+            this.subscriptionsGroupBox.Controls.Add(this.unsubscribeButton);
             this.subscriptionsGroupBox.Controls.Add(this.subscribeButton);
             this.subscriptionsGroupBox.Controls.Add(this.checkBox1);
             this.subscriptionsGroupBox.Controls.Add(this.textBox2);
@@ -103,15 +103,15 @@ namespace nMqtt.SampleApp.Views
             this.button3.Text = "Save...";
             this.button3.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // unsubscribeButton
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(393, 100);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 11;
-            this.button2.Text = "Unsubscribe";
-            this.button2.UseVisualStyleBackColor = true;
+            this.unsubscribeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.unsubscribeButton.Location = new System.Drawing.Point(393, 100);
+            this.unsubscribeButton.Name = "unsubscribeButton";
+            this.unsubscribeButton.Size = new System.Drawing.Size(75, 23);
+            this.unsubscribeButton.TabIndex = 11;
+            this.unsubscribeButton.Text = "Unsubscribe";
+            this.unsubscribeButton.UseVisualStyleBackColor = true;
             // 
             // subscribeButton
             // 
@@ -246,7 +246,7 @@ namespace nMqtt.SampleApp.Views
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button unsubscribeButton;
         private System.Windows.Forms.Button subscribeButton;
         private System.Windows.Forms.TextBox messageHistory;
     }

@@ -11,6 +11,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using Nmqtt;
 using System.Diagnostics;
@@ -21,9 +22,14 @@ namespace nMqtt.SampleApp
 	/// <summary>
 	/// Singleton for consuming mqtt functionality.
 	/// </summary>
-	public class MqttHandler
+	public class MqttHandler : IDisposable
 	{
 		private static MqttHandler instance = new MqttHandler ();
+
+        /// <summary>
+        /// Stores the underlying core disposables for the topic
+        /// </summary>
+        private readonly IDictionary<string, IDisposable> topicSubscriptions = new Dictionary<string, IDisposable>(); 
 
         /// <summary>
         /// The instance of the underlying MqttClient that is connected to the server.
@@ -80,14 +86,33 @@ namespace nMqtt.SampleApp
 		{
             if (client == null) throw new InvalidOperationException("You must connect before you can subscribe to a topic.");
 
-			client.Observe(topic, (MqttQos)qos)
-                .ObserveOn(SynchronizationContext.Current)
-                .Subscribe(msg => this.ClientMessageArrived(instance, new MqttMessageEventArgs(msg.Topic, msg.Payload)));
+			var sub = client.ListenTo(topic, (MqttQos)qos)
+                            .ObserveOn(SynchronizationContext.Current)
+                            .Subscribe(msg => ClientMessageArrived(instance, new MqttMessageEventArgs(msg.Topic, msg.Payload)));
+            topicSubscriptions.Add(topic, sub);
 		}
+
+        /// <summary>
+        /// Unsubscribes from the specified topic.
+        /// </summary>
+        /// <param name="topic">The topic to unsubscribe.</param>
+        public void Unsubscribe(string topic) {
+            IDisposable sub;
+            if (topicSubscriptions.TryGetValue(topic, out sub)) {
+                sub.Dispose();
+                topicSubscriptions.Remove(topic);
+            }
+        }
 		
 		/// <summary>
 		/// Event fired when a message arrives from the remote server.
 		/// </summary>
 		public event EventHandler<MqttMessageEventArgs> ClientMessageArrived;
+
+	    public void Dispose() {
+	        foreach (var topicSubscription in topicSubscriptions) {
+	            topicSubscription.Value.Dispose();
+	        }
+	    }
 	}
 }

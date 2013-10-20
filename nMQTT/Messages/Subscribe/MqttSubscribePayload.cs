@@ -20,7 +20,7 @@ using Nmqtt.ExtensionMethods;
 namespace Nmqtt
 {
     /// <summary>
-    ///     Class that contains details related to an MQTT Observe messages payload
+    ///     Class that contains details related to an MQTT Subscribe messages payload
     /// </summary>
     internal sealed class MqttSubscribePayload : MqttPayload
     {

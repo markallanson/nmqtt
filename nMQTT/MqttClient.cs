@@ -11,12 +11,14 @@
 */
 
 using System;
-using System.Linq;
 using Common.Logging;
 using Nmqtt.Diagnostics;
 
 namespace Nmqtt
 {
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
     /// <summary>
     ///     A client class for interacting with MQTT Data Packets
     /// </summary>
@@ -56,30 +58,30 @@ namespace Nmqtt
         /// <summary>
         ///     The remote server that this client will connect to.
         /// </summary>
-        public string          Server {
+        public string                   Server {
             get { return server; }
         }
 
         /// <summary>
         ///     The port on the remote server that this client will connect to.
         /// </summary>
-        public int             Port {
+        public int                      Port {
             get { return port; }
         }
 
         /// <summary>
         ///     Gets the Client Identifier of this instance of the MqttClient
         /// </summary>
-        public string          ClientIdentifier {
+        public string                   ClientIdentifier {
             get { return clientIdentifier; }
         }
 
         /// <summary>
         ///     Gets the current conneciton state of the Mqtt Client.
         /// </summary>
-        public ConnectionState ConnectionState {
+        public ConnectionState          ConnectionState {
             get {
-                return connectionHandler != null ? connectionHandler.State : Nmqtt.ConnectionState.Disconnected;
+                return connectionHandler != null ? connectionHandler.State : ConnectionState.Disconnected;
             }
         }
 
@@ -98,6 +100,9 @@ namespace Nmqtt
         /// <param name="port">The port.</param>
         /// <param name="clientIdentifier">The ID that the broker can use to identify the client.</param>
         public MqttClient(string server, int port, string clientIdentifier) {
+            Log.Debug(m => m("Creating MqttClient for broker '{0}', port '{1}' using Client Identifier '{2}'",
+                server, port, clientIdentifier));
+
             this.server = server;
             this.port = port;
             this.clientIdentifier = clientIdentifier;
@@ -107,13 +112,16 @@ namespace Nmqtt
         ///     Performs a synchronous connect to the message broker.
         /// </summary>
         public ConnectionState Connect() {
+            Log.Debug(m => m("Initiating connection to broker '{0}', port '{1}' using Client Identifier '{2}'",
+                server, port, clientIdentifier));
+
             connectionHandler    = new SynchronousMqttConnectionHandler();
             keepAlive            = new MqttConnectionKeepAlive(connectionHandler, 30); // TODO: Configurable timeout
-            subscriptionsManager = new SubscriptionsManager(connectionHandler);
+            publishingManager    = new PublishingManager(connectionHandler);
+            subscriptionsManager = new SubscriptionsManager(connectionHandler, publishingManager);
             messageLogger        = new MessageLogger(connectionHandler);
-            publishingManager    = new PublishingManager(connectionHandler, HandlePublishMessage);
 
-            return connectionHandler.Connect(this.server, this.port, GetConnectMessage());
+            return connectionHandler.Connect(server, port, GetConnectMessage());
         }
 
         /// <summary>
@@ -127,28 +135,6 @@ namespace Nmqtt
                 .StartClean(); // TODO: Not compatible for QOS Level 2 when implemented...
         }
 
-        /// <summary>
-        ///     Handles the processing of messages arriving from the message broker.
-        /// </summary>
-        /// <param name="message">The message that was received from the broker.</param>
-        private bool HandlePublishMessage(MqttMessage message) {
-            var pubMsg       = (MqttPublishMessage) message;
-            var subscription = subscriptionsManager.GetSubscription(pubMsg.VariableHeader.TopicName);
-            if (subscription == null) {
-                Log.WarnFormat("Recived message for a topic we're not subscribed to ({0})", pubMsg.VariableHeader.TopicName);
-                return false;
-            }
-
-            // Publish the message to the subscribers
-            var success = true;
-            try {
-                subscription.Subject.OnNext(pubMsg.Payload.Message.ToArray());
-            } catch (Exception ex) {
-                success = false;
-                Log.Error(m => m("Error while publishing message to observer for topic {0}.", subscription.Topic), ex);
-            }
-            return success;
-        }
 
         /// <summary>
         ///     Subscribles the specified topic with a callback function that accepts the raw message data.
@@ -156,8 +142,8 @@ namespace Nmqtt
         /// <param name="topic">The topic.</param>
         /// <param name="qosLevel">The qos level.</param>
         /// <returns></returns>
-        public IObservable<MqttReceivedMessage<byte[]>> Observe(string topic, MqttQos qosLevel) {
-            return Observe<byte[], PassThroughPayloadConverter>(topic, qosLevel);
+        public IObservable<MqttReceivedMessage<byte[]>> ListenTo(string topic, MqttQos qosLevel) {
+            return ListenTo<byte[], PassThroughPayloadConverter>(topic, qosLevel);
         }
 
         /// <summary>
@@ -169,7 +155,7 @@ namespace Nmqtt
         ///     The identifier assigned to the subscription.
         /// </returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "See method above for non generic implementation")]
-        public IObservable<MqttReceivedMessage<T>> Observe<T, TPayloadConverter>(string topic, MqttQos qosLevel)
+        public IObservable<MqttReceivedMessage<T>> ListenTo<T, TPayloadConverter>(string topic, MqttQos qosLevel)
             where TPayloadConverter : IPayloadConverter<T>, new() {
             if (connectionHandler.State != ConnectionState.Connected) {
                 throw new ConnectionException(connectionHandler.State);
@@ -248,13 +234,13 @@ namespace Nmqtt
 
             if (messageLogger != null) {
                 messageLogger.Dispose();
-            }
+            } 
 
             if (connectionHandler != null) {
                 connectionHandler.Dispose();
             }
-
-            GC.SuppressFinalize(this);
         }
     }
+// ReSharper restore UnusedMember.Global
+// ReSharper restore MemberCanBePrivate.Global
 }

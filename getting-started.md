@@ -13,15 +13,14 @@ Create a client using a custom MQTT port.
 
 Note that calls to the connect method are synchronous and do not return until the MQTT server has acknowledged
 the connection. There is currently no Asynchronous connection model.
-    
 
 ## Subscription
 nMQTT models MQTT subscriptions as observable sequences of messages using the 
 [Rx Framework](http://msdn.microsoft.com/en-us/data/gg577609.aspx). To subscribe to a topic simply
-call the client's `ObserveTopic` method, which returns an `IObservable`.
+call the client's `ListenTo` method, which returns an `IObservable`.
  
     IObservable<MqttRecivedMessage<byte[]> observation 
-		= client.ObserveTopic("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
+		= client.ListenTo("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
 
 You can also subscribe with a data converter that handles serialization of the messages to and from
 the Mqtt payload. The sample below converts the raw mqtt data to and from ASCII strings.
@@ -39,7 +38,10 @@ the Mqtt payload. The sample below converts the raw mqtt data to and from ASCII 
     }
 
     IObservable<MsqqReceivedMessage<string>> observable 
-           = client.ObserveTopic<string, AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
+           = client.ListenTo<string, AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce);
+
+Note that subscription to the broker is lazy initiated and will only occur once you `Subscribe` to the
+observable for the first time.
 
 ## Receiving Messages
 You can receive messages from the observation by subscribing to the observation using standard Rx symantics.
@@ -63,7 +65,7 @@ that arrives on that topic.
 ## Chaining Subscription and Receipt
 Rx Observables can be chained, so of course you can so it all in one shot.
 
-    IDisposable subscription = client.ObserveTopic<string, AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce)
+    IDisposable subscription = client.ListenTo<string, AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce)
                                      .ObserveOn(SynchronizationContext.Current)
 												 .Subscribe(msg => Process(msg.Topic, msg.Payload));
 
@@ -89,13 +91,10 @@ You can also leave serialization up to a data converter instead of passing in a 
 
     client.PublishMessage<AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtLeastOnce, "Hello World.");
 
-## Disconnction
+## Disconnection
 `MqttClient`'s cannot be used to connect and disconnect at will. Once you are finished you must dispose 
 the client. 
 
     client.Dispose()
 
 If you wish to continue later you would then need to create another client and issue your subscriptions again.
-
-This model is rather inflexible and will an alternate connect/disconnect model will likely be introduced in
-future versions.

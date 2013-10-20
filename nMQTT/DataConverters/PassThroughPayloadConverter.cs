@@ -16,7 +16,7 @@ namespace Nmqtt
     ///     Acts as a passthrough for the raw data without doing any conversion.
     /// </summary>
     /// s
-    public class PassThroughPayloadConverter : IPayloadConverter<byte[]>
+    internal class PassThroughPayloadConverter : IPayloadConverter<byte[]>
     {
         /// <summary>
         ///     Processes received data and returns it as a byte array.
