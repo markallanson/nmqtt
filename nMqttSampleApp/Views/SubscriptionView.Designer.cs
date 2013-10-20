@@ -48,7 +48,7 @@ namespace nMqtt.SampleApp.Views
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.receivedTopicTextbox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.qosNumeric = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
@@ -69,7 +69,7 @@ namespace nMqtt.SampleApp.Views
             this.subscriptionsGroupBox.Controls.Add(this.checkBox1);
             this.subscriptionsGroupBox.Controls.Add(this.textBox2);
             this.subscriptionsGroupBox.Controls.Add(this.label4);
-            this.subscriptionsGroupBox.Controls.Add(this.textBox1);
+            this.subscriptionsGroupBox.Controls.Add(this.receivedTopicTextbox);
             this.subscriptionsGroupBox.Controls.Add(this.label3);
             this.subscriptionsGroupBox.Controls.Add(this.qosNumeric);
             this.subscriptionsGroupBox.Controls.Add(this.label2);
@@ -154,12 +154,12 @@ namespace nMqtt.SampleApp.Views
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.receivedTopicTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(100, 45);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(224, 20);
-            this.textBox1.TabIndex = 5;
+            this.receivedTopicTextbox.Location = new System.Drawing.Point(100, 45);
+            this.receivedTopicTextbox.Name = "receivedTopicTextbox";
+            this.receivedTopicTextbox.Size = new System.Drawing.Size(224, 20);
+            this.receivedTopicTextbox.TabIndex = 5;            
             // 
             // label3
             // 
@@ -242,7 +242,7 @@ namespace nMqtt.SampleApp.Views
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox receivedTopicTextbox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;

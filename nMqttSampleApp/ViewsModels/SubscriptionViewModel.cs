@@ -76,6 +76,14 @@ namespace nMqtt.SampleApp
 				return Model.MessageHistory;
 			}
 		}
+
+        public string ReceivedTopic
+        {
+            get
+            {
+                return Model.ReceivedTopic;
+            }
+        }
 	
 		public SubscriptionViewModel()
 		{

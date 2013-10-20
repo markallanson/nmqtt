@@ -48,6 +48,8 @@ namespace Nmqtt
 
         public string WillTopic { get; set; }
         public string WillMessage { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MqttConnectPayload"/> class.
@@ -83,6 +85,16 @@ namespace Nmqtt
                 payloadStream.WriteMqttString(WillTopic);
                 payloadStream.WriteMqttString(WillMessage);
             }
+
+            if (variableHeader.ConnectFlags.UsernameFlag)
+            {
+                payloadStream.WriteMqttString(Username);
+            }
+
+            if (variableHeader.ConnectFlags.PasswordFlag)
+            {
+                payloadStream.WriteMqttString(Password);
+            }
         }
 
         /// <summary>
@@ -97,6 +109,16 @@ namespace Nmqtt
             {
                 WillTopic = payloadStream.ReadMqttString();
                 WillMessage = payloadStream.ReadMqttString();
+            }
+
+            if (variableHeader.ConnectFlags.UsernameFlag)
+            {
+                Username = payloadStream.ReadMqttString();
+            }
+
+            if (variableHeader.ConnectFlags.PasswordFlag)
+            {
+                Password = payloadStream.ReadMqttString();
             }
         }
 
@@ -113,6 +135,16 @@ namespace Nmqtt
                 length += enc.GetByteCount(WillMessage);
             }
 
+            if (variableHeader.ConnectFlags.UsernameFlag)
+            {
+                length += enc.GetByteCount(Username);
+            }
+
+            if (variableHeader.ConnectFlags.PasswordFlag)
+            {
+                length += enc.GetByteCount(Password);
+            }
+
             return length;
         }
 
@@ -122,8 +154,8 @@ namespace Nmqtt
         /// <returns>A string representation of the payload.</returns>
         public override string ToString()
         {
-            return String.Format("Payload: ClientIdentifier={0}, WillTopic={1}, WillMessage={2}",
-                ClientIdentifier, WillTopic, WillMessage);
+            return String.Format("Payload: ClientIdentifier={0}, WillTopic={1}, WillMessage={2}, Username={3}, Password={4}",
+                ClientIdentifier, WillTopic, WillMessage, Username, Password);
         }
 
     }

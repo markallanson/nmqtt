@@ -32,10 +32,11 @@ namespace nMqtt.SampleApp.Views
 			topicsComboBox.DataBindings.Add ("Text", ViewModel, "Topic");
 
 			qosNumeric.DataBindings.Add("Maximum", ViewModel, "QosMaximum");
-        		qosNumeric.DataBindings.Add("Minimum", ViewModel, "QosMinimum");
-        		qosNumeric.DataBindings.Add("Value", ViewModel, "Qos");
+        	qosNumeric.DataBindings.Add("Minimum", ViewModel, "QosMinimum");
+        	qosNumeric.DataBindings.Add("Value", ViewModel, "Qos");
         		
-        		messageHistory.DataBindings.Add("Text", ViewModel, "MessageHistory");
+        	messageHistory.DataBindings.Add("Text", ViewModel, "MessageHistory");
+            receivedTopicTextbox.DataBindings.Add("Text", ViewModel, "ReceivedTopic");            
         }
 
 		protected override void InitializeEventHandlers()

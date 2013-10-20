@@ -37,7 +37,18 @@ namespace nMqtt.SampleApp
 			get;
 			set;
 		}
-		
+
+        string receivedTopic;
+        public string ReceivedTopic
+        {
+            get { return receivedTopic; }
+            set
+            {
+                receivedTopic = value;
+                OnPropertyChanged("ReceivedTopic");
+            }
+        }
+
 		string messageHistory;
 		public string MessageHistory
 		{
@@ -74,7 +85,8 @@ namespace nMqtt.SampleApp
             // Assume the arrived message is a byte array that contains a simple ASCII string.
             string messagePublished = Encoding.ASCII.GetString((byte[])e.Message);
 
-			MessageHistory += String.Format("{0}: {1}{2}", e.Topic, messagePublished, Environment.NewLine);	
+            MessageHistory += String.Format("{0}{1}: {2}", Environment.NewLine, e.Topic, messagePublished);
+		    ReceivedTopic = e.Topic;
 		}
 	}
 }

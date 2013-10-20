@@ -10,20 +10,32 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+using nMqtt.SampleApp.ViewsModels;
 
 namespace nMqtt.SampleApp.Views
 {
-    public partial class PublishMessageView : UserControl
+    public partial class PublishMessageView : View<PublishMessageViewModel>
     {
         public PublishMessageView()
         {
             InitializeComponent();
+        }
+
+        protected override void InitializeDataBinding()
+        {
+            topicsCombo.DataSource = ViewModel.Topics;
+            topicsCombo.DataBindings.Add("Text", ViewModel, "Topic");
+
+            qosNumeric.DataBindings.Add("Maximum", ViewModel, "QosMaximum");
+            qosNumeric.DataBindings.Add("Minimum", ViewModel, "QosMinimum");
+            qosNumeric.DataBindings.Add("Value", ViewModel, "Qos");
+
+            messageTextbox.DataBindings.Add("Text", ViewModel, "Message");
+        }
+
+        protected override void InitializeEventHandlers()
+        {
+            publishButton.Click += (sender, e) => ViewModel.Publish();            
         }
     }
 }

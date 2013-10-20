@@ -29,12 +29,13 @@ namespace nMqtt.SampleApp.Views
         
         protected override void InitializeDataBinding()
         {
-        		this.clientIdentifierTextBox.DataBindings.Add("Text", ViewModel, "ClientIdentifier");
+            this.clientIdentifierTextBox.DataBindings.Add("Text", ViewModel, "ClientIdentifier");
+            this.usernameTextbox.DataBindings.Add("Text", ViewModel, "Username");
+            this.passwordTextbox.DataBindings.Add("Text", ViewModel, "Password");
         }
         
         protected override void InitializeEventHandlers ()
         {
         }
-
     }
 }

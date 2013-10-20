@@ -60,7 +60,7 @@ namespace nMqtt.SampleApp
 
 			Trace.WriteLine ("Connecting to " + server + ":" + port.ToString ());
 			
-			return client.Connect();
+			return client.Connect(Options.Username, Options.Password);
 		}
 
 		private void ClientMessageAvailable (object sender, MqttMessageEventArgs e)
@@ -86,9 +86,34 @@ namespace nMqtt.SampleApp
             if (client == null) throw new InvalidOperationException("You must connect before you can subscribe to a topic.");
 
 			client.Subscribe(topic, (MqttQos)qos);
+
+            Trace.WriteLine(String.Format("Subscribed to Topic '{0}'.", topic));
+            if (TopicSubscribed != null)
+            {
+                syncContext.Post((data) => this.TopicSubscribed(instance, new TopicSubscribedEventArgs(topic)), null);
+            }
 		}
-		
-		/// <summary>
+
+        /// <summary>
+        /// Publish message to the specified topic.
+        /// </summary>
+        /// <param name="topic">The topic.</param>
+        /// <param name="qos">The qos.</param>
+        /// <param name="data">The message.</param>
+        public void Publish(string topic, byte qos, object data)
+        {
+            if (client == null) throw new InvalidOperationException("You must connect before you can subscribe to a topic.");
+
+            client.PublishMessage<AsciiPublishDataConverter>(topic, (MqttQos)qos, data);
+        }
+
+        /// <summary>
+        /// Event fired when subscribed to a new topic
+        /// </summary>
+        /// TODO: MqttTopicSubscribedEventArgs
+        public event EventHandler<TopicSubscribedEventArgs> TopicSubscribed;
+
+        /// <summary>
 		/// Event fired when a message arrives from the remote server.
 		/// </summary>
 		public event EventHandler<MqttMessageEventArgs> ClientMessageArrived;
