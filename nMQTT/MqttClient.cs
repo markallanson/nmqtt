@@ -11,7 +11,6 @@
 */
 
 using System;
-using Nmqtt.ConnectionHandling.Authentication;
 using Common.Logging;
 using Nmqtt.Diagnostics;
 
@@ -110,38 +109,27 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Performs an authenticated synchronous connect to the message broker.
+        /// Performs a synchronous connect to the message broker with an optional username and password
+        /// for the purposes of authentication.
         /// </summary>
-        public ConnectionState Connect(string username, string password)
-        {
-            UsernamePasswordAuthenticator authenticator = null;
-
-            // A username/password authentication is valid as long as a username is set
-            if (!string.IsNullOrEmpty(username))
-            {
-                authenticator = new UsernamePasswordAuthenticator(username, password);
-            }
-
-            return Connect(authenticator);
-        }
-
-        /// <summary>
-        /// Performs an authenticated synchronous connect to the message broker.
-        /// </summary>
-        public ConnectionState Connect()
-        {
-            return Connect(null);
-        }
-
-        /// <summary>
-        /// Performs a synchronous connect to the message broker.
-        /// </summary>
-        internal ConnectionState Connect(Authenticator authentication)
+        /// <param name="username">Optionally the username to authenticate as.</param>
+        /// <param name="password">Optionally the password to authenticate with.</param>
+        public ConnectionState Connect(string username = null, string password = null)
         {
             Log.Debug(m => m("Initiating connection to broker '{0}', port '{1}' using Client Identifier '{2}'",
                 server, port, clientIdentifier));
 
-            MqttConnectMessage connectMessage = GetConnectMessage(authentication);
+            if (username != null) {
+                Log.Info(m => m("Authenticating with username '{0}' and password '{0}'", username, password));
+                if (username.Trim().Length > Constants.RecommendedMaxUsernamePasswordLength) {
+                    Log.Warn(m => m("Username length ({0}) exceeds the max recommended in the MQTT spec. ", username.Trim().Length));
+                }
+                if (password != null && password.Trim().Length > Constants.RecommendedMaxUsernamePasswordLength) {
+                    Log.Warn(m => m("Password length ({0}) exceeds the max recommended in the MQTT spec. ", password.Trim().Length));
+                }
+            }
+
+            var connectMessage = GetConnectMessage(username, password);
             connectionHandler = new SynchronousMqttConnectionHandler();
 
             // TODO: Get Get timeout from config or ctor or elsewhere.
@@ -157,17 +145,13 @@ namespace Nmqtt
         ///     Gets a configured connect message.
         /// </summary>
         /// <returns>An MqttConnectMessage that can be used to connect to a message broker.</returns>
-        private MqttConnectMessage GetConnectMessage(IAuthenticator authentication)
+        private MqttConnectMessage GetConnectMessage(string username, string password)
         {
             var message = new MqttConnectMessage()
                 .WithClientIdentifier(clientIdentifier)
                 .KeepAliveFor(30)
+                .AuthenticateAs(username, password)
                 .StartClean();
-
-            if (authentication != null)
-            {
-                authentication.ConfigureAuthentication(message);
-            }
 
             return message;
         }

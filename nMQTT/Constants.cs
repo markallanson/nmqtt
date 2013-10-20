@@ -28,5 +28,10 @@ namespace Nmqtt
         ///     The default Mqtt port to connect to.
         /// </summary>
         public const int DefaultMqttPort = 1883;
+
+        /// <summary>
+        ///     The recommended length for usernames and passwords.
+        /// </summary>
+        public const int RecommendedMaxUsernamePasswordLength = 12;
     }
 }

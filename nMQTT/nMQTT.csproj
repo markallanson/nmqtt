@@ -102,9 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientIdentifierException.cs" />
-    <Compile Include="ConnectionHandling\Authentication\Authenticator.cs" />
-    <Compile Include="ConnectionHandling\Authentication\IAuthenticator.cs" />
-    <Compile Include="ConnectionHandling\Authentication\UsernamePasswordAuthenticator.cs" />
     <Compile Include="ConnectionHandling\ConnectionDroppedEventArgs.cs" />
     <Compile Include="ConnectionHandling\IMqttConnectionHandler.cs" />
     <Compile Include="ConnectionHandling\SynchronousMqttConnectionHandler.cs" />

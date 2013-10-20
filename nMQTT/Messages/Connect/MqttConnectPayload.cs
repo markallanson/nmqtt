@@ -24,6 +24,8 @@ namespace Nmqtt
     {
         private string clientIdentifier;
         private readonly MqttConnectVariableHeader variableHeader;
+        private string username;
+        private string password;
 
         /// <summary>
         ///     The identifier of the client that is/has sent the connet message.
@@ -39,10 +41,18 @@ namespace Nmqtt
             }
         }
 
-        public string WillTopic { get; set; }
+        public string WillTopic   { get; set; }
         public string WillMessage { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        
+        public string Username {
+            get { return username; }
+            set { username = value != null ? value.Trim() : value; }
+        }
+
+        public string Password {
+            get { return password; }
+            set { password = value != null ? value.Trim() : value; }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MqttConnectPayload" /> class.

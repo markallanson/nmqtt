@@ -10,6 +10,8 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
+using System;
+
 namespace Nmqtt
 {
     /// <summary>
@@ -117,8 +119,8 @@ namespace Nmqtt
         /// <returns></returns>
         public MqttConnectMessage AuthenticateAs(string username, string password)
         {
-            this.VariableHeader.ConnectFlags.UsernameFlag = !string.IsNullOrEmpty(username);
-            this.VariableHeader.ConnectFlags.PasswordFlag = !string.IsNullOrEmpty(password);
+            this.VariableHeader.ConnectFlags.UsernameFlag = !String.IsNullOrEmpty(username);
+            this.VariableHeader.ConnectFlags.PasswordFlag = !String.IsNullOrEmpty(password);
 
             this.Payload.Username = username;
             this.Payload.Password = password;
