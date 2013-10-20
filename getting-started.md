@@ -67,7 +67,7 @@ Rx Observables can be chained, so of course you can so it all in one shot.
 
     IDisposable subscription = client.ListenTo<string, AsciiPublishDataConverter>("Nmqtt_quickstart_topic", MqttQos.AtMostOnce)
                                      .ObserveOn(SynchronizationContext.Current)
-												 .Subscribe(msg => Process(msg.Topic, msg.Payload));
+                                     .Subscribe(msg => Process(msg.Topic, msg.Payload));
 
 ## Unsubscribing
 Once you no longer want to receive messages for a topic, simply dispose your subscription. 
