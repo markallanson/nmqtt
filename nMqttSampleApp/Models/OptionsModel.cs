@@ -30,29 +30,5 @@ namespace nMqtt.SampleApp
 				Options.ClientIdentifier = value;
 			}
 		}
-
-        public string Username
-        {
-            get
-            {
-                return Options.Username;
-            }
-            set
-            {
-                Options.Username = value;
-            }
-        }
-
-        public string Password
-        {
-            get
-            {
-                return Options.Password;
-            }
-            set
-            {
-                Options.Password = value;
-            }
-        }
 	}
 }

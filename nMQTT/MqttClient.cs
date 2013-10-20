@@ -12,7 +12,6 @@
 
 using System.Linq;
 using System;
-using Nmqtt.ConnectionHandling.Authentication;
 using Nmqtt.Diagnostics;
 
 namespace Nmqtt
@@ -130,35 +129,11 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Performs an authenticated synchronous connect to the message broker.
-        /// </summary>
-        public ConnectionState Connect(string username, string password)
-        {
-            UsernamePasswordAuthenticator authenticator = null;
-
-            // A username/password authentication is valid as long as a username is set
-            if (!string.IsNullOrEmpty(username))
-            {
-                authenticator = new UsernamePasswordAuthenticator(username, password);
-            }
-
-            return Connect(authenticator);
-        }
-
-        /// <summary>
-        /// Performs an authenticated synchronous connect to the message broker.
+        /// Performs a synchronous connect to the message broker.
         /// </summary>
         public ConnectionState Connect()
         {
-            return Connect(null);
-        }
-
-        /// <summary>
-        /// Performs a synchronous connect to the message broker.
-        /// </summary>
-        internal ConnectionState Connect(Authenticator authentication)
-        {
-            MqttConnectMessage connectMessage = GetConnectMessage(authentication);
+            MqttConnectMessage connectMessage = GetConnectMessage();
             connectionHandler = new SynchronousMqttConnectionHandler();
 
             // TODO: Get Get timeout from config or ctor or elsewhere.
@@ -174,19 +149,12 @@ namespace Nmqtt
         /// Gets a configured connect message.
         /// </summary>
         /// <returns>An MqttConnectMessage that can be used to connect to a message broker.</returns>
-        private MqttConnectMessage GetConnectMessage(IAuthenticator authentication)
+        private MqttConnectMessage GetConnectMessage()
         {
-            var message = new MqttConnectMessage()
+            return new MqttConnectMessage()
                 .WithClientIdentifier(clientIdentifier)
                 .KeepAliveFor(30)
                 .StartClean();
-
-            if (authentication != null)
-            {
-                authentication.ConfigureAuthentication(message);
-            }
-
-            return message;
         }
 
         /// <summary>

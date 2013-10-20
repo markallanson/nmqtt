@@ -107,9 +107,7 @@ namespace Nmqtt
                 // drop the connection if our connect request has been rejected.
                 if (ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.BrokerUnavailable ||
                     ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.IdentifierRejected ||
-                    ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.UnacceptedProtocolVersion ||
-                    ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.NotAuthorized ||
-                    ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.BadUsernameOrPassword)
+                    ackMsg.VariableHeader.ReturnCode == MqttConnectReturnCode.UnacceptedProtocolVersion)
                 {
                     // TODO: Decide on a way to let the client know why we have been rejected.
                     PerformConnectionDisconnect();

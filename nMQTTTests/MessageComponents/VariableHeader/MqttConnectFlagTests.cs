@@ -60,27 +60,27 @@ namespace NmqttTests.MessageComponents.VariableHeader
         }
 
         [Fact]
-        public void MqttConnectFlags_PasswordFlag_true()
+        public void MqttConnectFlags_Reserved2_true()
         {
-            Assert.True(GetConnectFlags(64).PasswordFlag);
+            Assert.True(GetConnectFlags(64).Reserved2);
         }
 
         [Fact]
-        public void MqttConnectFlags_PasswordFlag_false()
+        public void MqttConnectFlags_Reserved2_false()
         {
-            Assert.False(GetConnectFlags(0).PasswordFlag);
+            Assert.False(GetConnectFlags(0).Reserved2);
         }
 
         [Fact]
-        public void MqttConnectFlags_UsernameFlag_true()
+        public void MqttConnectFlags_Reserved3_true()
         {
-            Assert.True(GetConnectFlags(128).UsernameFlag);
+            Assert.True(GetConnectFlags(128).Reserved3);
         }
 
         [Fact]
-        public void MqttConnectFlags_UsernameFlag_false()
+        public void MqttConnectFlags_Reserved3_false()
         {
-            Assert.False(GetConnectFlags(0).UsernameFlag);
+            Assert.False(GetConnectFlags(0).Reserved3);
         }
 
         [Fact]
