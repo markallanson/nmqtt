@@ -69,6 +69,7 @@ namespace nMqtt.SampleApp
 		{
 			if (!Topics.Contains (Topic))
 				Topics.Add (Topic);
+
 			if (!subscribedToEvent)
 			{
 				subscribedToEvent = true;
@@ -80,11 +81,16 @@ namespace nMqtt.SampleApp
 			
 		}
 
+        public void Unsubscribe() {
+            MqttHandler.Instance.Unsubscribe(Topic);
+        }
+
 		void HandleMqttHandlerInstanceClientMessageArrived (object sender, Nmqtt.MqttMessageEventArgs e)
 		{
             // Assume the arrived message is a byte array that contains a simple ASCII string.
             var messagePublished = Encoding.ASCII.GetString((byte[])e.Message);
 			MessageHistory += String.Format("{0}: {1}{2}", e.Topic, messagePublished, Environment.NewLine);	
 		}
+
 	}
 }
