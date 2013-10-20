@@ -11,49 +11,42 @@
 */
 
 using System;
-using System.Text;
-using System.IO;
-
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Text;
 
 namespace Nmqtt
 {
     /// <summary>
-    /// Class that contains details related to an MQTT SubscribeAck messages payload 
+    ///     Class that contains details related to an MQTT SubscribeAck messages payload
     /// </summary>
     internal sealed class MqttSubscribeAckPayload : MqttPayload
     {
-        private MqttVariableHeader variableHeader;
-        private MqttHeader header;
+        private readonly MqttVariableHeader variableHeader;
+        private readonly MqttHeader header;
 
-        private Collection<MqttQos> qosGrants = new Collection<MqttQos>();
+        private readonly Collection<MqttQos> qosGrants = new Collection<MqttQos>();
 
         /// <summary>
-        /// The collection of subscriptions, Key is the topic, Value is the qos
+        ///     The collection of subscriptions, Key is the topic, Value is the qos
         /// </summary>
-        public Collection<MqttQos> QosGrants
-        {
-            get
-            {
-                return qosGrants;
-            }
+        public Collection<MqttQos> QosGrants {
+            get { return qosGrants; }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttSubscribeAckPayload"/> class.
+        ///     Initializes a new instance of the <see cref="MqttSubscribeAckPayload" /> class.
         /// </summary>
-        public MqttSubscribeAckPayload()
-        {
-        }
+        public MqttSubscribeAckPayload() {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttSubscribeAckPayload"/> class.
+        ///     Initializes a new instance of the <see cref="MqttSubscribeAckPayload" /> class.
         /// </summary>
         /// <param name="header">The header to use for the message.</param>
         /// <param name="variableHeader">The variable header to use for the message.</param>
         /// <param name="payloadStream">The payload stream.</param>
-        public MqttSubscribeAckPayload(MqttHeader header, MqttSubscribeAckVariableHeader variableHeader, Stream payloadStream)
-        {
+        public MqttSubscribeAckPayload(MqttHeader header, MqttSubscribeAckVariableHeader variableHeader,
+                                       Stream payloadStream) {
             this.header = header;
             this.variableHeader = variableHeader;
 
@@ -61,72 +54,63 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Creates a payload from the specified header stream.
+        ///     Creates a payload from the specified header stream.
         /// </summary>
         /// <param name="payloadStream"></param>
-        public override void ReadFrom(Stream payloadStream)
-        {
+        public override void ReadFrom(Stream payloadStream) {
             int payloadBytesRead = 0;
             int payloadLength = header.MessageSize - variableHeader.Length;
 
             // read all the topics and qos subscriptions from the message payload
-            while (payloadBytesRead < payloadLength)
-            {
-                MqttQos granted = (MqttQos)payloadStream.ReadByte();
-                payloadBytesRead++; 
+            while (payloadBytesRead < payloadLength) {
+                var granted = (MqttQos) payloadStream.ReadByte();
+                payloadBytesRead++;
                 AddGrant(granted);
             }
         }
 
         /// <summary>
-        /// Writes the payload to the supplied stream.
+        ///     Writes the payload to the supplied stream.
         /// </summary>
         /// <param name="payloadStream"></param>
-        public override void WriteTo(Stream payloadStream)
-        {
-            foreach (MqttQos qos in qosGrants)
-            {
-                payloadStream.WriteByte((byte)qos);
+        public override void WriteTo(Stream payloadStream) {
+            foreach (var qos in qosGrants) {
+                payloadStream.WriteByte((byte) qos);
             }
         }
 
         /// <summary>
-        /// Gets the length of the payload in bytes when written to a stream.
+        ///     Gets the length of the payload in bytes when written to a stream.
         /// </summary>
         /// <returns>The length of the payload in bytes.</returns>
-        internal override int GetWriteLength()
-        {
-            return qosGrants.Count * sizeof(MqttQos);
+        internal override int GetWriteLength() {
+            return qosGrants.Count*sizeof (MqttQos);
         }
 
         /// <summary>
-        /// Adds a new subscription to the collection of subscriptions.
+        ///     Adds a new subscription to the collection of subscriptions.
         /// </summary>
         /// <param name="grantedQos">The granted qos.</param>
-        public void AddGrant(MqttQos grantedQos)
-        {
+        public void AddGrant(MqttQos grantedQos) {
             qosGrants.Add(grantedQos);
         }
 
         /// <summary>
-        /// Clears the subscriptions.
+        ///     Clears the subscriptions.
         /// </summary>
-        public void ClearGrants()
-        {
+        public void ClearGrants() {
             qosGrants.Clear();
         }
 
         /// <summary>
-        /// Returns a string representation of the payload.
+        ///     Returns a string representation of the payload.
         /// </summary>
         /// <returns>A string representation of the payload.</returns>
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
+        public override string ToString() {
+            var sb = new StringBuilder();
             sb.AppendLine(String.Format("Payload: Subscription Grants [{0}]", qosGrants.Count));
 
-            foreach (MqttQos grant in qosGrants)
-            {
+            foreach (var grant in qosGrants) {
                 sb.AppendLine(String.Format("{{ Grant={0} }}", grant));
             }
 

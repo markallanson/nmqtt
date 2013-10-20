@@ -16,9 +16,10 @@ using System.IO;
 namespace Nmqtt
 {
     /// <summary>
-    /// Represents the connect flags part of the MQTT Variable Header
+    ///     Represents the connect flags part of the MQTT Variable Header
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Justification="Keeping terminology consistent with Mqtt Spec")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags"
+        , Justification = "Keeping terminology consistent with Mqtt Spec")]
     internal class MqttConnectFlags
     {
         public bool Reserved1 { get; set; }
@@ -30,54 +31,47 @@ namespace Nmqtt
         public bool UsernameFlag { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectFlags"/> class.
+        ///     Initializes a new instance of the <see cref="MqttConnectFlags" /> class.
         /// </summary>
-        public MqttConnectFlags()
-        {
-        }
+        public MqttConnectFlags() {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectFlags"/> class configured as per the supplied stream.
+        ///     Initializes a new instance of the <see cref="MqttConnectFlags" /> class configured as per the supplied stream.
         /// </summary>
         /// <param name="connectFlagsStream">The connect flags stream.</param>
-        public MqttConnectFlags(Stream connectFlagsStream)
-        {
+        public MqttConnectFlags(Stream connectFlagsStream) {
             ReadFrom(connectFlagsStream);
         }
 
         /// <summary>
-        /// Writes the connect flag byte to the supplied stream.
+        ///     Writes the connect flag byte to the supplied stream.
         /// </summary>
         /// <param name="connectFlagsStream">The stream to write to.</param>
-        public void WriteTo(Stream connectFlagsStream)
-        {
+        public void WriteTo(Stream connectFlagsStream) {
             connectFlagsStream.WriteByte(ConnectFlagByte);
         }
 
         /// <summary>
-        /// Reads the connect flags from the underlying stream.
+        ///     Reads the connect flags from the underlying stream.
         /// </summary>
         /// <param name="stream">The stream.</param>
-        internal void ReadFrom(Stream stream)
-        {
-            byte connectFlagsByte = (byte)stream.ReadByte();
+        internal void ReadFrom(Stream stream) {
+            var connectFlagsByte = (byte) stream.ReadByte();
 
             Reserved1 = (connectFlagsByte & 1) == 1;
             CleanStart = (connectFlagsByte & 2) == 2;
             WillFlag = (connectFlagsByte & 4) == 4;
-            WillQos = (MqttQos)((connectFlagsByte >> 3) & 3);
+            WillQos = (MqttQos) ((connectFlagsByte >> 3) & 3);
             WillRetain = (connectFlagsByte & 32) == 32;
             PasswordFlag = (connectFlagsByte & 64) == 64;
             UsernameFlag = (connectFlagsByte & 128) == 128;       
         }
 
         /// <summary>
-        /// Builds the byte that represents the current connect flags.
+        ///     Builds the byte that represents the current connect flags.
         /// </summary>
-        private byte ConnectFlagByte
-        {
-            get
-            {
+        private byte ConnectFlagByte {
+            get {
                 return (byte)
                     ((Reserved1 ? 1 : 0) |
                     (CleanStart ? 1 : 0) << 1 |
@@ -90,25 +84,23 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Gets the length of data written when WriteTo is called.
+        ///     Gets the length of data written when WriteTo is called.
         /// </summary>
         /// <returns></returns>
-        internal static int GetWriteLength()
-        {
+        internal static int GetWriteLength() {
             return 1;
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return String.Format("Connect Flags: Reserved1={0}, CleanStart={1}, WillFlag={2}, WillQos={3}, " +
-                "WillRetain={4}, PasswordFlag={5}, UserNameFlag={6}",
-                Reserved1, CleanStart, WillFlag, WillQos, WillRetain, PasswordFlag, UsernameFlag);
+                                 "WillRetain={4}, PasswordFlag={5}, UserNameFlag={6}",
+                                  Reserved1, CleanStart, WillFlag, WillQos, WillRetain, PasswordFlag, UsernameFlag);
         }
     }
 }

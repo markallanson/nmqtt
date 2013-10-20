@@ -15,22 +15,21 @@ using System;
 namespace Nmqtt
 {
     /// <summary>
-    /// Event arguments that represent the data present within an invalid message.
+    ///     Event arguments that represent the data present within an invalid message.
     /// </summary>
     public class InvalidMessageEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets or sets the Exception that describes the invalid message problem.
+        ///     Gets or sets the Exception that describes the invalid message problem.
         /// </summary>
         /// <value>The data stream.</value>
         public InvalidMessageException Exception { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidMessageEventArgs"/> class.
+        ///     Initializes a new instance of the <see cref="InvalidMessageEventArgs" /> class.
         /// </summary>
         /// <param name="exception">The Exception that describes the message problem.</param>
-        public InvalidMessageEventArgs(InvalidMessageException exception)
-        {
+        public InvalidMessageEventArgs(InvalidMessageException exception) {
             this.Exception = exception;
         }
     }

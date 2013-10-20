@@ -10,7 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
 using System.Windows.Forms;
 
 namespace nMqtt.SampleApp
@@ -27,7 +26,7 @@ namespace nMqtt.SampleApp
 		{
 			get
 			{ 
-					return viewModel; 
+				return viewModel; 
 			}
 			set
 			{
@@ -35,10 +34,6 @@ namespace nMqtt.SampleApp
 				InitializeDataBinding ();
 				InitializeEventHandlers();
 			}
-		}
-
-		public View ()
-		{
 		}
 		
 		/// <summary>

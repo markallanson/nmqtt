@@ -16,33 +16,27 @@ using System.IO;
 namespace Nmqtt
 {
     /// <summary>
-    /// Implementation of the variable header for an MQTT Connect message.
+    ///     Implementation of the variable header for an MQTT Connect message.
     /// </summary>
     internal sealed class MqttConnectVariableHeader : MqttVariableHeader
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
+        ///     Initializes a new instance of the <see cref="MqttConnectVariableHeader" /> class.
         /// </summary>
-        public MqttConnectVariableHeader()
-        {
-        }
+        public MqttConnectVariableHeader() {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttConnectVariableHeader"/> class.
+        ///     Initializes a new instance of the <see cref="MqttConnectVariableHeader" /> class.
         /// </summary>
         /// <param name="headerStream">A stream containing the header of the message.</param>
         public MqttConnectVariableHeader(Stream headerStream)
-            : base(headerStream)
-        {
-        }
+            : base(headerStream) {}
 
         /// <summary>
-        /// Returns the read flags for the connect variabe header (prot name, version, connect, keepalive)
+        ///     Returns the read flags for the connect variabe header (prot name, version, connect, keepalive)
         /// </summary>
-        protected override MqttVariableHeader.ReadWriteFlags ReadFlags
-        {
-            get
-            {
+        protected override MqttVariableHeader.ReadWriteFlags ReadFlags {
+            get {
                 return
                     ReadWriteFlags.ProtocolName |
                     ReadWriteFlags.ProtocolVersion |
@@ -52,27 +46,25 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Returns the write flags for the connect variabe header (prot name, version, connect, keepalive)
+        ///     Returns the write flags for the connect variabe header (prot name, version, connect, keepalive)
         /// </summary>
-        protected override MqttVariableHeader.ReadWriteFlags WriteFlags
-        {
-            get
-            {
+        protected override MqttVariableHeader.ReadWriteFlags WriteFlags {
+            get {
                 // we read and write the same values on the connect header.
                 return ReadFlags;
             }
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return
-                String.Format("Connect Variable Header: ProtocolName={0}, ProtocolVersion={1}, ConnectFlags=({2}), KeepAlive={3}",
+                String.Format(
+                    "Connect Variable Header: ProtocolName={0}, ProtocolVersion={1}, ConnectFlags=({2}), KeepAlive={3}",
                     ProtocolName, ProtocolVersion, ConnectFlags, KeepAlive);
         }
     }

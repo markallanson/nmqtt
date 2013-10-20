@@ -39,9 +39,9 @@ namespace nMqtt.SampleApp.Views
             receivedTopicTextbox.DataBindings.Add("Text", ViewModel, "ReceivedTopic");            
         }
 
-		protected override void InitializeEventHandlers()
-		{
-			subscribeButton.Click += (sender, e) => ViewModel.Subscribe();
-		}
+        protected override void InitializeEventHandlers() {
+            subscribeButton.Click += (sender, e) => ViewModel.Subscribe();
+            unsubscribeButton.Click += (sender, e) => ViewModel.Unsubscribe();
+        }
     }
 }

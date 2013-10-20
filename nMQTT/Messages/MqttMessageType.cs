@@ -13,12 +13,12 @@
 namespace Nmqtt
 {
     /// <summary>
-    /// An enumeration of all available MQTT Message Types
+    ///     An enumeration of all available MQTT Message Types
     /// </summary>
     internal enum MqttMessageType
     {
         /// <summary>
-        /// Reserved by the MQTT spec, should not be used.
+        ///     Reserved by the MQTT spec, should not be used.
         /// </summary>
         Reserved1 = 0,
 
@@ -38,7 +38,7 @@ namespace Nmqtt
         Disconnect,
 
         /// <summary>
-        /// Reserved by the MQTT spec, should not be used.
+        ///     Reserved by the MQTT spec, should not be used.
         /// </summary>
         Reserved2
     }

@@ -11,101 +11,80 @@
 */
 
 using System;
+using Common.Logging;
 using Nmqtt.Properties;
-using System.IO;
 
 namespace Nmqtt.Diagnostics
 {
     /// <summary>
-    /// 
+    /// Implements message logging by observing the messages received and the messages sent.
     /// </summary>
     internal class MessageLogger : IDisposable
     {
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+
         private bool disposed;
 
-        private MqttConnectionHandler connectionHandler;
-        private StreamWriter logFileWriter;
+        private readonly MqttConnectionHandler connectionHandler;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageLogger"/> class.
+        ///     Initializes a new instance of the <see cref="MessageLogger" /> class.
         /// </summary>
         /// <param name="connectionHandler">The connection handler.</param>
-        public MessageLogger(MqttConnectionHandler connectionHandler)
-        {
-            if (Settings.Default.EnableMessageLogging)
-            {
+        public MessageLogger(MqttConnectionHandler connectionHandler) {
+            if (Settings.Default.EnableMessageLogging) {
                 this.connectionHandler = connectionHandler;
                 // subscribe to ALL events received.
-                foreach (MqttMessageType msgType in Enum.GetValues(typeof(MqttMessageType)))
-                {
+                foreach (MqttMessageType msgType in Enum.GetValues(typeof (MqttMessageType))) {
                     connectionHandler.RegisterForMessage(msgType, MessageLoggerCallback);
                 }
                 connectionHandler.RegisterForAllSentMessages(MessageSentCallback);
-
-                logFileWriter = new StreamWriter(Settings.Default.MessageLoggingFile);
             }
         }
 
         /// <summary>
-        /// Called whenever a message is sent from the client to the broker.
+        ///     Called whenever a message is sent from the client to the broker.
         /// </summary>
         /// <param name="msg">The message that was sent.</param>
         /// <returns>true; always.</returns>
-        private bool MessageSentCallback(MqttMessage msg)
-        {
+        private bool MessageSentCallback(MqttMessage msg) {
             LogMessage(msg, false);
             return true;
         }
 
         /// <summary>
-        /// Logs details of received messages.
+        ///     Logs details of received messages.
         /// </summary>
         /// <param name="msg">The message to log.</param>
         /// <returns>true, always.</returns>
-        private bool MessageLoggerCallback(MqttMessage msg)
-        {
+        private bool MessageLoggerCallback(MqttMessage msg) {
             LogMessage(msg, true);
             return true;
         }
 
         /// <summary>
-        /// Logs a message to the message log
+        ///     Logs a message to the message log
         /// </summary>
         /// <param name="msg">The message to log.</param>
         /// <param name="inbound">Set to true if the message is inbound to the client.</param>
-        public void LogMessage(MqttMessage msg, bool inbound)
-        {
-            if (!disposed)
-            {
-                if (logFileWriter != null)
-                {
-                    logFileWriter.WriteLine(String.Format("{0} {1} ]>----<[ {2} ]>----|", inbound ? "<<<<" : ">>>>", DateTime.Now, msg.Header.MessageType));
-                    logFileWriter.WriteLine(msg.ToString());
-                    logFileWriter.Flush();
-                }
+        private void LogMessage(MqttMessage msg, bool inbound) {
+            if (!disposed) {
+                Log.Info(m => m(String.Format("{0} {1} ]>----<[ {2} ]>----|", inbound ? "<<<<" : ">>>>",
+                                              DateTime.Now, 
+                                              msg.Header.MessageType)));
             }
         }
 
-        #region IDisposable Members
-
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             disposed = true;
 
             // subscribe to ALL events received.
-            foreach (MqttMessageType msgType in Enum.GetValues(typeof(MqttMessageType)))
-            {
+            foreach (MqttMessageType msgType in Enum.GetValues(typeof (MqttMessageType))) {
                 connectionHandler.UnRegisterForMessage(msgType, MessageLoggerCallback);
             }
-
-            logFileWriter.Dispose();
-
-            GC.SuppressFinalize(this);
         }
-
-        #endregion
     }
 }

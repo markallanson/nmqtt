@@ -15,43 +15,40 @@ using System.IO;
 namespace Nmqtt
 {
     /// <summary>
-    /// Represents the payload (Body) of an MQTT Message.
+    ///     Represents the payload (Body) of an MQTT Message.
     /// </summary>
     internal abstract class MqttPayload
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttPayload"/> class.
+        ///     Initializes a new instance of the <see cref="MqttPayload" /> class.
         /// </summary>
-        protected MqttPayload()
-        {
-        }
+        protected MqttPayload() {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttPayload"/> class.
+        ///     Initializes a new instance of the <see cref="MqttPayload" /> class.
         /// </summary>
         /// <param name="payloadStream">The payload stream.</param>
-        protected MqttPayload(Stream payloadStream)
-        {
+        protected MqttPayload(Stream payloadStream) {
             ReadFrom(payloadStream);
         }
 
         /// <summary>
-        /// Writes the payload to the supplied stream.
+        ///     Writes the payload to the supplied stream.
         /// </summary>
         /// <param name="payloadStream">The stream to write the variable header to.</param>
         /// <remarks>
-        /// A basic message has no Variable Header.
+        ///     A basic message has no Variable Header.
         /// </remarks>
         public abstract void WriteTo(Stream payloadStream);
 
         /// <summary>
-        /// Creates a payload from the specified header stream.
+        ///     Creates a payload from the specified header stream.
         /// </summary>
         /// <param name="payloadStream">The stream to read the payload from.</param>
         public abstract void ReadFrom(Stream payloadStream);
 
         /// <summary>
-        /// Gets the length of the payload in bytes when written to a stream.
+        ///     Gets the length of the payload in bytes when written to a stream.
         /// </summary>
         /// <returns>The length of the payload in bytes.</returns>
         internal abstract int GetWriteLength();

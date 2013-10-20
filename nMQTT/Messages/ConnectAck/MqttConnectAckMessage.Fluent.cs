@@ -13,17 +13,16 @@
 namespace Nmqtt
 {
     /// <summary>
-    /// Message that indicates a connection acknowledgement.
+    ///     Message that indicates a connection acknowledgement.
     /// </summary>
     internal sealed partial class MqttConnectAckMessage
     {
         /// <summary>
-        /// Sets the return code of the Variable Header.
+        ///     Sets the return code of the Variable Header.
         /// </summary>
         /// <param name="returnCode">The return code to set.</param>
         /// <returns>The new MqttConnectAckMessage with the return code set.</returns>
-        public MqttConnectAckMessage WithReturnCode(MqttConnectReturnCode returnCode)
-        {
+        public MqttConnectAckMessage WithReturnCode(MqttConnectReturnCode returnCode) {
             this.VariableHeader.ReturnCode = returnCode;
             return this;
         }

@@ -14,36 +14,30 @@ using System.Collections.Generic;
 
 namespace Nmqtt
 {
-    internal static class MessageIdentifierDispenser
+    internal class MessageIdentifierDispenser
     {
-        private static Dictionary<string, short> idStorage = new Dictionary<string, short>();
+        private readonly Dictionary<string, short> idStorage = new Dictionary<string, short>();
 
         /// <summary>
-        /// Used to synchronise access
+        ///     Used to synchronise access
         /// </summary>
-        private static object idPadlock = new object();
+        private static readonly object idPadlock = new object();
 
         /// <summary>
-        /// Gets the next message identifier for the specified key.
+        ///     Gets the next message identifier for the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public static short GetNextMessageIdentifier(string key)
-        {
+        public short GetNextMessageIdentifier(string key) {
             // only a single id can be dispensed at a time, regardless of the key. 
             // Will revise to per-key locking if it proves bottleneck
-            lock (idPadlock)
-            {
-                if (!idStorage.ContainsKey(key))
-                {
+            lock (idPadlock) {
+                if (!idStorage.ContainsKey(key)) {
                     idStorage.Add(key, 1); // add a new key, start at 1, 0 is reserved for by MQTT spec for invalid msg.
                     return 1;
-                }
-                else
-                {
+                } else {
                     short nextId = ++idStorage[key];
-                    if (nextId == short.MinValue)
-                    {
+                    if (nextId == short.MinValue) {
                         // overflow, wrap back to 1.
                         nextId = idStorage[key] = 1;
                     }

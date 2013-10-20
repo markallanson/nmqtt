@@ -10,8 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
-using System.Linq;
 using System.ComponentModel;
 using nMqtt.SampleApp.Models;
 

@@ -10,7 +10,6 @@
  *     http://www.opensource.org/licenses/mit-license.php
 */
 
-using System;
 using System.ComponentModel;
 
 namespace nMqtt.SampleApp
@@ -93,6 +92,11 @@ namespace nMqtt.SampleApp
 		public void Subscribe()
 		{
 			Model.Subscribe();
+		}
+		
+		public void Unsubscribe()
+		{
+            Model.Unsubscribe();
 		}
 	}
 }

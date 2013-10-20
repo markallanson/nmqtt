@@ -11,6 +11,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Reactive.Linq;
 using Nmqtt;
 using System.Diagnostics;
 using System.Threading;
@@ -20,9 +22,14 @@ namespace nMqtt.SampleApp
 	/// <summary>
 	/// Singleton for consuming mqtt functionality.
 	/// </summary>
-	public class MqttHandler
+	public class MqttHandler : IDisposable
 	{
 		private static MqttHandler instance = new MqttHandler ();
+
+        /// <summary>
+        /// Stores the underlying core disposables for the topic
+        /// </summary>
+        private readonly IDictionary<string, IDisposable> topicSubscriptions = new Dictionary<string, IDisposable>(); 
 
         /// <summary>
         /// The instance of the underlying MqttClient that is connected to the server.
@@ -55,17 +62,11 @@ namespace nMqtt.SampleApp
 		public ConnectionState Connect (string server, short port)
 		{
 			client = new MqttClient (server, port, Options.ClientIdentifier);
-			client.MessageAvailable += ClientMessageAvailable;
             syncContext = SynchronizationContext.Current;
 
 			Trace.WriteLine ("Connecting to " + server + ":" + port.ToString ());
 			
 			return client.Connect(Options.Username, Options.Password);
-		}
-
-		private void ClientMessageAvailable (object sender, MqttMessageEventArgs e)
-		{
-			OnClientMessageArrived(e);
 		}
 
         /// <summary>
@@ -85,8 +86,11 @@ namespace nMqtt.SampleApp
 		{
             if (client == null) throw new InvalidOperationException("You must connect before you can subscribe to a topic.");
 
-			client.Subscribe(topic, (MqttQos)qos);
+			var sub = client.ListenTo(topic, (MqttQos)qos)
+                            .ObserveOn(SynchronizationContext.Current)
+                            .Subscribe(msg => ClientMessageArrived(instance, new MqttMessageEventArgs(msg.Topic, msg.Payload)));
 
+            topicSubscriptions.Add(topic, sub);
             Trace.WriteLine(String.Format("Subscribed to Topic '{0}'.", topic));
             if (TopicSubscribed != null)
             {
@@ -100,11 +104,11 @@ namespace nMqtt.SampleApp
         /// <param name="topic">The topic.</param>
         /// <param name="qos">The qos.</param>
         /// <param name="data">The message.</param>
-        public void Publish(string topic, byte qos, object data)
+        public void Publish(string topic, byte qos, string data)
         {
             if (client == null) throw new InvalidOperationException("You must connect before you can subscribe to a topic.");
 
-            client.PublishMessage<AsciiPublishDataConverter>(topic, (MqttQos)qos, data);
+            client.PublishMessage<string, AsciiPayloadConverter>(topic, (MqttQos)qos, data);
         }
 
         /// <summary>
@@ -114,16 +118,26 @@ namespace nMqtt.SampleApp
         public event EventHandler<TopicSubscribedEventArgs> TopicSubscribed;
 
         /// <summary>
+        /// Unsubscribes from the specified topic.
+        /// </summary>
+        /// <param name="topic">The topic to unsubscribe.</param>
+        public void Unsubscribe(string topic) {
+            IDisposable sub;
+            if (topicSubscriptions.TryGetValue(topic, out sub)) {
+                sub.Dispose();
+                topicSubscriptions.Remove(topic);
+            }
+        }
+		
+		/// <summary>
 		/// Event fired when a message arrives from the remote server.
 		/// </summary>
 		public event EventHandler<MqttMessageEventArgs> ClientMessageArrived;
-		private void OnClientMessageArrived (MqttMessageEventArgs e)
-		{
-			Trace.WriteLine (String.Format ("Message Arrived on Topic '{0}'.", e.Topic));
-			if (ClientMessageArrived != null)
-			{
-                syncContext.Post((data) => this.ClientMessageArrived(instance, e), null);
-			}
-		}
+
+	    public void Dispose() {
+	        foreach (var topicSubscription in topicSubscriptions) {
+	            topicSubscription.Value.Dispose();
+	        }
+	    }
 	}
 }

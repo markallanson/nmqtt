@@ -20,43 +20,39 @@ namespace Nmqtt
          */
 
         /// <summary>
-        /// Sets the type of the message identified in the header.
+        ///     Sets the type of the message identified in the header.
         /// </summary>
         /// <param name="messageType">The type of message.</param>
         /// <returns>An instance of the header.</returns>
-        public MqttHeader AsType(MqttMessageType messageType)
-        {
+        public MqttHeader AsType(MqttMessageType messageType) {
             this.MessageType = messageType;
             return this;
         }
 
         /// <summary>
-        /// Sets the Qos of the message header.
+        ///     Sets the Qos of the message header.
         /// </summary>
         /// <param name="qos">The Qos to ser</param>
         /// <returns>An instance of the header.</returns>
-        public MqttHeader WithQos(MqttQos qos)
-        {
+        public MqttHeader WithQos(MqttQos qos) {
             this.Qos = qos;
             return this;
         }
 
         /// <summary>
-        /// Sets the IsDuplicate flag of the header.
+        ///     Sets the IsDuplicate flag of the header.
         /// </summary>
         /// <returns>An Instance of the header.</returns>
-        public MqttHeader IsDuplicate()
-        {
+        public MqttHeader IsDuplicate() {
             this.Duplicate = true;
             return this;
         }
 
         /// <summary>
-        /// Defines that the message should be retained.
+        ///     Defines that the message should be retained.
         /// </summary>
         /// <returns>An instance of the header,</returns>
-        public MqttHeader ShouldBeRetained()
-        {
+        public MqttHeader ShouldBeRetained() {
             this.Retain = true;
             return this;
         }

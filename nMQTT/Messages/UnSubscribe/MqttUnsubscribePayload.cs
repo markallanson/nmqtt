@@ -11,51 +11,44 @@
 */
 
 using System;
-using System.Text;
-using System.IO;
-
-using Nmqtt.ExtensionMethods;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Text;
 using Nmqtt.Encoding;
+using Nmqtt.ExtensionMethods;
 
 namespace Nmqtt
 {
     /// <summary>
-    /// Class that contains details related to an MQTT Unsubscribe messages payload 
+    ///     Class that contains details related to an MQTT Unsubscribe messages payload
     /// </summary>
     internal sealed class MqttUnsubscribePayload : MqttPayload
     {
-        private MqttVariableHeader variableHeader;
-        private MqttHeader header;
+        private readonly MqttVariableHeader variableHeader;
+        private readonly MqttHeader header;
 
-        private Collection<string> subscriptions = new Collection<string>();
+        private readonly Collection<string> subscriptions = new Collection<string>();
 
         /// <summary>
-        /// The collection of subscriptions, Key is the topic, Value is the qos
+        ///     The collection of subscriptions, Key is the topic, Value is the qos
         /// </summary>
-        public Collection<string> Subscriptions
-        {
-            get
-            {
-                return subscriptions;
-            }
+        public Collection<string> Subscriptions {
+            get { return subscriptions; }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttUnsubscribePayload"/> class.
+        ///     Initializes a new instance of the <see cref="MqttUnsubscribePayload" /> class.
         /// </summary>
-        public MqttUnsubscribePayload()
-        {
-        }
+        public MqttUnsubscribePayload() {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MqttUnsubscribePayload"/> class.
+        ///     Initializes a new instance of the <see cref="MqttUnsubscribePayload" /> class.
         /// </summary>
         /// <param name="payloadStream">The payload stream.</param>
         /// <param name="header">The header to use for the message.</param>
         /// <param name="variableHeader">The variable header to use for the message.</param>
-        public MqttUnsubscribePayload(MqttHeader header, MqttUnsubscribeVariableHeader variableHeader, Stream payloadStream)
-        {
+        public MqttUnsubscribePayload(MqttHeader header, MqttUnsubscribeVariableHeader variableHeader,
+                                      Stream payloadStream) {
             this.header = header;
             this.variableHeader = variableHeader;
 
@@ -63,17 +56,15 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Creates a payload from the specified header stream.
+        ///     Creates a payload from the specified header stream.
         /// </summary>
         /// <param name="payloadStream"></param>
-        public override void ReadFrom(Stream payloadStream)
-        {
+        public override void ReadFrom(Stream payloadStream) {
             int payloadBytesRead = 0;
             int payloadLength = header.MessageSize - variableHeader.Length;
 
             // read all the topics and qos subscriptions from the message payload
-            while (payloadBytesRead < payloadLength)
-            {
+            while (payloadBytesRead < payloadLength) {
                 string topic = payloadStream.ReadMqttString();
 
                 payloadBytesRead += topic.Length + 2; // +2 = Mqtt string length bytes
@@ -83,28 +74,24 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Writes the payload to the supplied stream.
+        ///     Writes the payload to the supplied stream.
         /// </summary>
         /// <param name="payloadStream"></param>
-        public override void WriteTo(Stream payloadStream)
-        {
-            foreach (string topic in subscriptions)
-            {
+        public override void WriteTo(Stream payloadStream) {
+            foreach (var topic in subscriptions) {
                 payloadStream.WriteMqttString(topic);
             }
         }
 
         /// <summary>
-        /// Gets the length of the payload in bytes when written to a stream.
+        ///     Gets the length of the payload in bytes when written to a stream.
         /// </summary>
         /// <returns>The length of the payload in bytes.</returns>
-        internal override int GetWriteLength()
-        {
+        internal override int GetWriteLength() {
             int length = 0;
-            MqttEncoding enc = new MqttEncoding();
+            var enc = new MqttEncoding();
 
-            foreach (string topic in subscriptions)
-            {
+            foreach (var topic in subscriptions) {
                 length += enc.GetByteCount(topic);
             }
 
@@ -112,36 +99,31 @@ namespace Nmqtt
         }
 
         /// <summary>
-        /// Adds a new subscription to the collection of subscriptions.
+        ///     Adds a new subscription to the collection of subscriptions.
         /// </summary>
         /// <param name="topic">The topic to Unsubscribe from.</param>
-        public void AddSubscription(string topic)
-        {
-            if (!Subscriptions.Contains(topic))
-            {
+        public void AddSubscription(string topic) {
+            if (!Subscriptions.Contains(topic)) {
                 Subscriptions.Add(topic);
             }
         }
 
         /// <summary>
-        /// Clears the subscriptions.
+        ///     Clears the subscriptions.
         /// </summary>
-        public void ClearSubscriptions()
-        {
+        public void ClearSubscriptions() {
             Subscriptions.Clear();
         }
 
         /// <summary>
-        /// Returns a string representation of the payload.
+        ///     Returns a string representation of the payload.
         /// </summary>
         /// <returns>A string representation of the payload.</returns>
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
+        public override string ToString() {
+            var sb = new StringBuilder();
             sb.AppendLine(String.Format("Payload: Subscription [{0}]", subscriptions.Count));
 
-            foreach (string topic in Subscriptions)
-            {
+            foreach (var topic in Subscriptions) {
                 sb.AppendLine(String.Format("{{ Topic={0} }}", topic));
             }
 
