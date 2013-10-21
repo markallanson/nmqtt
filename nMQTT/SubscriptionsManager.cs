@@ -124,15 +124,10 @@ namespace Nmqtt
             // Get an ID that represents the subscription. We will use this same ID for unsubscribe as well.
             var msgId = messageIdentifierDispenser.GetNextMessageIdentifier("subscriptions");
 
-            // create a new observable that subscribes to the topic when
-            // the first person subscribes, and unsubscribes when 
-            // it's disposed.
+            // create a new observable that is used to yield messages
+            // that arrive for the topic.
             var observable = CreateObservableForSubscription(topic, msgId);
-
-            // Wrap the downstream observable with a publish (rollup) 
-            // and refcount (dispose when all subscribers finish).
-            observable.Publish().RefCount();
-
+                                
             var sub = new Subscription {
                 Topic             = topic,
                 Qos               = qos,
@@ -193,7 +188,12 @@ namespace Nmqtt
                     connectionHandler.SendMessage(unsubscribeMsg);
                 });
             });
-            return observable;
+
+            // Publish and refcount so we can share the single subscription amongst all
+            // subscribers and dispose automatically when everyone has disposed their
+            // subscriptions.
+            return observable.Publish()
+                             .RefCount();
         }
 
         /// <summary>
