@@ -163,7 +163,6 @@ namespace Nmqtt
                     = Observable.FromEventPattern<PublishEventArgs>(h => publishingManager.MessageReceived += h,
                                                                     h => publishingManager.MessageReceived -= h);
                 var msgPubSub = msgPubObservable
-                    .Where(ep => topic.Equals(ep.EventArgs.PublishMessage.VariableHeader.TopicName))
                     .Select(ep => ep.EventArgs.PublishMessage)
                     .Subscribe(msg => {
                         try {
