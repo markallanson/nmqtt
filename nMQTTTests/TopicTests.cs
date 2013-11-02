@@ -48,6 +48,15 @@ namespace NmqttTests {
         public void TopicWithMoreThanJustWildcardInFragmentThrowsArgumentException() {
             Assert.Throws<ArgumentException>(() => new Topic("a/frag+/topic"));
         }
+        
+        [Fact]
+        public void TopicWithLengthLongerThanMaxAllowedThrowsArgumentException() {
+            var longTopic = new char[65536];
+            for (int i = 0; i < longTopic.Length; i++) {
+                longTopic[i] = 'a';
+            }
+            Assert.Throws<ArgumentException>(() => new Topic(new string(longTopic)));
+        }
 
         [Fact]
         public void MultiWildcardAtEndOfTopicIsValidWhenPreceededByTopicSeparator() {
