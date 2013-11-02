@@ -123,8 +123,8 @@
     <Compile Include="Messages\Publish\MqttPublishMessage.Fluent.cs" />
     <Compile Include="Messages\SubscribeAck\MqttSubscribeAckMessage.Fluent.cs" />
     <Compile Include="Messages\Subscribe\MqttSubscribeMessage.Fluent.cs" />
-    <Compile Include="Messages\UnsubscribeAck\MqttUnsubscribeAckMessage.Fluent.cs" />
-    <Compile Include="Messages\Unsubscribe\MqttUnsubscribeMessage.Fluent.cs" />
+    <Compile Include="Messages\UnSubscribeAck\MqttUnsubscribeAckMessage.Fluent.cs" />
+    <Compile Include="Messages\UnSubscribe\MqttUnsubscribeMessage.Fluent.cs" />
     <Compile Include="MqttReceivedMessage.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <DependentUpon>Settings.settings</DependentUpon>
@@ -146,9 +146,9 @@
     <Compile Include="Messages\PublishRelease\MqttPublishReleaseVariableHeader.cs" />
     <Compile Include="Messages\PublishComplete\MqttPublishCompleteVariableHeader.cs" />
     <Compile Include="Messages\PublishComplete\MqttPublishCompleteMessage.cs" />
-    <Compile Include="Messages\Unsubscribe\MqttUnsubscribeMessage.cs" />
-    <Compile Include="Messages\Unsubscribe\MqttUnsubscribePayload.cs" />
-    <Compile Include="Messages\Unsubscribe\MqttUnsubscribeVariableHeader.cs" />
+    <Compile Include="Messages\UnSubscribe\MqttUnsubscribeMessage.cs" />
+    <Compile Include="Messages\UnSubscribe\MqttUnsubscribePayload.cs" />
+    <Compile Include="Messages\UnSubscribe\MqttUnsubscribeVariableHeader.cs" />
     <Compile Include="Messages\Subscribe\MqttSubscribeMessage.cs" />
     <Compile Include="Messages\Subscribe\MqttSubscribePayload.cs" />
     <Compile Include="Messages\Subscribe\MqttSubscribeVariableHeader.cs" />
@@ -163,8 +163,8 @@
     <Compile Include="Messages\Publish\MqttPublishMessage.cs" />
     <Compile Include="Messages\Publish\MqttPublishPayload.cs" />
     <Compile Include="Messages\Publish\MqttPubishVariableHeader.cs" />
-    <Compile Include="Messages\UnsubscribeAck\MqttUnsubscribeAckVariableHeader.cs" />
-    <Compile Include="Messages\UnsubscribeAck\MqttUnsubscribeAckMessage.cs" />
+    <Compile Include="Messages\UnSubscribeAck\MqttUnSubscribeAckVariableHeader.cs" />
+    <Compile Include="Messages\UnSubscribeAck\MqttUnSubscribeAckMessage.cs" />
     <Compile Include="Messages\MqttConnectFlags.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
