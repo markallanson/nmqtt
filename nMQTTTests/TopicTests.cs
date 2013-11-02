@@ -124,6 +124,18 @@ namespace NmqttTests {
             Assert.True(topic.Matches("finance/ibm/closingprice/month/october/2014"));
         }
 
+        [Fact]
+        public void TopicWithSingleWildcardMatchesTopicEmptyFragmentAtThatPoint() {
+            var topic = new Topic("finance/+/closingprice");
+            Assert.True(topic.Matches("finance//closingprice"));
+        }
+
+        [Fact]
+        public void TopicWithSingleWildcardAtEndMatchesTopicWithEmptyLastFragmentAtThatSpot() {
+            var topic = new Topic("finance/ibm/+");
+            Assert.True(topic.Matches("finance/ibm/"));
+        }
+
         /*
          * Tests for cases where topics should not match
          */
@@ -155,6 +167,12 @@ namespace NmqttTests {
         public void TopicWithMultiWildcardDoesNotMatchTopicWithDifferenceBeforeWildcardLevel() {
             var topic = new Topic("finance/#");
             Assert.False(topic.Matches("money/ibm"));
+        }  
+
+        [Fact]
+        public void TopicsDifferingOnlyByCaseDoNotMatch() {
+            var topic = new Topic("finance");
+            Assert.False(topic.Matches("Finance"));
         }       
 
         /*
