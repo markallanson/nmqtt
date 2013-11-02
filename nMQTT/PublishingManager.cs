@@ -107,7 +107,7 @@ namespace Nmqtt
         /// <param name="qualityOfService">The QOS to use when publishing the message.</param>
         /// <param name="data">The message to send.</param>
         /// <returns>The message identifier assigned to the message.</returns>
-        public short Publish<T, TPayloadConverter>(string topic, MqttQos qualityOfService, T data)
+        public short Publish<T, TPayloadConverter>(PublicationTopic topic, MqttQos qualityOfService, T data)
             where TPayloadConverter : IPayloadConverter<T>, new() {
             var msgId = messageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
 
@@ -115,7 +115,7 @@ namespace Nmqtt
 
             var converter = GetPayloadConverter<TPayloadConverter>();
             var msg = new MqttPublishMessage()
-                .ToTopic(topic)
+                .ToTopic(topic.ToString())
                 .WithMessageIdentifier(msgId)
                 .WithQos(qualityOfService)
                 .PublishData(converter.ConvertToBytes(data));

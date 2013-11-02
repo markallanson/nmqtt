@@ -9,7 +9,8 @@
  *
  *     http://www.opensource.org/licenses/mit-license.php
 */
-
+using System.Windows.Forms;
+using Nmqtt;
 using nMqtt.SampleApp.ViewsModels;
 
 namespace nMqtt.SampleApp.Views
@@ -35,7 +36,14 @@ namespace nMqtt.SampleApp.Views
 
         protected override void InitializeEventHandlers()
         {
-            publishButton.Click += (sender, e) => ViewModel.Publish();            
+
+            publishButton.Click += (sender, e) => {
+                try {
+                    ViewModel.Publish();
+                } catch (InvalidTopicException ex) {
+                    MessageBox.Show(ex.Message, "Error in Topic " + ex.Topic, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };            
         }
     }
 }

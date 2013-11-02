@@ -26,7 +26,7 @@ namespace Nmqtt
         /// <param name="qualityOfService">The QOS to use when publishing the message.</param>
         /// <param name="data">The message to send.</param>
         /// <returns>The message identifier assigned to the message.</returns>
-        short Publish<T, TPayloadConverter>(string topic, MqttQos qualityOfService, T data)
+        short Publish<T, TPayloadConverter>(PublicationTopic topic, MqttQos qualityOfService, T data)
             where TPayloadConverter : IPayloadConverter<T>, new();
 
         /// <summary>

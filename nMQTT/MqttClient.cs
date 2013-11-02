@@ -232,13 +232,19 @@ namespace Nmqtt
         /// <returns>
         ///     The message identiier assigned to the message.
         /// </returns>
+        /// <exception cref="InvalidTopicException">Thrown if the topic supplied violates the MQTT topic format rules.</exception>
         public short PublishMessage<T, TPayloadConverter>(string topic, MqttQos qualityOfService, T data)
             where TPayloadConverter : IPayloadConverter<T>, new() {
             if (connectionHandler.State != ConnectionState.Connected) {
                 throw new ConnectionException(connectionHandler.State);
             }
 
-            return publishingManager.Publish<T, TPayloadConverter>(topic, qualityOfService, data);
+            try {
+                var pubTopic = new PublicationTopic(topic);
+                return publishingManager.Publish<T, TPayloadConverter>(pubTopic, qualityOfService, data);
+            } catch (ArgumentException ex) {
+                throw new InvalidTopicException(ex.Message, topic, ex);
+            }
         }
 
         /// <summary>

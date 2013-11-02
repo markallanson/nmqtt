@@ -175,7 +175,7 @@ namespace Nmqtt
                 headerLength += sizeof (byte);
             }
             if ((WriteFlags & ReadWriteFlags.TopicName) == ReadWriteFlags.TopicName) {
-                headerLength += enc.GetByteCount(TopicName);
+                headerLength += enc.GetByteCount(TopicName.ToString());
             }
             if ((WriteFlags & ReadWriteFlags.MessageIdentifier) == ReadWriteFlags.MessageIdentifier) {
                 headerLength += sizeof (short);
@@ -202,7 +202,7 @@ namespace Nmqtt
         }
 
         protected void WriteTopicName(Stream stream) {
-            stream.WriteMqttString(TopicName);
+            stream.WriteMqttString(TopicName.ToString());
         }
 
         protected void WriteMessageIdentifier(Stream stream) {

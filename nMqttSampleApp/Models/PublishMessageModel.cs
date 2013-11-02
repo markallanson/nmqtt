@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace nMqtt.SampleApp.Models
 {
@@ -48,7 +49,7 @@ namespace nMqtt.SampleApp.Models
 
         public void Publish()
         {
-            MqttHandler.Instance.Publish(Topic, Qos, Message);
+           MqttHandler.Instance.Publish(Topic, Qos, Message);
         }
     }
 }

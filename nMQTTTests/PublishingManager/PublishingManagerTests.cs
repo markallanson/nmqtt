@@ -85,7 +85,7 @@ namespace NmqttTests.PublishingMananger
             chMock.Setup(x => x.SendMessage(It.IsAny<MqttPublishMessage>()));
 
             var pm = new PublishingManager(chMock.Object);
-            pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtMostOnce, "test");
+            pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
         }
@@ -99,7 +99,7 @@ namespace NmqttTests.PublishingMananger
                   .Callback((MqttMessage msg) => pubMsg = (MqttPublishMessage) msg);
 
             var pm = new PublishingManager(chMock.Object);
-            pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtLeastOnce, "test");
+            pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtLeastOnce, "test");
 
             chMock.VerifyAll();
 
@@ -116,7 +116,7 @@ namespace NmqttTests.PublishingMananger
                   .Callback((MqttMessage msg) => pubMsg = (MqttPublishMessage) msg);
 
             var pm = new PublishingManager(chMock.Object);
-            pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtMostOnce, "test");
+            pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
 
@@ -133,7 +133,7 @@ namespace NmqttTests.PublishingMananger
                   .Callback((MqttMessage msg) => pubMsg = (MqttPublishMessage) msg);
 
             var pm = new PublishingManager(chMock.Object);
-            pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtMostOnce, "test");
+            pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
 
@@ -150,7 +150,7 @@ namespace NmqttTests.PublishingMananger
                   .Callback((MqttMessage msg) => pubMsg = (MqttPublishMessage) msg);
 
             var pm = new PublishingManager(chMock.Object);
-            int retId = pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtMostOnce, "test");
+            int retId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
 
@@ -165,8 +165,8 @@ namespace NmqttTests.PublishingMananger
 
             // publish and save the first id
             var pm = new PublishingManager(chMock.Object);
-            int firstMsgId = pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtMostOnce, "test");
-            int secondMsgId = pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtMostOnce, "test");
+            int firstMsgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
+            int secondMsgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
 
@@ -179,7 +179,7 @@ namespace NmqttTests.PublishingMananger
             var chMock = new Mock<IMqttConnectionHandler>();
 
             var pm = new PublishingManager(chMock.Object);
-            int msgId = pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtLeastOnce, "test");
+            int msgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtLeastOnce, "test");
 
             var msgs = GetPublishedMessages(pm);
 
@@ -196,7 +196,7 @@ namespace NmqttTests.PublishingMananger
 
             // send the message, verify we've stored it ok.
             var pm = new PublishingManager(chMock.Object);
-            var msgId = pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.AtLeastOnce, "test");
+            var msgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtLeastOnce, "test");
             var msgs = GetPublishedMessages(pm);
             Assert.True(msgs.ContainsKey(msgId));
 
@@ -221,7 +221,7 @@ namespace NmqttTests.PublishingMananger
 
             // send the message, verify we've stored it ok.
             var pm = new PublishingManager(chMock.Object);
-            var msgId = pm.Publish<string, AsciiPayloadConverter>("A/Topic", MqttQos.ExactlyOnce, "test");
+            var msgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.ExactlyOnce, "test");
             var msgs = GetPublishedMessages(pm);
             Assert.True(msgs.ContainsKey(msgId));
 
