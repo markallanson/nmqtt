@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="ConnectionHandling\MqttConnectionKeepAliveTests.cs" />
     <Compile Include="ConnectionHandling\SynchronousMqttConnectionTests.cs" />
+    <Compile Include="PublicationTopicTests.cs" />
     <Compile Include="DataConverters\AsciiStringDataConverterTests.cs" />
     <Compile Include="DataConverters\PassthroughDataConverterTests.cs" />
     <Compile Include="Encoding\MqttEncoding.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="ReflectionBindingConstants.cs" />
     <Compile Include="MessageComponents\VariableHeader\MqttConnectFlagTests.cs" />
     <Compile Include="SubscriptionsManager\SubscriptionsManager.cs" />
+    <Compile Include="TopicTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="nMqttDevOnly.snk" />

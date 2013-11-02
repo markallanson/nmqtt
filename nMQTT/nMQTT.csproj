@@ -183,6 +183,7 @@
     <Compile Include="MqttQos.cs" />
     <Compile Include="Messages\MqttVariableHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublicationTopic.cs" />
     <Compile Include="PublishEventArgs.cs" />
     <Compile Include="PublishingManager.cs" />
     <Compile Include="DataConverters\AsciiPayloadConverter.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="SubscriptionsManager.cs" />
     <Compile Include="SubscriptionStatus.cs" />
     <Compile Include="MqttMessageEventArgs.cs" />
+    <Compile Include="Topic.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="CodeAnalysisDictionary.xml" />
