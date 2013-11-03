@@ -2,6 +2,12 @@
 
 Welcome to the nMQTT .Net MQTT Library. You can find a [quickstart here](./getting-started.md) 
 
+## Build Server
+There is a [TeamCity build server](http://teamcity.bareknucklecode.com:8111/) which provides CI 
+builds. The build currently runs on Ubuntu/Mono(v2) both because it's simpler and cheaper to maintain.
+This also has the side benefit of finding any filename case bugs which can cause issues with
+builds under mono on linux.
+
 ## Getting Source
 The source for nMQTT is on [github](https://github.com/markallanson/nmqtt).
 
