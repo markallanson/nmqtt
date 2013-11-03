@@ -214,5 +214,18 @@ namespace NmqttTests.SubscriptionsManager
 
             Assert.Null(subs.GetSubscription(topic));
         }
+
+        [Fact]
+        public void SubscriptionAgainstInvalidTopicThrowsInvalidTopicException() {
+            var chMock = new Mock<IMqttConnectionHandler>();
+            var pubMock = new Mock<IPublishingManager>();
+
+            const string badTopic = "finance/ibm#";
+            const MqttQos qos = MqttQos.AtMostOnce;
+
+            // run and verify the mocks were called.
+            var subs = new Nmqtt.SubscriptionsManager(chMock.Object, pubMock.Object);
+            Assert.Throws<InvalidTopicException>(() => subs.RegisterSubscription<byte[], PassThroughPayloadConverter>(badTopic, qos));
+        }
     }
 }

@@ -163,6 +163,7 @@ namespace Nmqtt
         /// <param name="topic">The topic.</param>
         /// <param name="qosLevel">The qos level.</param>
         /// <returns></returns>
+        /// <exception cref="InvalidTopicException">If a topic that does not meet the MQTT topic spec rules is provided.</exception>
         public IObservable<MqttReceivedMessage<byte[]>> ListenTo(string topic, MqttQos qosLevel) {
             return ListenTo<byte[], PassThroughPayloadConverter>(topic, qosLevel);
         }
@@ -175,6 +176,7 @@ namespace Nmqtt
         /// <returns>
         ///     The identifier assigned to the subscription.
         /// </returns>
+        /// <exception cref="InvalidTopicException">If a topic that does not meet the MQTT topic spec rules is provided.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "See method above for non generic implementation")]
         public IObservable<MqttReceivedMessage<T>> ListenTo<T, TPayloadConverter>(string topic, MqttQos qosLevel)
             where TPayloadConverter : IPayloadConverter<T>, new() {

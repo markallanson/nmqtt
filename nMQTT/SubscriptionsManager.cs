@@ -75,6 +75,7 @@ namespace Nmqtt
         /// <param name="topic"></param>
         /// <param name="qos"></param>
         /// <returns>An IObservable that yields any messages received once subscribed.</returns>
+        /// <exception cref="InvalidTopicException">If a topic that does not meet the MQTT topic spec rules is provided.</exception>
         public IObservable<MqttReceivedMessage<T>> RegisterSubscription<T, TPayloadConverter>(string topic, MqttQos qos)
             where TPayloadConverter : IPayloadConverter<T>, new() {
             // if we have a pending subscription or established subscription just return the existing observable.
@@ -120,6 +121,7 @@ namespace Nmqtt
         /// <param name="topic">The topic to subscribe to.</param>
         /// <param name="qos">The QOS level to subscribe at.</param>
         /// <returns>An observable that yields messages when they arrive.</returns>
+        /// <exception cref="InvalidTopicException">If a topic that does not meet the MQTT topic spec rules is provided.</exception>
         private IObservable<MqttReceivedMessage<T>> CreateNewSubscription<T, TPayloadConverter>(string topic, MqttQos qos)
             where TPayloadConverter : IPayloadConverter<T>, new() {
             Log.Info(m => m("Creating subscription for topoc {0} @ QOS {1}.", topic, qos));
@@ -153,7 +155,7 @@ namespace Nmqtt
                 return WrapSubscriptionObservable<T, TPayloadConverter>(sub.Observable);            
             } catch (ArgumentException ex) {
                 Log.Warn(m => m("Error while processing topoc {0}. topoc structure not valid.", topic), ex);
-                throw;
+                throw new InvalidTopicException(ex.Message, topic, ex);
             }
         }
 
