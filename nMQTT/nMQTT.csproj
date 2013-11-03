@@ -108,6 +108,7 @@
     <Compile Include="ConnectionHandling\ConnectionState.cs" />
     <Compile Include="ConnectionHandling\MqttConnectionHandler.cs" />
     <Compile Include="ConnectionException.cs" />
+    <Compile Include="SubscriptionTopic.cs" />
     <Compile Include="InvalidTopicException.cs" />
     <Compile Include="Diagnostics\MessageLogger.cs" />
     <Compile Include="ExtensionMethods\CollectionExtensions.cs" />

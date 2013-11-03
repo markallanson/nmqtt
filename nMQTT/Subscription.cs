@@ -9,10 +9,7 @@
  *
  *     http://www.opensource.org/licenses/mit-license.php
 */
-
 using System;
-using System.Reactive.Subjects;
-using Common.Logging;
 
 namespace Nmqtt
 {
@@ -21,31 +18,29 @@ namespace Nmqtt
     /// </summary>
     internal class Subscription
     {
-        protected static ILog Log = LogManager.GetCurrentClassLogger();
-
         /// <summary>
         ///     The message identifier assigned to the subscription
         /// </summary>
-        public short MessageIdentifier { get; set; }
+        public short                                    MessageIdentifier { get; set; }
 
         /// <summary>
         ///     The time the subscription was created.
         /// </summary>
-        public DateTime CreatedTime { get; set; }
+        public DateTime                                 CreatedTime { get; set; }
 
         /// <summary>
-        ///     The topic that is subscribed to.
+        ///     The Topic that is subscribed to.
         /// </summary>
-        public string Topic { get; set; }
+        public SubscriptionTopic                        Topic { get; set; }
 
         /// <summary>
         ///     The QOS level of the topics subscription
         /// </summary>
-        public MqttQos Qos { get; set; }
+        public MqttQos                                  Qos { get; set; }
 
         /// <summary>
         /// The observable that receives messages from the broker.
         /// </summary>
-        public IObservable<byte[]> Observable { get; set; }
+        public IObservable<MqttReceivedMessage<byte[]>> Observable { get; set; }
     }
 }

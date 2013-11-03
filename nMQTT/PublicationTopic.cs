@@ -13,12 +13,19 @@ using System;
 
 namespace Nmqtt {
     /// <summary>
-    /// Implementation of a Publication Topic that performs additional validations
-    /// for Publication topics.
+    ///     Implementation of a Publication topic that performs additional validations
+    ///     messages that are published.
     /// </summary>
     internal class PublicationTopic : Topic {
-        public PublicationTopic(string topic) : base(topic) {
-            if (this.HasWildcards) {
+        public PublicationTopic(string topic) 
+            : base(topic, ValidateMinLength, ValidateMaxLength, ValidateWildcards) { }
+
+        /// <summary>
+        ///     Validates that the topic has no wildcards which are not allowed in publication topics.
+        /// </summary>
+        /// <param name="topicInstance">The instance to check.</param>
+        private static void ValidateWildcards(Topic topicInstance) {
+            if (topicInstance.HasWildcards) {
                 throw new ArgumentException("Cannot publish to a topic that contains MQTT topic wildcards (# or +)");
             }
         }

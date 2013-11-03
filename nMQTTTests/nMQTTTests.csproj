@@ -135,7 +135,7 @@
     <Compile Include="ReflectionBindingConstants.cs" />
     <Compile Include="MessageComponents\VariableHeader\MqttConnectFlagTests.cs" />
     <Compile Include="SubscriptionsManager\SubscriptionsManager.cs" />
-    <Compile Include="TopicTests.cs" />
+    <Compile Include="SubscriptionTopicTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="nMqttDevOnly.snk" />

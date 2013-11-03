@@ -85,7 +85,7 @@ namespace NmqttTests.PublishingMananger
             chMock.Setup(x => x.SendMessage(It.IsAny<MqttPublishMessage>()));
 
             var pm = new PublishingManager(chMock.Object);
-            pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
+            pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
         }
@@ -99,7 +99,7 @@ namespace NmqttTests.PublishingMananger
                   .Callback((MqttMessage msg) => pubMsg = (MqttPublishMessage) msg);
 
             var pm = new PublishingManager(chMock.Object);
-            pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtLeastOnce, "test");
+            pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtLeastOnce, "test");
 
             chMock.VerifyAll();
 
@@ -116,12 +116,12 @@ namespace NmqttTests.PublishingMananger
                   .Callback((MqttMessage msg) => pubMsg = (MqttPublishMessage) msg);
 
             var pm = new PublishingManager(chMock.Object);
-            pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
+            pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
 
-            // check the message topic was correct
-            Assert.Equal("A/Topic", pubMsg.VariableHeader.TopicName);
+            // check the message rawTopic was correct
+            Assert.Equal("A/rawTopic", pubMsg.VariableHeader.TopicName);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace NmqttTests.PublishingMananger
                   .Callback((MqttMessage msg) => pubMsg = (MqttPublishMessage) msg);
 
             var pm = new PublishingManager(chMock.Object);
-            pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
+            pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
 
@@ -150,7 +150,7 @@ namespace NmqttTests.PublishingMananger
                   .Callback((MqttMessage msg) => pubMsg = (MqttPublishMessage) msg);
 
             var pm = new PublishingManager(chMock.Object);
-            int retId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
+            int retId = pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
 
@@ -165,8 +165,8 @@ namespace NmqttTests.PublishingMananger
 
             // publish and save the first id
             var pm = new PublishingManager(chMock.Object);
-            int firstMsgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
-            int secondMsgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtMostOnce, "test");
+            int firstMsgId = pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtMostOnce, "test");
+            int secondMsgId = pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtMostOnce, "test");
 
             chMock.VerifyAll();
 
@@ -179,7 +179,7 @@ namespace NmqttTests.PublishingMananger
             var chMock = new Mock<IMqttConnectionHandler>();
 
             var pm = new PublishingManager(chMock.Object);
-            int msgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtLeastOnce, "test");
+            int msgId = pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtLeastOnce, "test");
 
             var msgs = GetPublishedMessages(pm);
 
@@ -196,7 +196,7 @@ namespace NmqttTests.PublishingMananger
 
             // send the message, verify we've stored it ok.
             var pm = new PublishingManager(chMock.Object);
-            var msgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.AtLeastOnce, "test");
+            var msgId = pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.AtLeastOnce, "test");
             var msgs = GetPublishedMessages(pm);
             Assert.True(msgs.ContainsKey(msgId));
 
@@ -221,7 +221,7 @@ namespace NmqttTests.PublishingMananger
 
             // send the message, verify we've stored it ok.
             var pm = new PublishingManager(chMock.Object);
-            var msgId = pm.Publish<string, AsciiPayloadConverter>(new Topic("A/Topic"), MqttQos.ExactlyOnce, "test");
+            var msgId = pm.Publish<string, AsciiPayloadConverter>(new PublicationTopic("A/rawTopic"), MqttQos.ExactlyOnce, "test");
             var msgs = GetPublishedMessages(pm);
             Assert.True(msgs.ContainsKey(msgId));
 
@@ -259,7 +259,7 @@ namespace NmqttTests.PublishingMananger
 
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.AtMostOnce)
                             .PublishData(new byte[] {0, 1, 2}));
 
@@ -280,7 +280,7 @@ namespace NmqttTests.PublishingMananger
 
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.AtLeastOnce)
                             .PublishData(new byte[] {0, 1, 2}));
 
@@ -301,7 +301,7 @@ namespace NmqttTests.PublishingMananger
 
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.ExactlyOnce)
                             .PublishData(new byte[] {0, 1, 2}));
 
@@ -323,7 +323,7 @@ namespace NmqttTests.PublishingMananger
 
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.AtMostOnce)
                             .PublishData(new byte[] {0, 1, 2}));
 
@@ -345,7 +345,7 @@ namespace NmqttTests.PublishingMananger
 
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.AtLeastOnce)
                             .PublishData(new byte[] {0, 1, 2}));
 
@@ -366,7 +366,7 @@ namespace NmqttTests.PublishingMananger
 
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.ExactlyOnce)
                             .PublishData(new byte[] {0, 1, 2}));
 
@@ -395,7 +395,7 @@ namespace NmqttTests.PublishingMananger
             // fake a publish from a remote party and verify we sent a received back.
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.ExactlyOnce)
                             .PublishData(new byte[] {0, 1, 2}));
             mock.Verify(x => x.SendMessage(It.IsAny<MqttPublishReceivedMessage>()));
@@ -422,7 +422,7 @@ namespace NmqttTests.PublishingMananger
             // fake a publish from a remote party and verify we sent a received back.
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.ExactlyOnce)
                             .PublishData(new byte[] {0, 1, 2}));
             var rcvdMsgs = GetReceivedMessages(pm);
@@ -445,7 +445,7 @@ namespace NmqttTests.PublishingMananger
             // fake a publish from a remote party and verify we sent a received back.
             pubCallback(new MqttPublishMessage()
                             .WithMessageIdentifier(msgId)
-                            .ToTopic("A/Topic")
+                            .ToTopic("A/rawTopic")
                             .WithQos(MqttQos.ExactlyOnce)
                             .PublishData(new byte[] {0, 1, 2}));
             var rcvdMsgs = GetReceivedMessages(pm);

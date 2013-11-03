@@ -53,7 +53,7 @@ namespace Nmqtt
     /// </remarks>
     internal sealed class PublishingManager : IPublishingManager
     {
-        private static readonly ILog                        Log = LogManager.GetCurrentClassLogger();
+        private static readonly ILog                        Log                        = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Handles dispensing of message ids for messages published to a topic.
@@ -63,29 +63,27 @@ namespace Nmqtt
         /// <summary>
         ///     Stores messages that have been pubished but not yet acknowledged.
         /// </summary>
-        private readonly Dictionary<int, MqttPublishMessage> publishedMessages =
-            new Dictionary<int, MqttPublishMessage>();
+        private readonly Dictionary<int, MqttPublishMessage> publishedMessages         = new Dictionary<int, MqttPublishMessage>();
 
         /// <summary>
         ///     Stores messages that have been received from a broker with qos level 2 (Exactly Once).
         /// </summary>
-        private readonly Dictionary<int, MqttPublishMessage> receivedMessages =
-            new Dictionary<int, MqttPublishMessage>();
-
-        /// <summary>
-        ///     The current connection handler.
-        /// </summary>
-        private readonly IMqttConnectionHandler connectionHandler;
+        private readonly Dictionary<int, MqttPublishMessage> receivedMessages          = new Dictionary<int, MqttPublishMessage>();
 
         /// <summary>
         ///     Stores a cache of data converters used when publishing data to a broker.
         /// </summary>
-        private readonly Dictionary<Type, object> dataConverters = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object>            dataConverters            = new Dictionary<Type, object>();
+
+        /// <summary>
+        ///     The current connection handler.
+        /// </summary>
+        private readonly IMqttConnectionHandler              connectionHandler;
 
         /// <summary>
         /// Raised when a message has been recieved by the client and the relevant QOS handshake is complete.
         /// </summary>
-        public event EventHandler<PublishEventArgs> MessageReceived;
+        public event EventHandler<PublishEventArgs>          MessageReceived;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PublishingManager" /> class.
@@ -109,7 +107,7 @@ namespace Nmqtt
         /// <returns>The message identifier assigned to the message.</returns>
         public short Publish<T, TPayloadConverter>(PublicationTopic topic, MqttQos qualityOfService, T data)
             where TPayloadConverter : IPayloadConverter<T>, new() {
-            var msgId = messageIdentifierDispenser.GetNextMessageIdentifier(String.Format("Topic:{0}", topic));
+            var msgId = messageIdentifierDispenser.GetNextMessageIdentifier(String.Format("topic:{0}", topic));
 
             Log.DebugFormat("Publishing message ID {0} on topic {1} using QOS {2}", msgId, topic, qualityOfService);
 
@@ -169,19 +167,20 @@ namespace Nmqtt
         /// <returns></returns>
         private bool HandlePublish(MqttMessage msg) {
             var pubMsg = (MqttPublishMessage) msg;
-            bool publishSuccess = true;
+            var publishSuccess = true;
 
             try {
+                var topic = new PublicationTopic(pubMsg.VariableHeader.TopicName);
                 if (pubMsg.Header.Qos == MqttQos.AtMostOnce) {
                     // QOS AtMostOnce 0 require no response.
 
                     // send the message for processing to whoever is waiting.
-                    OnMessageReceived(pubMsg);
+                    OnMessageReceived(topic, pubMsg);
                 } else if (pubMsg.Header.Qos == MqttQos.AtLeastOnce) {
                     // QOS AtLeastOnce 1 require an acknowledgement
 
                     // send the message for processing to whoever is waiting.
-                    OnMessageReceived(pubMsg);
+                    OnMessageReceived(topic, pubMsg);
 
                     var ackMsg = new MqttPublishAckMessage()
                         .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
@@ -200,6 +199,10 @@ namespace Nmqtt
                         .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
                     connectionHandler.SendMessage(pubRecv);
                 }
+            } catch (ArgumentException ex) {
+                Log.Warn(m => m("Message recieved which contained topic ({0}) that was not valid according to MQTT Spec was suppressed.", 
+                                pubMsg.VariableHeader.TopicName), ex);
+                publishSuccess = false;            
             } catch (Exception ex) {
                 Log.Error(m => m("An error occurred while processing a message received from a broker ({0}).", msg), ex);
                 publishSuccess = false;
@@ -221,14 +224,19 @@ namespace Nmqtt
                 receivedMessages.TryGetValue(pubRelMsg.VariableHeader.MessageIdentifier, out pubMsg);
                 if (pubMsg != null) {
                     receivedMessages.Remove(pubRelMsg.VariableHeader.MessageIdentifier);
-
+                    
                     // send the message for processing to whoever is waiting.
-                    OnMessageReceived(pubMsg);
+                    var topic = new PublicationTopic(pubMsg.VariableHeader.TopicName);
+                    OnMessageReceived(topic, pubMsg);
 
                     var compMsg = new MqttPublishCompleteMessage()
                         .WithMessageIdentifier(pubMsg.VariableHeader.MessageIdentifier);
                     connectionHandler.SendMessage(compMsg);
                 }
+            } catch (ArgumentException ex) {
+                Log.Warn(m => m("Message recieved which contained topic ({0}) that was not valid according to MQTT Spec was suppressed.",
+                                pubRelMsg.VariableHeader.TopicName), ex);
+                publishSuccess = false;
             } catch (Exception ex) {
                 Log.Error(m => m("An error occurred while processing a publish release message received from a broker ({0}).", msg), ex);
                 publishSuccess = false;
@@ -240,11 +248,12 @@ namespace Nmqtt
         /// <summary>
         /// Raises the MessageReceived event.
         /// </summary>
+        /// <param name="topic">The topic the message belongs to.</param>
         /// <param name="msg">The message received.</param>
-        private void OnMessageReceived(MqttPublishMessage msg) {
+        private void OnMessageReceived(PublicationTopic topic, MqttPublishMessage msg) {
             var handler = MessageReceived;
             if (handler != null) {
-                handler(this, new PublishEventArgs(msg));
+                handler(this, new PublishEventArgs(topic, msg));
             }
         }
 

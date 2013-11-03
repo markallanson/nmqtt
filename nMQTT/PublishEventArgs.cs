@@ -20,13 +20,20 @@ namespace Nmqtt {
         /// <summary>
         /// The message being published.
         /// </summary>
-        public MqttPublishMessage PublishMessage { get; set; }
+        public MqttPublishMessage PublishMessage { get; private set; }
+
+        /// <summary>
+        /// Gets the parsed topic belonging to the published message.
+        /// </summary>
+        public PublicationTopic   Topic          { get; private set; }
 
         /// <summary>
         /// Creates a new instance of a PublishEventArgs class.
         /// </summary>
+        /// <param name="topic">The parsed topic.</param>
         /// <param name="publishMessage">The MQTT Publish Message that's been published.</param>
-        public PublishEventArgs(MqttPublishMessage publishMessage) {
+        public PublishEventArgs(PublicationTopic topic, MqttPublishMessage publishMessage) {
+            Topic          = topic;
             PublishMessage = publishMessage;
         }
     }

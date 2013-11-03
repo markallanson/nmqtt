@@ -24,7 +24,7 @@ namespace Nmqtt
     /// </summary>
     internal class SubscriptionsManager : IDisposable
     {
-        private static readonly ILog                        Log = LogManager.GetCurrentClassLogger();
+        private static readonly ILog                        Log                        = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     used to synchronize access to subscriptions.
@@ -39,12 +39,12 @@ namespace Nmqtt
         /// <summary>
         ///     List of confirmed subscriptions, keyed on the topic name.
         /// </summary>
-        private readonly Dictionary<string, Subscription>   subscriptions               = new Dictionary<string, Subscription>();
+        private readonly Dictionary<string, Subscription>   subscriptions              = new Dictionary<string, Subscription>();
 
         /// <summary>
         ///     A list of subscriptions that are pending acknowledgement, keyed on the message identifier.
         /// </summary>
-        private readonly Dictionary<int, Subscription>      pendingSubscriptions        = new Dictionary<int, Subscription>();
+        private readonly Dictionary<int, Subscription>      pendingSubscriptions       = new Dictionary<int, Subscription>();
 
         /// <summary>
         ///     The connection handler that we use to subscribe to subscription acknowledgements.
@@ -92,19 +92,22 @@ namespace Nmqtt
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TPayloadConverter"></typeparam>
-        /// <param name="topic">The subscription topic to get.</param>
+        /// <param name="topic">The subscription Topic to get.</param>
         /// <param name="observable">Set to an observable on the subscription if one exists, otherwise null.</param>
         /// <returns>True if an existing observable is available, otherwise false.</returns>
         private bool TryGetExistingSubscription<T, TPayloadConverter>(string topic, out IObservable<MqttReceivedMessage<T>> observable)
             where TPayloadConverter : IPayloadConverter<T>, new() {
             var existingObservable = this.pendingSubscriptions.Values
                                                               .Union(this.subscriptions.Values)
+// ReSharper disable SuspiciousTypeConversion.Global 
+// SubscriptionTopic implements explicit handling for string equality checking
                                                               .Where(ps => ps.Topic.Equals(topic))
+// ReSharper restore SuspiciousTypeConversion.Global
                                                               .Select(ps => ps.Observable)
                                                               .FirstOrDefault();
             observable = null;
             if (existingObservable != null) {
-                observable = WrapSubscriptionObservable<T, TPayloadConverter>(topic, existingObservable);
+                observable = WrapSubscriptionObservable<T, TPayloadConverter>(existingObservable);
             } 
             return observable != null;
         }
@@ -119,72 +122,84 @@ namespace Nmqtt
         /// <returns>An observable that yields messages when they arrive.</returns>
         private IObservable<MqttReceivedMessage<T>> CreateNewSubscription<T, TPayloadConverter>(string topic, MqttQos qos)
             where TPayloadConverter : IPayloadConverter<T>, new() {
-            Log.Info(m => m("Creating subscription for topic {0} @ QOS {1}.", topic, qos));
+            Log.Info(m => m("Creating subscription for topoc {0} @ QOS {1}.", topic, qos));
 
-            // Get an ID that represents the subscription. We will use this same ID for unsubscribe as well.
-            var msgId = messageIdentifierDispenser.GetNextMessageIdentifier("subscriptions");
+            try {
+                var subscriptionTopic = new SubscriptionTopic(topic);
 
-            // create a new observable that is used to yield messages
-            // that arrive for the topic.
-            var observable = CreateObservableForSubscription(topic, msgId);
-                                
-            var sub = new Subscription {
-                Topic             = topic,
-                Qos               = qos,
-                MessageIdentifier = msgId,
-                CreatedTime       = DateTime.Now,
-                Observable        = observable,
-            };
+                // Get an ID that represents the subscription. We will use this same ID for unsubscribe as well.
+                var msgId = messageIdentifierDispenser.GetNextMessageIdentifier("subscriptions");
 
-            pendingSubscriptions.Add(sub.MessageIdentifier, sub);
+                // create a new observable that is used to yield messages
+                // that arrive for the topoc.
+                var observable = CreateObservableForSubscription(subscriptionTopic, msgId);
 
-            // build a subscribe message for the caller and send it off to the broker.
-            var msg = new MqttSubscribeMessage().WithMessageIdentifier(sub.MessageIdentifier)
-                                                .ToTopic(sub.Topic)
-                                                .AtQos(sub.Qos);
-            connectionHandler.SendMessage(msg);
+                var sub = new Subscription {
+                    Topic             = subscriptionTopic,
+                    Qos               = qos,
+                    MessageIdentifier = msgId,
+                    CreatedTime       = DateTime.Now,
+                    Observable        = observable,
+                };
 
-            return WrapSubscriptionObservable<T, TPayloadConverter>(topic, sub.Observable);
+                pendingSubscriptions.Add(sub.MessageIdentifier, sub);
+
+                // build a subscribe message for the caller and send it off to the broker.
+                var msg = new MqttSubscribeMessage().WithMessageIdentifier(sub.MessageIdentifier)
+                                                    .ToTopic(sub.Topic.ToString())
+                                                    .AtQos(sub.Qos);
+                connectionHandler.SendMessage(msg);
+
+                return WrapSubscriptionObservable<T, TPayloadConverter>(sub.Observable);            
+            } catch (ArgumentException ex) {
+                Log.Warn(m => m("Error while processing topoc {0}. topoc structure not valid.", topic), ex);
+                throw;
+            }
         }
 
         /// <summary>
         ///     Creates an observable for a subscription.
         /// </summary>
-        /// <param name="topic">The topic to create the observable for.</param>
-        /// <param name="msgId">The messgeid assigned to the subscription</param>
-        /// <returns>An observable that yields a byte array for each message that arrives on a topic.</returns>
-        private IObservable<byte[]> CreateObservableForSubscription(string topic, short msgId) {
-            var observable = Observable.Create((IObserver<byte[]> observer) => {
-                Log.Info(m => m("Creating underlying core observable for topic {0}.", topic));
+        /// <param name="subscriptionTopic">The topic to the obserbable should read messages on.</param>
+        /// <param name="msgId">The messgeid assigned to the subscription.</param>
+        /// <returns>An observable that yields a byte array for each message that arrives on a topoc.</returns>
+        private IObservable<MqttReceivedMessage<byte[]>> CreateObservableForSubscription(SubscriptionTopic subscriptionTopic, short msgId) {
+            var observable = Observable.Create<MqttReceivedMessage<byte[]>>(observer => {
+                Log.Info(m => m("Creating underlying core observable for topoc {0}.", subscriptionTopic));
 
-                // Listen for payload messages and when they arrive for our topic
+                // Listen for payload messages and when they arrive for our topoc
                 // publish them onto the observable.
                 var msgPubObservable
                     = Observable.FromEventPattern<PublishEventArgs>(h => publishingManager.MessageReceived += h,
                                                                     h => publishingManager.MessageReceived -= h);
                 var msgPubSub = msgPubObservable
-                    .Where(ep => topic.Equals(ep.EventArgs.PublishMessage.VariableHeader.TopicName))
-                    .Select(ep => ep.EventArgs.PublishMessage)
-                    .Subscribe(msg => {
+                    .Where(ep => subscriptionTopic.Matches(ep.EventArgs.Topic))
+                    .Select(ep => ep.EventArgs)
+                    .Subscribe(eventArgs => {
                         try {
-                            observer.OnNext(msg.Payload.Message.ToArray());
+                            // we use the messages topic name here so that if the 
+                            // matched subscription was a wildcard, we give the 
+                            // consumer the actual topic the message was published
+                            // for, not the original wildcard subscription topic.
+                            observer.OnNext(new MqttReceivedMessage<byte[]>(eventArgs.Topic.ToString(), 
+                                                                            eventArgs.PublishMessage.Payload.Message.ToArray()));
                         } catch (Exception ex) {
-                            Log.Error(m => m("Error while publishing message to observer for topic {0}.", topic), ex);
+                            Log.Error(m => m("Error while publishing message to observer for topic {0}.", eventArgs.Topic.ToString()), ex);
                         }
                     });
 
-                // Unsubscribe from the topic on the server,
+                // Unsubscribe from the topoc on the server,
                 return Disposable.Create(() => {
-                    Log.Info(m => m("Last subscriber gone for topic '{0}', unsubscribing on broker.", topic));
+                    Log.Info(m => m("Last subscriber gone for topic '{0}', unsubscribing on broker.", subscriptionTopic));
                     
-                    // stop processing publish messages for this topic received by thethe publishing manager.
+                    // stop processing publish messages for this topoc received by thethe publishing manager.
                     msgPubSub.Dispose();
 
                     // build a unsubscribe message for the caller and send it off to the broker.
-                    var unsubscribeMsg = new MqttUnsubscribeMessage().WithMessageIdentifier(
-                        messageIdentifierDispenser.GetNextMessageIdentifier("unsubscriptions"))
-                                                  .WithMessageIdentifier(msgId)
-                                                  .FromTopic(topic);
+                    var unsubscribeMsg = new MqttUnsubscribeMessage()
+                        .WithMessageIdentifier(messageIdentifierDispenser.GetNextMessageIdentifier("unsubscriptions"))
+                        .WithMessageIdentifier(msgId)
+                        .FromTopic(subscriptionTopic.ToString());
                     connectionHandler.SendMessage(unsubscribeMsg);
                 });
             });
@@ -201,13 +216,12 @@ namespace Nmqtt
         /// </summary>
         /// <typeparam name="T">The type of data the subscription is expected to return.</typeparam>
         /// <typeparam name="TPayloadConverter">The type of the converter that can convert from bytes to the type T.</typeparam>
-        /// <param name="topic">The topic being wrapped</param>
         /// <param name="observable">The observable on the raw byte array to be wrapped.</param>
         /// <returns>An observable that yields MqttReceivedMessages of type T when a message arrives on the subscription.</returns>
-        private static IObservable<MqttReceivedMessage<T>>  WrapSubscriptionObservable<T, TPayloadConverter>(string topic, IObservable<byte[]> observable) 
+        private static IObservable<MqttReceivedMessage<T>>  WrapSubscriptionObservable<T, TPayloadConverter>(IObservable<MqttReceivedMessage<byte[]>> observable) 
             where TPayloadConverter : IPayloadConverter<T>, new() {
             var payloadConverter = new TPayloadConverter();
-            return observable.Select(ba => new MqttReceivedMessage<T>(topic, payloadConverter.ConvertFromBytes(ba)));
+            return observable.Select(ba => new MqttReceivedMessage<T>(ba.Topic, payloadConverter.ConvertFromBytes(ba.Payload)));
         }
 
         /// <summary>
@@ -226,7 +240,7 @@ namespace Nmqtt
                 }
 
                 // move it to the subscriptions pool, and out of the pending pool.
-                subscriptions.Add(sub.Topic, sub);
+                subscriptions.Add(sub.Topic.ToString(), sub);
                 pendingSubscriptions.Remove(subAck.VariableHeader.MessageIdentifier);
 
                 return true;
@@ -243,12 +257,12 @@ namespace Nmqtt
                 var unSubAck = (MqttUnsubscribeAckMessage)msg;
                 var existingSubscription = subscriptions.Values.FirstOrDefault(sub => sub.MessageIdentifier == unSubAck.VariableHeader.MessageIdentifier);
                 if (existingSubscription != null) {
-                    Log.Info(m => m("Unsubscription from broker topic {0} acknowledged.", existingSubscription.Topic));
+                    Log.Info(m => m("Unsubscription from broker topoc {0} acknowledged.", existingSubscription.Topic));
 
                     // Complete the observable sequence for the subscription, then remove it from the subscriptions.
                     // This is "proper" but may or may not be useful as we unsubscribe dynamically when the
                     // last of the subscribers has disposed themselves.
-                    subscriptions.Remove(existingSubscription.Topic);
+                    subscriptions.Remove(existingSubscription.Topic.ToString());
                 } else {
                     Log.Warn(m => m("Unsubscribe ack recieved for unknown msgid {0}.", unSubAck.VariableHeader.MessageIdentifier));                    
                 }
@@ -259,25 +273,27 @@ namespace Nmqtt
         /// <summary>
         ///     Gets the current status of a subscription.
         /// </summary>
-        /// <param name="topic">The topic to check the subscription for.</param>
-        /// <returns>The current status of the subscription</returns>
+        /// <param name="topic">The topoc to check the subscription for.</param>
+        /// <returns>The current status of the subscription</returns>  
+        // ReSharper disable SuspiciousTypeConversion.Global
         public SubscriptionStatus GetSubscriptionsStatus(string topic) {
             lock (subscriptionPadlock) {
                 var status = SubscriptionStatus.DoesNotExist;
                 if (subscriptions.ContainsKey(topic)) {
                     status = SubscriptionStatus.Active;
                 }
-                if (pendingSubscriptions.Any(pair => pair.Value.Topic.Equals(topic, StringComparison.Ordinal))) {
+                if (pendingSubscriptions.Any(pair => pair.Value.Topic.Equals(topic))) {
                     status = SubscriptionStatus.Pending;
                 }
                 return status;
             }
         }
+        // ReSharper restore SuspiciousTypeConversion.Global
 
         /// <summary>
-        ///     Gets the subscription data method registered for a subscription topic.
+        ///     Gets the subscription data method registered for a subscription topoc.
         /// </summary>
-        /// <param name="topic">The topic to retrieve the subscription data for.</param>
+        /// <param name="topic">The topoc to retrieve the subscription data for.</param>
         /// <returns>The subscription data for a subscription, or null if there is no registered subscription.</returns>
         /// <remarks>
         ///     This will ignore pending subscriptions, so any messages that arrive for pending subscriptions will NOT be delivered. This
