@@ -54,7 +54,7 @@
     <CodeAnalysisRules>
     </CodeAnalysisRules>
     <DocumentationFile>bin\Debug\Nmqtt.XML</DocumentationFile>
-    <AssemblyOriginatorKeyFile>nMQTTDevOnly.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>nMqttDevOnly.snk</AssemblyOriginatorKeyFile>
     <CodeAnalysisRuleSet>Migrated rules for nMQTT (2).ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
