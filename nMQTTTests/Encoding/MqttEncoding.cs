@@ -11,12 +11,7 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Xunit;
-using NmqttTests;
 using System.Diagnostics;
 
 namespace nMqttTests.Encoding
@@ -50,7 +45,7 @@ namespace nMqttTests.Encoding
         }
 
         /// <summary>
-        /// Tests the MqttEncoding GetBytes method
+        /// Tests the MqttEncoding GetBytesCount  method
         /// </summary>
         [Fact]
         public void GetByteCount()
@@ -82,10 +77,10 @@ namespace nMqttTests.Encoding
         }
 
         /// <summary>
-        /// Tests the MqttEncoding GetCharCount method with a valid input
+        /// Tests the MqttEncoding GetCharCount method with a valid input for lengs that only use the LSB
         /// </summary>
         [Fact]
-        public void GetCharCount_ValidLength()
+        public void GetCharCount_ValidLength_LSB()
         {
             var strBytes = new[] 
             {
@@ -100,6 +95,24 @@ namespace nMqttTests.Encoding
             var count = enc.GetCharCount(strBytes);
 
             Assert.Equal<int>(3, count);
+        }        
+        
+        /// <summary>
+        /// Tests the MqttEncoding GetCharCount method with a valid input for lengs that only use the MSB
+        /// </summary>
+        [Fact]
+        public void GetCharCount_ValidLength_MSB()
+        {
+            var strBytes = new[] 
+            {
+                (byte)255,
+                (byte)255,
+            };
+
+            System.Text.Encoding enc = GetEncoding();
+            var count = enc.GetCharCount(strBytes);
+
+            Assert.Equal<int>(65535, count);
         }
 
         /// <summary>

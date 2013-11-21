@@ -90,7 +90,7 @@ namespace Nmqtt.Encoding
                 throw new ArgumentException("Length byte array must comprise 2 bytes");
             }
 
-            return (short) ((bytes[0] << 8) + bytes[1]);
+            return (ushort) ((bytes[0] << 8) + bytes[1]);
         }
 
         /// <summary>
