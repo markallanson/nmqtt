@@ -110,6 +110,18 @@ namespace nMqtt.SampleApp
 
             client.PublishMessage<string, AsciiPayloadConverter>(topic, (MqttQos)qos, data);
         }
+        /// <summary>
+        /// Publish message to the specified topic.
+        /// </summary>
+        /// <param name="topic">The topic.</param>
+        /// <param name="qos">The qos.</param>
+        /// <param name="data">The message.</param>
+        public void Publish(string topic, byte qos, byte[] data)
+        {
+            if (client == null) throw new InvalidOperationException("You must connect before you can subscribe to a topic.");
+
+            client.PublishMessage(topic, (MqttQos)qos, data);
+        }
 
         /// <summary>
         /// Event fired when subscribed to a new topic

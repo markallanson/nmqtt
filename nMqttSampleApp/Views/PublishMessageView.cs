@@ -15,7 +15,7 @@ using nMqtt.SampleApp.ViewsModels;
 
 namespace nMqtt.SampleApp.Views
 {
-    public partial class PublishMessageView : View<PublishMessageViewModel>
+    public partial class PublishMessageView : PublishMessageViewBase
     {
         public PublishMessageView()
         {
@@ -36,14 +36,28 @@ namespace nMqtt.SampleApp.Views
 
         protected override void InitializeEventHandlers()
         {
-
             publishButton.Click += (sender, e) => {
                 try {
                     ViewModel.Publish();
                 } catch (InvalidTopicException ex) {
                     MessageBox.Show(ex.Message, "Error in Topic " + ex.Topic, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            };            
+            };
+
+            fileButton.Click += (sender, e) => {
+                try {
+                    using (var ofd = new OpenFileDialog()) {
+                        ofd.Multiselect = false;
+                        if (ofd.ShowDialog() == DialogResult.OK) {
+                            ViewModel.Publish(ofd.FileName);
+                        }
+                    }
+                } catch (InvalidTopicException ex) {
+                    MessageBox.Show(ex.Message, "Error in Topic " + ex.Topic, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };   
         }
     }
+
+    public class PublishMessageViewBase : View<PublishMessageViewModel> {}
 }

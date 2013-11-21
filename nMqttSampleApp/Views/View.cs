@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace nMqtt.SampleApp
 {
-	public abstract class View<TViewModel> : UserControl
+	public class View<TViewModel> : UserControl
 		where TViewModel : ViewModel
 	{
 		private TViewModel viewModel;
@@ -39,11 +39,13 @@ namespace nMqtt.SampleApp
 		/// <summary>
 		/// When implemented in an inherting class, initializes data binding between the View and the ViewModel
 		/// </summary>
-		protected abstract void InitializeDataBinding();
+		protected virtual void InitializeDataBinding() {
+		}
 		
 		/// <summary>
 		/// When implemented in an inheriting class, initializes event handlers for the View. 
 		/// </summary>
-		protected abstract void InitializeEventHandlers();
+		protected virtual void InitializeEventHandlers() {
+		}
 	}
 }

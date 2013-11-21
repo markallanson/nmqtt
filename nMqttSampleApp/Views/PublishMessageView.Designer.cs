@@ -43,7 +43,7 @@ namespace nMqtt.SampleApp.Views
             this.publishGroupBox = new System.Windows.Forms.GroupBox();
             this.messageTextbox = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.fileButton = new System.Windows.Forms.Button();
             this.publishButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.qosNumeric = new System.Windows.Forms.NumericUpDown();
@@ -58,7 +58,7 @@ namespace nMqtt.SampleApp.Views
             // 
             this.publishGroupBox.Controls.Add(this.messageTextbox);
             this.publishGroupBox.Controls.Add(this.button3);
-            this.publishGroupBox.Controls.Add(this.button2);
+            this.publishGroupBox.Controls.Add(this.fileButton);
             this.publishGroupBox.Controls.Add(this.publishButton);
             this.publishGroupBox.Controls.Add(this.checkBox1);
             this.publishGroupBox.Controls.Add(this.qosNumeric);
@@ -73,11 +73,11 @@ namespace nMqtt.SampleApp.Views
             this.publishGroupBox.TabStop = false;
             this.publishGroupBox.Text = "Publishing";
             // 
-            // textBox1
+            // messageTextbox
             // 
-            this.messageTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.messageTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.messageTextbox.Location = new System.Drawing.Point(11, 51);
             this.messageTextbox.Multiline = true;
             this.messageTextbox.Name = "messageTextbox";
@@ -94,17 +94,17 @@ namespace nMqtt.SampleApp.Views
             this.button3.Text = "Hex";
             this.button3.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // fileButton
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(397, 81);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 20;
-            this.button2.Text = "File...";
-            this.button2.UseVisualStyleBackColor = true;
+            this.fileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.fileButton.Location = new System.Drawing.Point(397, 81);
+            this.fileButton.Name = "fileButton";
+            this.fileButton.Size = new System.Drawing.Size(75, 23);
+            this.fileButton.TabIndex = 20;
+            this.fileButton.Text = "File...";
+            this.fileButton.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // publishButton
             // 
             this.publishButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.publishButton.Location = new System.Drawing.Point(397, 51);
@@ -125,7 +125,7 @@ namespace nMqtt.SampleApp.Views
             this.checkBox1.Text = "Retained";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown1
+            // qosNumeric
             // 
             this.qosNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.qosNumeric.Location = new System.Drawing.Point(364, 20);
@@ -143,10 +143,10 @@ namespace nMqtt.SampleApp.Views
             this.label2.TabIndex = 16;
             this.label2.Text = "At Qos:";
             // 
-            // comboBox1
+            // topicsCombo
             // 
-            this.topicsCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.topicsCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.topicsCombo.FormattingEnabled = true;
             this.topicsCombo.Location = new System.Drawing.Point(88, 19);
             this.topicsCombo.Name = "topicsCombo";
@@ -186,7 +186,7 @@ namespace nMqtt.SampleApp.Views
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox messageTextbox;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button fileButton;
         private System.Windows.Forms.Button publishButton;
     }
 }

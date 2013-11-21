@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 
 namespace nMqtt.SampleApp.Models
 {
@@ -50,6 +51,11 @@ namespace nMqtt.SampleApp.Models
         public void Publish()
         {
            MqttHandler.Instance.Publish(Topic, Qos, Message);
+        }
+
+        public void Publish(string fileName) {
+            var fileBytes = File.ReadAllBytes(fileName);
+            MqttHandler.Instance.Publish(Topic, Qos, fileBytes);
         }
     }
 }

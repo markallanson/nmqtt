@@ -80,5 +80,9 @@ namespace nMqtt.SampleApp.ViewsModels
             Model.Publish();
             Message = string.Empty;
         }
+
+        public void Publish(string fileName) {
+            Model.Publish(fileName);
+        }
     }
 }
