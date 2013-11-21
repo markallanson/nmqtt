@@ -29,7 +29,7 @@ namespace nMqttTests.ExtensionMethods
         /// <summary>
         /// Ensures we get the correct exception when we say there's more bytes than there actually are.
         /// </summary>
-        [Fact]
+        [Fact(Skip="Reading strings changed to use repeatable reads against the buffer to support slow network connections therefore no implementation of 'too few characters' at the moment.")]
         public void String_NotEnoughBytesInString()
         {
             Type emType = GetStreamExtensionMethod();
@@ -48,6 +48,26 @@ namespace nMqttTests.ExtensionMethods
             }
         }
 
+        /// <summary>
+        /// Ensures we get the correct exception when we say there's more bytes than there actually are.
+        /// </summary>
+        [Fact]
+        public void String_LongStringIsFullyRead() {
+            var emType = GetStreamExtensionMethod();
+
+            var longString = new byte[65535];  // Longest possible 65k string full of character 'a'
+            for (var i = 0; i < longString.Length; i++) {
+                longString[i] = (byte)'a';
+            }
+            var expectedString = System.Text.Encoding.ASCII.GetString(longString);
+            var bytes = new List<byte>(new[]{ (byte)(longString.Length >> 8), (byte)(longString.Length & 0xFF) });
+            bytes.AddRange(longString);
+            
+            using (var ms = new MemoryStream(bytes.ToArray())) { 
+                var result = (String) emType.InvokeMember("ReadMqttString", ReflectionBindingConstants.PublicStaticMethod, null, null, new object[] { ms });
+                Assert.Equal(expectedString, result);
+            }
+        }
         /// <summary>
         /// Ensures we get an exception when we don't have enough bytes to describe a string.
         /// </summary>
