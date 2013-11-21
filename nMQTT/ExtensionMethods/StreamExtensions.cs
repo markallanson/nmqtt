@@ -11,6 +11,7 @@
 */
 
 using System;
+using System.Collections;
 using System.IO;
 using Nmqtt.Encoding;
 
@@ -49,27 +50,33 @@ namespace Nmqtt.ExtensionMethods
         /// </summary>
         /// <param name="stringStream">The stream to read the string from.</param>
         /// <returns>The Mqtt String.</returns>
-        public static string ReadMqttString(this Stream stringStream) {
+        public static string ReadMqttString(this Stream stringStream)
+        {
             // read and check the length
             var lengthBytes = new byte[2];
-            int bytesRead = stringStream.Read(lengthBytes, 0, 2);
-            if (bytesRead < 2) {
+            var bytesRead = stringStream.Read(lengthBytes, 0, 2);
+            if (bytesRead < 2)
+            {
                 throw new ArgumentException(
                     "The stream did not have enough bytes to describe the length of the string",
                     "stringStream");
             }
 
             System.Text.Encoding enc = new MqttEncoding();
-            var stringLength = (short) enc.GetCharCount(lengthBytes);
+            var stringLength = (ushort)enc.GetCharCount(lengthBytes);
 
             // read the bytes from the string, validate we have enough etc.
             var stringBytes = new byte[stringLength];
-            bytesRead = stringStream.Read(stringBytes, 0, stringLength);
-            if (bytesRead < stringLength) {
-                throw new ArgumentException("stream",
-                                            String.Format(
-                                                "The stream did not have enough bytes to match the defined string length {0}",
-                                                stringLength));
+            var readBuffer = new byte[1 << 10]; // 1KB read buffer
+            var totalRead = 0;
+
+            // Keep reading until we have all. Intentionally synchronous
+            while (totalRead < stringLength) {
+                var remainingBytes = stringLength - totalRead;
+                var nextReadSize = remainingBytes > readBuffer.Length ? readBuffer.Length : remainingBytes;
+                bytesRead = stringStream.Read(readBuffer, 0, nextReadSize);
+                Array.Copy(readBuffer, 0, stringBytes, totalRead, bytesRead);
+                totalRead += bytesRead;
             }
 
             return enc.GetString(stringBytes);
