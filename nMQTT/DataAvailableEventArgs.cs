@@ -11,7 +11,7 @@
 */
 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace Nmqtt
 {
@@ -20,13 +20,13 @@ namespace Nmqtt
     /// </summary>
     public class DataAvailableEventArgs : EventArgs
     {
-        private readonly Collection<byte> messageData;
+        private readonly List<byte> messageData;
 
         /// <summary>
         ///     Gets or sets the data stream that contains the data to read from.
         /// </summary>
         /// <value>The data stream.</value>
-        public Collection<byte> MessageData {
+        public List<byte> MessageData {
             get { return messageData; }
         }
 
@@ -34,7 +34,7 @@ namespace Nmqtt
         ///     Initializes a new instance of the <see cref="DataAvailableEventArgs" /> class.
         /// </summary>
         /// <param name="messageData">A collection of bytes containing the message data.</param>
-        public DataAvailableEventArgs(Collection<byte> messageData) {
+        public DataAvailableEventArgs(List<byte> messageData) {
             this.messageData = messageData;
         }
     }

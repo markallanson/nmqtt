@@ -26,7 +26,7 @@ namespace NmqttTests.EventArgs
         [Fact]
         public void CtorDataAvailableInProperty()
         {
-            DataAvailableEventArgs e = new DataAvailableEventArgs(new Collection<byte>(new byte[] { 3, 2, 1 }));
+            var e = new DataAvailableEventArgs(new List<byte>(new byte[] { 3, 2, 1 }));
             Assert.Equal<int>(3, e.MessageData.Count());
             Assert.Equal<byte>(3, e.MessageData[0]);
             Assert.Equal<byte>(2, e.MessageData[1]);
